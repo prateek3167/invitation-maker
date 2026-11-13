@@ -1,0 +1,30 @@
+import {afterAll,beforeAll,expect,it} from 'vitest';
+import {mkdtemp,mkdir,readFile,realpath,rm} from 'node:fs/promises';
+import path from 'node:path';
+import {randomUUID,createHash} from 'node:crypto';
+import {createEmbeddedDatabase} from '../../packages/database/client';
+import {user,portraitAssets} from '../../packages/database/schema';
+import {createCard,createProject,getCard,updateCard,removeProject} from '../../packages/database/projects';
+import {deleteUnusedPhotos,hydratePhoto} from '../../packages/database/media';
+import {enqueueExport} from '../../packages/database/exports';
+import {createInvitation,templates,validateInvitation,royalCategories,presets} from '../../packages/editor-core/document';
+import {serverArtwork} from '../../packages/template-engine/artwork';
+import {renderSvg} from '../../packages/template-engine/render';
+let db:Awaited<ReturnType<typeof createEmbeddedDatabase>>,directory:string;
+const previous=process.env.PRIVATE_MEDIA_DIRECTORY;
+beforeAll(async()=>{await mkdir('.cache',{recursive:true});directory=await mkdtemp(path.resolve('.cache/royal-test-'));process.env.PRIVATE_MEDIA_DIRECTORY=directory;db=await createEmbeddedDatabase();await db.db.insert(user).values([{id:'royal-owner',name:'Royal',email:'royal@example.test'},{id:'royal-other',name:'Other',email:'royal-other@example.test'}]);});
+afterAll(async()=>{await db?.client.close();if(previous===undefined)delete process.env.PRIVATE_MEDIA_DIRECTORY;else process.env.PRIVATE_MEDIA_DIRECTORY=previous;const actual=await realpath(directory),parent=await realpath('.cache');if(path.dirname(actual)!==parent||!path.basename(actual).startsWith('royal-test-'))throw new Error('Unsafe test cleanup');await rm(actual,{recursive:true,force:true});});
+it('ships two distinct original backgrounds per royal category, all presets and safe editable two-photo documents',async()=>{
+  const royal=templates.filter(t=>t.royal),hashes=new Set<string>();expect(royal).toHaveLength(20);expect(royalCategories).toHaveLength(10);
+  for(const category of royalCategories)expect(royal.filter(t=>t.royal?.category===category)).toHaveLength(2);
+  for(const template of royal){const document=createInvitation(template),art=await serverArtwork(document);hashes.add(createHash('sha256').update(art!).digest('hex'));for(const format of Object.keys(presets) as (keyof typeof presets)[]){document.format=format;validateInvitation(document);expect(renderSvg(document,art)).toContain(`width="${presets[format].width}"`);}await readFile(`apps/web/public/royal/${template.id}-thumb.webp`);expect(()=>renderSvg(document)).toThrow('embedded');expect(()=>validateInvitation({...document,portraits:{bride:{data:'https://evil.example/photo',x:50,y:50,zoom:1},groom:null}})).toThrow();}expect(hashes.size).toBe(20);
+});
+it('persists both portraits/crops, enforces ownership and cleanup, and captures self-contained royal export snapshots',async()=>{
+  const project=await createProject(db.db,'royal-owner',{title:'Royal wedding',occasion:'Wedding'}),other=await createProject(db.db,'royal-other',{title:'Other',occasion:'Wedding'}),document=createInvitation(templates.find(t=>t.royal)!);
+  document.portraits={bride:{data:`data:image/webp;base64,${(await readFile('apps/web/public/royal/demo-bride.webp')).toString('base64')}`,x:20,y:35,zoom:1.3},groom:{data:`data:image/webp;base64,${(await readFile('apps/web/public/royal/demo-groom.webp')).toString('base64')}`,x:70,y:65,zoom:1.7}};
+  const card=await createCard(db.db,'royal-owner',project.id,{document});expect(card.portraits?.bride?.data).toMatch(/^asset:/);expect(card.portraits?.groom?.data).toMatch(/^asset:/);expect(await db.db.select().from(portraitAssets)).toHaveLength(2);
+  await expect(createCard(db.db,'royal-other',other.id,{document:card})).rejects.toMatchObject({status:404});expect(await deleteUnusedPhotos(db.db,'royal-owner')).toBe(0);
+  const hydrated=await hydratePhoto(db.db,'royal-owner',await getCard(db.db,'royal-owner',card.id));expect(hydrated.portraits?.bride?.x).toBe(20);expect(hydrated.portraits?.groom?.zoom).toBe(1.7);
+  const saved=await updateCard(db.db,'royal-owner',card.id,hydrated);const job=await enqueueExport(db.db,'royal-owner',{invitationId:saved.id,revision:saved.revision,idempotencyKey:randomUUID(),format:'png'});expect(job.snapshotSvg.match(/<image /g)).toHaveLength(3);expect(job.snapshotSvg).not.toContain('asset:');expect(job.snapshotSvg).toContain('data:image/webp;base64,');
+  await updateCard(db.db,'royal-owner',saved.id,{...saved,portraits:{...saved.portraits!,bride:null}});expect(await deleteUnusedPhotos(db.db,'royal-owner')).toBe(1);await removeProject(db.db,'royal-owner',project.id);expect(await deleteUnusedPhotos(db.db,'royal-owner')).toBe(1);expect(job.snapshotSvg.match(/<image /g)).toHaveLength(3);
+});

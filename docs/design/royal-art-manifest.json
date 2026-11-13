@@ -1,0 +1,210 @@
+{
+  "generator": "built-in image_gen",
+  "date": "2026-11-13",
+  "artworks": [
+    {
+      "id": "royal-portrait-gulabi",
+      "category": "Royal Couple Portrait",
+      "name": "Gulabi Sheesh Mahal",
+      "width": 1200,
+      "height": 1680,
+      "bytes": 435020,
+      "sha256": "13f9dae6c95ee1e722f72a26a38c441c941b9f4ab1edf1c0f268889e252c54c0",
+      "originalGenerationFile": "C:/Users/USER/.codex/generated_images/01a1cfdb-4c04-74e0-b573-9ee8e481f435/exec-c15557a8-73f2-4270-b3ef-17fe86887957.png"
+    },
+    {
+      "id": "royal-portrait-noor",
+      "category": "Royal Couple Portrait",
+      "name": "Noor-e-Mahal",
+      "width": 1200,
+      "height": 1680,
+      "bytes": 483528,
+      "sha256": "93e1ce94d29421f55a109933c5ec3f7ae22a0bfb857010787eab8855141083d8",
+      "originalGenerationFile": "C:/Users/USER/.codex/generated_images/01a1cfdb-4c04-74e0-b573-9ee8e481f435/exec-429618b1-fedc-4f42-bd84-65336420ba21.png"
+    },
+    {
+      "id": "mughal-charbagh",
+      "category": "Mughal Garden",
+      "name": "Charbagh Reverie",
+      "width": 1200,
+      "height": 1680,
+      "bytes": 471842,
+      "sha256": "1812f1ec3a8cd2b96294eee048b5cf9792fbcfc516e66394c18ffdae21dd7af2",
+      "originalGenerationFile": "C:/Users/USER/.codex/generated_images/01a1cfdb-4c04-74e0-b573-9ee8e481f435/exec-a397f4c3-8544-428c-9740-be1baf24a067.png"
+    },
+    {
+      "id": "mughal-moonlight",
+      "category": "Mughal Garden",
+      "name": "Moonlit Shalimar",
+      "width": 1200,
+      "height": 1680,
+      "bytes": 436644,
+      "sha256": "44d88c7379c5efd50d5c889d1e63328396c2109d958101563f6f7172b5ecb608",
+      "originalGenerationFile": "C:/Users/USER/.codex/generated_images/01a1cfdb-4c04-74e0-b573-9ee8e481f435/exec-3d7c5e9e-90c6-41a7-bf34-062f847b4d9d.png"
+    },
+    {
+      "id": "peacock-neelam",
+      "category": "Imperial Peacock",
+      "name": "Neelam Mayura",
+      "width": 1200,
+      "height": 1680,
+      "bytes": 519534,
+      "sha256": "1c1cec8eb890dc3c9e399aa3646429310bc75ba22fef58c59b209dbfef1c301e",
+      "originalGenerationFile": "C:/Users/USER/.codex/generated_images/01a1cfdb-4c04-74e0-b573-9ee8e481f435/exec-395b591f-bb09-47c7-8a1f-c8674da33220.png"
+    },
+    {
+      "id": "peacock-emerald",
+      "category": "Imperial Peacock",
+      "name": "Emerald Mor Chowk",
+      "width": 1200,
+      "height": 1680,
+      "bytes": 515252,
+      "sha256": "20c60a56da452a8499725feef3970c549d92d54b8fb2ea814ddaf7ffa0585cee",
+      "originalGenerationFile": "C:/Users/USER/.codex/generated_images/01a1cfdb-4c04-74e0-b573-9ee8e481f435/exec-a1e4f0f4-d257-4000-892c-ce6839cee78c.png"
+    },
+    {
+      "id": "darbar-chandelier",
+      "category": "Maharaja Darbar",
+      "name": "Darbar of A Thousand Lights",
+      "width": 1200,
+      "height": 1680,
+      "bytes": 456290,
+      "sha256": "fb73607a2ec2befa6f90bc73bb3449006e8325eecc0ff367c5f313dbc9323761",
+      "originalGenerationFile": "C:/Users/USER/.codex/generated_images/01a1cfdb-4c04-74e0-b573-9ee8e481f435/exec-d707e11f-965f-4ac6-9470-19b6b03e0f28.png"
+    },
+    {
+      "id": "darbar-sheesh",
+      "category": "Maharaja Darbar",
+      "name": "Amber Sheesh Darbar",
+      "width": 1200,
+      "height": 1680,
+      "bytes": 488658,
+      "sha256": "59b1f362efc7489b924c0bae14dee7c1902a67ac7fc4e3ab76384208b0faa2d8",
+      "originalGenerationFile": "C:/Users/USER/.codex/generated_images/01a1cfdb-4c04-74e0-b573-9ee8e481f435/exec-cdc9c4c2-3210-477e-a3c9-49b95ef3e007.png"
+    },
+    {
+      "id": "jharokha-gulabi",
+      "category": "Rajputana Jharokha",
+      "name": "Gulabi Jharokha",
+      "width": 1200,
+      "height": 1680,
+      "bytes": 460440,
+      "sha256": "67fda807fa37230f4b9f363da7212bbc95865e439e0afb52485f03e698f9a5d1",
+      "originalGenerationFile": "C:/Users/USER/.codex/generated_images/01a1cfdb-4c04-74e0-b573-9ee8e481f435/exec-3a8ab1a9-8a4b-4f21-a9fc-7bea83f2ed16.png"
+    },
+    {
+      "id": "jharokha-jaisalmer",
+      "category": "Rajputana Jharokha",
+      "name": "Jaisalmer Sandstone",
+      "width": 1200,
+      "height": 1680,
+      "bytes": 435864,
+      "sha256": "9a2f76a2ddb1288aa130a7fd73af189622b6d20f72924d22e8caf462c1abf1bc",
+      "originalGenerationFile": "C:/Users/USER/.codex/generated_images/01a1cfdb-4c04-74e0-b573-9ee8e481f435/exec-dbfe5875-cabd-4909-92e4-32f021fb778a.png"
+    },
+    {
+      "id": "palace-udaipur",
+      "category": "Royal Palace Heritage",
+      "name": "Udaipur Lake Palace",
+      "width": 1200,
+      "height": 1680,
+      "bytes": 354290,
+      "sha256": "30f395e91a6af47b2334f9559d72921d6f2019647776ec1bc678b7a456cc6f4d",
+      "originalGenerationFile": "C:/Users/USER/.codex/generated_images/01a1cfdb-4c04-74e0-b573-9ee8e481f435/exec-3cc6c9e5-60c3-4dc7-88e4-f02983163f4d.png"
+    },
+    {
+      "id": "palace-rajwada",
+      "category": "Royal Palace Heritage",
+      "name": "Rajwada Grand Entrance",
+      "width": 1200,
+      "height": 1680,
+      "bytes": 503700,
+      "sha256": "64d44b014553d04b33922fbd0998a49e1c613c44252eb57c5b5e1ce52c8b9459",
+      "originalGenerationFile": "C:/Users/USER/.codex/generated_images/01a1cfdb-4c04-74e0-b573-9ee8e481f435/exec-41f2ae0a-a927-4340-b870-c42350d8759a.png"
+    },
+    {
+      "id": "mandap-marigold",
+      "category": "Golden Mandap",
+      "name": "Marigold Suvarna Mandap",
+      "width": 1200,
+      "height": 1680,
+      "bytes": 512954,
+      "sha256": "fbad0a9d03efebeb4d070653797b9a6c974e09e293b96b3ba534d4f1706d0943",
+      "originalGenerationFile": "C:/Users/USER/.codex/generated_images/01a1cfdb-4c04-74e0-b573-9ee8e481f435/exec-94ef8159-dc7e-4026-a3dd-e5b756c547f1.png"
+    },
+    {
+      "id": "mandap-rose",
+      "category": "Golden Mandap",
+      "name": "Gulab Mandap at Dusk",
+      "width": 1200,
+      "height": 1680,
+      "bytes": 433838,
+      "sha256": "6718956330794a397512300ed602e0980b3af152390675abe526951084046347",
+      "originalGenerationFile": "C:/Users/USER/.codex/generated_images/01a1cfdb-4c04-74e0-b573-9ee8e481f435/exec-d6f5e14c-7357-4498-9c75-61339172f7a6.png"
+    },
+    {
+      "id": "scroll-kishangarh",
+      "category": "Vintage Royal Scroll",
+      "name": "Kishangarh Heirloom",
+      "width": 1200,
+      "height": 1680,
+      "bytes": 643678,
+      "sha256": "737611d842800cfa91029b5daab9eed476c795f5172ab5caf51c0d3c5a6acbba",
+      "originalGenerationFile": "C:/Users/USER/.codex/generated_images/01a1cfdb-4c04-74e0-b573-9ee8e481f435/exec-0fa8ef12-bf5c-4ba5-b541-c338847595c1.png"
+    },
+    {
+      "id": "scroll-mewar",
+      "category": "Vintage Royal Scroll",
+      "name": "Mewar Painted Chronicle",
+      "width": 1200,
+      "height": 1680,
+      "bytes": 686304,
+      "sha256": "4c54bb9573493441ef78f8c1b7c60f43c83723b0429b7becfc094d7986b6aabc",
+      "originalGenerationFile": "C:/Users/USER/.codex/generated_images/01a1cfdb-4c04-74e0-b573-9ee8e481f435/exec-101fbe73-7908-460d-97fa-5c762f61a070.png"
+    },
+    {
+      "id": "lotus-padma",
+      "category": "Royal Lotus Garden",
+      "name": "Padma Mahal",
+      "width": 1200,
+      "height": 1680,
+      "bytes": 351500,
+      "sha256": "048a9c07319ec586555be63ad51bbea0be2a33350e4cf0ed1e3f9668bb2c8ff8",
+      "originalGenerationFile": "C:/Users/USER/.codex/generated_images/01a1cfdb-4c04-74e0-b573-9ee8e481f435/exec-308d1acf-2887-49fd-92d8-4e03c5ddd7ee.png"
+    },
+    {
+      "id": "lotus-kamal",
+      "category": "Royal Lotus Garden",
+      "name": "Kamal Bagh at Dawn",
+      "width": 1200,
+      "height": 1680,
+      "bytes": 386478,
+      "sha256": "8e626dca775cede0a0e83ce4282024b04fb65253b179760109f843b506ff788b",
+      "originalGenerationFile": "C:/Users/USER/.codex/generated_images/01a1cfdb-4c04-74e0-b573-9ee8e481f435/exec-8b6ef896-73a7-4dd7-9242-c12a81e5cdc9.png"
+    },
+    {
+      "id": "elephant-baraat",
+      "category": "Regal Elephant Procession",
+      "name": "Shahi Baraat",
+      "width": 1200,
+      "height": 1680,
+      "bytes": 526424,
+      "sha256": "ad9a54e1a12edd28aede02d8a125ed635d13e0790bedcc341bd6bb40c05dd6e1",
+      "originalGenerationFile": "C:/Users/USER/.codex/generated_images/01a1cfdb-4c04-74e0-b573-9ee8e481f435/exec-f9227b29-394a-4b26-aa76-64d486c03a20.png"
+    },
+    {
+      "id": "elephant-gajraj",
+      "category": "Regal Elephant Procession",
+      "name": "Gajraj Palace Procession",
+      "width": 1200,
+      "height": 1680,
+      "bytes": 585872,
+      "sha256": "a96c7b704a4ff39ec7fa67c5fa8c8c8c0cda30594287cae2306d711fca5fb040",
+      "originalGenerationFile": "C:/Users/USER/.codex/generated_images/01a1cfdb-4c04-74e0-b573-9ee8e481f435/exec-cdb9217c-d0e5-4834-92da-31c38e8cc104.png"
+    }
+  ],
+  "demoPortraits": {
+    "source": "C:/Users/USER/.codex/generated_images/01a1cfdb-4c04-74e0-b573-9ee8e481f435/exec-6cdf5b0e-6ef5-4ee3-969e-06efdb3c7204.png",
+    "description": "Fictional AI-generated preview couple; never inserted into saved user documents."
+  }
+}

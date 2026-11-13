@@ -1,0 +1,53 @@
+import { afterAll, beforeAll, expect, it } from 'vitest';
+import { mkdir, mkdtemp, realpath, rm } from 'node:fs/promises';
+import path from 'node:path';
+import sharp from 'sharp';
+import { eq } from 'drizzle-orm';
+import { createEmbeddedDatabase } from '../../packages/database/client';
+import { assets, user } from '../../packages/database/schema';
+import { createProject, createCard, updateCard, getCard, removeProject } from '../../packages/database/projects';
+import { hydratePhoto, normalizePhoto, readAsset, deleteUnusedPhotos } from '../../packages/database/media';
+import { createInvitation, templates } from '../../packages/editor-core/document';
+import { renderSvg } from '../../packages/template-engine/render';
+let database: Awaited<ReturnType<typeof createEmbeddedDatabase>>, directory: string;
+const prior = process.env.PRIVATE_MEDIA_DIRECTORY;
+beforeAll(async () => {
+  await mkdir('.cache', { recursive: true }); directory = await mkdtemp(path.resolve('.cache/media-test-'));
+  process.env.PRIVATE_MEDIA_DIRECTORY = directory;
+  database = await createEmbeddedDatabase();
+  await database.db.insert(user).values([{ id: 'media-owner', name: 'Owner', email: 'media@example.test' }, { id: 'other-owner', name: 'Other', email: 'other-media@example.test' }]);
+});
+afterAll(async () => {
+  await database?.client.close(); if (prior === undefined) delete process.env.PRIVATE_MEDIA_DIRECTORY; else process.env.PRIVATE_MEDIA_DIRECTORY = prior;
+  const actual = await realpath(directory), parent = await realpath('.cache');
+  if (path.dirname(actual) !== parent || !path.basename(actual).startsWith('media-test-')) throw new Error('Unsafe test cleanup');
+  await rm(actual, { recursive: true, force: true });
+});
+it('rejects disguised active content, corrupt images, oversized input and excessive pixels', async () => {
+  await expect(normalizePhoto(Buffer.from('<svg onload="alert(1)"></svg>'))).rejects.toMatchObject({ code: 'INVALID_IMAGE' });
+  await expect(normalizePhoto(Buffer.from([255, 216, 255, ...new Array(20).fill(0)]))).rejects.toMatchObject({ code: 'INVALID_IMAGE' });
+  await expect(normalizePhoto(Buffer.alloc(6_000_001))).rejects.toMatchObject({ code: 'INVALID_IMAGE_SIZE' });
+  const huge = await sharp({ create: { width: 6500, height: 6500, channels: 3, background: '#fff' } }).png().toBuffer();
+  await expect(normalizePhoto(huge)).rejects.toMatchObject({ code: 'INVALID_IMAGE' });
+});
+it('strips metadata, deduplicates private photos, isolates owners and preserves portable render parity', async () => {
+  const original = await sharp({ create: { width: 2400, height: 1600, channels: 3, background: '#aacc99' } }).withMetadata({ orientation: 6 }).jpeg().toBuffer();
+  const event = await createProject(database.db, 'media-owner', { title: 'Photo event', occasion: 'Wedding' });
+  const source = createInvitation(templates.find(template => template.photo)!);
+  source.photo = { data: `data:image/jpeg;base64,${original.toString('base64')}`, x: 25, y: 75, zoom: 1.5 };
+  const card = await createCard(database.db, 'media-owner', event.id, { document: source });
+  expect(card.photo?.data).toMatch(/^asset:/); expect(() => renderSvg(card)).toThrow('Resolve');
+  const id = card.photo!.data.slice(6), privateFile = await readAsset(database.db, 'media-owner', id);
+  const metadata = await sharp(privateFile.bytes).metadata(); expect(metadata.exif).toBeUndefined(); expect(metadata.orientation).toBeUndefined(); expect(Math.max(metadata.width!, metadata.height!)).toBe(2000);
+  await expect(readAsset(database.db, 'other-owner', id)).rejects.toMatchObject({ status: 404 });
+  const portable = await hydratePhoto(database.db, 'media-owner', card); expect(portable.photo?.x).toBe(25);
+  const saved = await updateCard(database.db, 'media-owner', card.id, portable);
+  expect(saved.photo?.data).toBe(card.photo?.data);
+  expect((await database.db.select().from(assets).where(eq(assets.ownerId, 'media-owner')))).toHaveLength(1);
+  expect(renderSvg(await hydratePhoto(database.db, 'media-owner', await getCard(database.db, 'media-owner', card.id)))).toBe(renderSvg(portable));
+  const foreignEvent = await createProject(database.db, 'other-owner', { title: 'Other event', occasion: 'Wedding' });
+  await expect(createCard(database.db, 'other-owner', foreignEvent.id, { document: card })).rejects.toMatchObject({ status: 404 });
+  expect(await deleteUnusedPhotos(database.db, 'media-owner')).toBe(0);
+  await removeProject(database.db, 'media-owner', event.id); expect(await deleteUnusedPhotos(database.db, 'media-owner')).toBe(1);
+  await expect(readAsset(database.db, 'media-owner', id)).rejects.toMatchObject({ status: 404 });
+});

@@ -1,0 +1,11 @@
+node_modules/
+.next/
+.cache/
+.data/
+coverage/
+test-results/
+playwright-report/
+*.tsbuildinfo
+.env*
+!.env.example
+powershell.cmd

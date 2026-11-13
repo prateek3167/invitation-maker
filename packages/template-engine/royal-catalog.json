@@ -1,0 +1,842 @@
+[
+  {
+    "id": "royal-portrait-gulabi",
+    "name": "Gulabi Sheesh Mahal",
+    "occasion": "Wedding",
+    "style": "Royal & Traditional · Royal Couple Portrait",
+    "photo": true,
+    "layout": 0,
+    "palette": [
+      "#63313e",
+      "#fff6e6",
+      "#b58b45"
+    ],
+    "fields": {
+      "host": "Meera Rathore",
+      "partner": "Arjun Singh",
+      "heading": "Shaadi · Wedding Celebration",
+      "date": "THURSDAY, 18 NOVEMBER 2027",
+      "time": "5:30 PM · PHERAS FOLLOWED BY DINNER",
+      "venue": "The Lakeview Palace · Udaipur",
+      "message": "Together with our families, we invite you to celebrate a lifetime of love."
+    },
+    "royal": {
+      "category": "Royal Couple Portrait",
+      "artwork": "royal-portrait-gulabi",
+      "frame": "arch",
+      "composition": 0,
+      "photoBoxes": [
+        [
+          170,
+          315,
+          156,
+          229
+        ],
+        [
+          375,
+          315,
+          158,
+          228
+        ]
+      ]
+    }
+  },
+  {
+    "id": "royal-portrait-noor",
+    "name": "Noor-e-Mahal",
+    "occasion": "Wedding",
+    "style": "Royal & Traditional · Royal Couple Portrait",
+    "photo": true,
+    "layout": 1,
+    "palette": [
+      "#63313e",
+      "#fff6e6",
+      "#b58b45"
+    ],
+    "fields": {
+      "host": "Aditi Sharma",
+      "partner": "Rohan Mehta",
+      "heading": "Sangeet Celebration",
+      "date": "FRIDAY, 19 NOVEMBER 2027",
+      "time": "7:00 PM · DINNER & CELEBRATIONS",
+      "venue": "The Heritage Courtyard · Jaipur",
+      "message": "Together with our families, we invite you to celebrate a lifetime of love."
+    },
+    "royal": {
+      "category": "Royal Couple Portrait",
+      "artwork": "royal-portrait-noor",
+      "frame": "oval",
+      "composition": 2,
+      "photoBoxes": [
+        [
+          140,
+          227,
+          187,
+          231
+        ],
+        [
+          376,
+          234,
+          185,
+          226
+        ]
+      ]
+    }
+  },
+  {
+    "id": "mughal-charbagh",
+    "name": "Charbagh Reverie",
+    "occasion": "Wedding",
+    "style": "Royal & Traditional · Mughal Garden",
+    "photo": true,
+    "layout": 2,
+    "palette": [
+      "#183e36",
+      "#fff7e5",
+      "#c69c52"
+    ],
+    "fields": {
+      "host": "Meera Rathore",
+      "partner": "Arjun Singh",
+      "heading": "Shaadi · Wedding Celebration",
+      "date": "THURSDAY, 18 NOVEMBER 2027",
+      "time": "5:30 PM · PHERAS FOLLOWED BY DINNER",
+      "venue": "The Lakeview Palace · Udaipur",
+      "message": "Together with our families, we invite you to celebrate a lifetime of love."
+    },
+    "royal": {
+      "category": "Mughal Garden",
+      "artwork": "mughal-charbagh",
+      "frame": "arch",
+      "composition": 1,
+      "photoBoxes": [
+        [
+          130,
+          268,
+          205,
+          242
+        ],
+        [
+          366,
+          268,
+          207,
+          242
+        ]
+      ]
+    }
+  },
+  {
+    "id": "mughal-moonlight",
+    "name": "Moonlit Shalimar",
+    "occasion": "Wedding",
+    "style": "Royal & Traditional · Mughal Garden",
+    "photo": true,
+    "layout": 3,
+    "palette": [
+      "#183e36",
+      "#fff7e5",
+      "#c69c52"
+    ],
+    "fields": {
+      "host": "Aditi Sharma",
+      "partner": "Rohan Mehta",
+      "heading": "Mehndi Celebration",
+      "date": "FRIDAY, 19 NOVEMBER 2027",
+      "time": "7:00 PM · DINNER & CELEBRATIONS",
+      "venue": "The Heritage Courtyard · Jaipur",
+      "message": "Together with our families, we invite you to celebrate a lifetime of love."
+    },
+    "royal": {
+      "category": "Mughal Garden",
+      "artwork": "mughal-moonlight",
+      "frame": "oval",
+      "composition": 3,
+      "photoBoxes": [
+        [
+          145,
+          305,
+          182,
+          221
+        ],
+        [
+          375,
+          305,
+          194,
+          224
+        ]
+      ]
+    }
+  },
+  {
+    "id": "peacock-neelam",
+    "name": "Neelam Mayura",
+    "occasion": "Wedding",
+    "style": "Royal & Traditional · Imperial Peacock",
+    "photo": true,
+    "layout": 4,
+    "palette": [
+      "#283c36",
+      "#fff8e8",
+      "#b48c4f"
+    ],
+    "fields": {
+      "host": "Meera Rathore",
+      "partner": "Arjun Singh",
+      "heading": "Shaadi · Wedding Celebration",
+      "date": "THURSDAY, 18 NOVEMBER 2027",
+      "time": "5:30 PM · PHERAS FOLLOWED BY DINNER",
+      "venue": "The Lakeview Palace · Udaipur",
+      "message": "Together with our families, we invite you to celebrate a lifetime of love."
+    },
+    "royal": {
+      "category": "Imperial Peacock",
+      "artwork": "peacock-neelam",
+      "frame": "oval",
+      "composition": 2,
+      "photoBoxes": [
+        [
+          140,
+          305,
+          182,
+          219
+        ],
+        [
+          392,
+          303,
+          182,
+          219
+        ]
+      ]
+    }
+  },
+  {
+    "id": "peacock-emerald",
+    "name": "Emerald Mor Chowk",
+    "occasion": "Wedding",
+    "style": "Royal & Traditional · Imperial Peacock",
+    "photo": true,
+    "layout": 5,
+    "palette": [
+      "#283c36",
+      "#fff8e8",
+      "#b48c4f"
+    ],
+    "fields": {
+      "host": "Aditi Sharma",
+      "partner": "Rohan Mehta",
+      "heading": "Sagaai Celebration",
+      "date": "FRIDAY, 19 NOVEMBER 2027",
+      "time": "7:00 PM · DINNER & CELEBRATIONS",
+      "venue": "The Heritage Courtyard · Jaipur",
+      "message": "Together with our families, we invite you to celebrate a lifetime of love."
+    },
+    "royal": {
+      "category": "Imperial Peacock",
+      "artwork": "peacock-emerald",
+      "frame": "arch",
+      "composition": 4,
+      "photoBoxes": [
+        [
+          133,
+          231,
+          200,
+          235
+        ],
+        [
+          368,
+          233,
+          196,
+          233
+        ]
+      ]
+    }
+  },
+  {
+    "id": "darbar-chandelier",
+    "name": "Darbar of A Thousand Lights",
+    "occasion": "Wedding",
+    "style": "Royal & Traditional · Maharaja Darbar",
+    "photo": true,
+    "layout": 6,
+    "palette": [
+      "#24345d",
+      "#faf4e8",
+      "#ab884a"
+    ],
+    "fields": {
+      "host": "Meera Rathore",
+      "partner": "Arjun Singh",
+      "heading": "Shaadi · Wedding Celebration",
+      "date": "THURSDAY, 18 NOVEMBER 2027",
+      "time": "5:30 PM · PHERAS FOLLOWED BY DINNER",
+      "venue": "The Lakeview Palace · Udaipur",
+      "message": "Together with our families, we invite you to celebrate a lifetime of love."
+    },
+    "royal": {
+      "category": "Maharaja Darbar",
+      "artwork": "darbar-chandelier",
+      "frame": "arch",
+      "composition": 3,
+      "photoBoxes": [
+        [
+          126,
+          298,
+          210,
+          224
+        ],
+        [
+          362,
+          298,
+          207,
+          224
+        ]
+      ]
+    }
+  },
+  {
+    "id": "darbar-sheesh",
+    "name": "Amber Sheesh Darbar",
+    "occasion": "Wedding",
+    "style": "Royal & Traditional · Maharaja Darbar",
+    "photo": true,
+    "layout": 7,
+    "palette": [
+      "#24345d",
+      "#faf4e8",
+      "#ab884a"
+    ],
+    "fields": {
+      "host": "Aditi Sharma",
+      "partner": "Rohan Mehta",
+      "heading": "Haldi Celebration",
+      "date": "FRIDAY, 19 NOVEMBER 2027",
+      "time": "7:00 PM · DINNER & CELEBRATIONS",
+      "venue": "The Heritage Courtyard · Jaipur",
+      "message": "Together with our families, we invite you to celebrate a lifetime of love."
+    },
+    "royal": {
+      "category": "Maharaja Darbar",
+      "artwork": "darbar-sheesh",
+      "frame": "oval",
+      "composition": 0,
+      "photoBoxes": [
+        [
+          151,
+          257,
+          168,
+          210
+        ],
+        [
+          376,
+          257,
+          172,
+          210
+        ]
+      ]
+    }
+  },
+  {
+    "id": "jharokha-gulabi",
+    "name": "Gulabi Jharokha",
+    "occasion": "Wedding",
+    "style": "Royal & Traditional · Rajputana Jharokha",
+    "photo": true,
+    "layout": 8,
+    "palette": [
+      "#173b66",
+      "#fff5e1",
+      "#ad8843"
+    ],
+    "fields": {
+      "host": "Meera Rathore",
+      "partner": "Arjun Singh",
+      "heading": "Shaadi · Wedding Celebration",
+      "date": "THURSDAY, 18 NOVEMBER 2027",
+      "time": "5:30 PM · PHERAS FOLLOWED BY DINNER",
+      "venue": "The Lakeview Palace · Udaipur",
+      "message": "Together with our families, we invite you to celebrate a lifetime of love."
+    },
+    "royal": {
+      "category": "Rajputana Jharokha",
+      "artwork": "jharokha-gulabi",
+      "frame": "arch",
+      "composition": 4,
+      "photoBoxes": [
+        [
+          126,
+          348,
+          203,
+          214
+        ],
+        [
+          369,
+          348,
+          203,
+          214
+        ]
+      ]
+    }
+  },
+  {
+    "id": "jharokha-jaisalmer",
+    "name": "Jaisalmer Sandstone",
+    "occasion": "Wedding",
+    "style": "Royal & Traditional · Rajputana Jharokha",
+    "photo": true,
+    "layout": 9,
+    "palette": [
+      "#173b66",
+      "#fff5e1",
+      "#ad8843"
+    ],
+    "fields": {
+      "host": "Aditi Sharma",
+      "partner": "Rohan Mehta",
+      "heading": "Shaadi Celebration",
+      "date": "FRIDAY, 19 NOVEMBER 2027",
+      "time": "7:00 PM · DINNER & CELEBRATIONS",
+      "venue": "The Heritage Courtyard · Jaipur",
+      "message": "Together with our families, we invite you to celebrate a lifetime of love."
+    },
+    "royal": {
+      "category": "Rajputana Jharokha",
+      "artwork": "jharokha-jaisalmer",
+      "frame": "oval",
+      "composition": 1,
+      "photoBoxes": [
+        [
+          145,
+          271,
+          170,
+          229
+        ],
+        [
+          378,
+          270,
+          168,
+          233
+        ]
+      ]
+    }
+  },
+  {
+    "id": "palace-udaipur",
+    "name": "Udaipur Lake Palace",
+    "occasion": "Wedding",
+    "style": "Royal & Traditional · Royal Palace Heritage",
+    "photo": true,
+    "layout": 0,
+    "palette": [
+      "#154d40",
+      "#fbf5e6",
+      "#b08a44"
+    ],
+    "fields": {
+      "host": "Meera Rathore",
+      "partner": "Arjun Singh",
+      "heading": "Shaadi · Wedding Celebration",
+      "date": "THURSDAY, 18 NOVEMBER 2027",
+      "time": "5:30 PM · PHERAS FOLLOWED BY DINNER",
+      "venue": "The Lakeview Palace · Udaipur",
+      "message": "Together with our families, we invite you to celebrate a lifetime of love."
+    },
+    "royal": {
+      "category": "Royal Palace Heritage",
+      "artwork": "palace-udaipur",
+      "frame": "arch",
+      "composition": 0,
+      "photoBoxes": [
+        [
+          137,
+          312,
+          201,
+          231
+        ],
+        [
+          369,
+          312,
+          201,
+          231
+        ]
+      ]
+    }
+  },
+  {
+    "id": "palace-rajwada",
+    "name": "Rajwada Grand Entrance",
+    "occasion": "Wedding",
+    "style": "Royal & Traditional · Royal Palace Heritage",
+    "photo": true,
+    "layout": 1,
+    "palette": [
+      "#154d40",
+      "#fbf5e6",
+      "#b08a44"
+    ],
+    "fields": {
+      "host": "Aditi Sharma",
+      "partner": "Rohan Mehta",
+      "heading": "Sangeet Celebration",
+      "date": "FRIDAY, 19 NOVEMBER 2027",
+      "time": "7:00 PM · DINNER & CELEBRATIONS",
+      "venue": "The Heritage Courtyard · Jaipur",
+      "message": "Together with our families, we invite you to celebrate a lifetime of love."
+    },
+    "royal": {
+      "category": "Royal Palace Heritage",
+      "artwork": "palace-rajwada",
+      "frame": "oval",
+      "composition": 2,
+      "photoBoxes": [
+        [
+          151,
+          317,
+          158,
+          189
+        ],
+        [
+          378,
+          317,
+          158,
+          189
+        ]
+      ]
+    }
+  },
+  {
+    "id": "mandap-marigold",
+    "name": "Marigold Suvarna Mandap",
+    "occasion": "Wedding",
+    "style": "Royal & Traditional · Golden Mandap",
+    "photo": true,
+    "layout": 2,
+    "palette": [
+      "#682c39",
+      "#fff6e6",
+      "#b48739"
+    ],
+    "fields": {
+      "host": "Meera Rathore",
+      "partner": "Arjun Singh",
+      "heading": "Shaadi · Wedding Celebration",
+      "date": "THURSDAY, 18 NOVEMBER 2027",
+      "time": "5:30 PM · PHERAS FOLLOWED BY DINNER",
+      "venue": "The Lakeview Palace · Udaipur",
+      "message": "Together with our families, we invite you to celebrate a lifetime of love."
+    },
+    "royal": {
+      "category": "Golden Mandap",
+      "artwork": "mandap-marigold",
+      "frame": "arch",
+      "composition": 1,
+      "photoBoxes": [
+        [
+          131,
+          333,
+          194,
+          208
+        ],
+        [
+          362,
+          333,
+          194,
+          208
+        ]
+      ]
+    }
+  },
+  {
+    "id": "mandap-rose",
+    "name": "Gulab Mandap at Dusk",
+    "occasion": "Wedding",
+    "style": "Royal & Traditional · Golden Mandap",
+    "photo": true,
+    "layout": 3,
+    "palette": [
+      "#682c39",
+      "#fff6e6",
+      "#b48739"
+    ],
+    "fields": {
+      "host": "Aditi Sharma",
+      "partner": "Rohan Mehta",
+      "heading": "Mehndi Celebration",
+      "date": "FRIDAY, 19 NOVEMBER 2027",
+      "time": "7:00 PM · DINNER & CELEBRATIONS",
+      "venue": "The Heritage Courtyard · Jaipur",
+      "message": "Together with our families, we invite you to celebrate a lifetime of love."
+    },
+    "royal": {
+      "category": "Golden Mandap",
+      "artwork": "mandap-rose",
+      "frame": "oval",
+      "composition": 3,
+      "photoBoxes": [
+        [
+          133,
+          310,
+          184,
+          208
+        ],
+        [
+          369,
+          310,
+          193,
+          208
+        ]
+      ]
+    }
+  },
+  {
+    "id": "scroll-kishangarh",
+    "name": "Kishangarh Heirloom",
+    "occasion": "Wedding",
+    "style": "Royal & Traditional · Vintage Royal Scroll",
+    "photo": true,
+    "layout": 4,
+    "palette": [
+      "#7c4c2b",
+      "#fff6e8",
+      "#ac8442"
+    ],
+    "fields": {
+      "host": "Meera Rathore",
+      "partner": "Arjun Singh",
+      "heading": "Shaadi · Wedding Celebration",
+      "date": "THURSDAY, 18 NOVEMBER 2027",
+      "time": "5:30 PM · PHERAS FOLLOWED BY DINNER",
+      "venue": "The Lakeview Palace · Udaipur",
+      "message": "Together with our families, we invite you to celebrate a lifetime of love."
+    },
+    "royal": {
+      "category": "Vintage Royal Scroll",
+      "artwork": "scroll-kishangarh",
+      "frame": "oval",
+      "composition": 2,
+      "photoBoxes": [
+        [
+          126,
+          273,
+          182,
+          238
+        ],
+        [
+          382,
+          273,
+          182,
+          238
+        ]
+      ]
+    }
+  },
+  {
+    "id": "scroll-mewar",
+    "name": "Mewar Painted Chronicle",
+    "occasion": "Wedding",
+    "style": "Royal & Traditional · Vintage Royal Scroll",
+    "photo": true,
+    "layout": 5,
+    "palette": [
+      "#7c4c2b",
+      "#fff6e8",
+      "#ac8442"
+    ],
+    "fields": {
+      "host": "Aditi Sharma",
+      "partner": "Rohan Mehta",
+      "heading": "Sagaai Celebration",
+      "date": "FRIDAY, 19 NOVEMBER 2027",
+      "time": "7:00 PM · DINNER & CELEBRATIONS",
+      "venue": "The Heritage Courtyard · Jaipur",
+      "message": "Together with our families, we invite you to celebrate a lifetime of love."
+    },
+    "royal": {
+      "category": "Vintage Royal Scroll",
+      "artwork": "scroll-mewar",
+      "frame": "arch",
+      "composition": 4,
+      "photoBoxes": [
+        [
+          128,
+          294,
+          207,
+          221
+        ],
+        [
+          375,
+          294,
+          205,
+          221
+        ]
+      ]
+    }
+  },
+  {
+    "id": "lotus-padma",
+    "name": "Padma Mahal",
+    "occasion": "Wedding",
+    "style": "Royal & Traditional · Royal Lotus Garden",
+    "photo": true,
+    "layout": 6,
+    "palette": [
+      "#793f46",
+      "#fff5e8",
+      "#ac8147"
+    ],
+    "fields": {
+      "host": "Meera Rathore",
+      "partner": "Arjun Singh",
+      "heading": "Shaadi · Wedding Celebration",
+      "date": "THURSDAY, 18 NOVEMBER 2027",
+      "time": "5:30 PM · PHERAS FOLLOWED BY DINNER",
+      "venue": "The Lakeview Palace · Udaipur",
+      "message": "Together with our families, we invite you to celebrate a lifetime of love."
+    },
+    "royal": {
+      "category": "Royal Lotus Garden",
+      "artwork": "lotus-padma",
+      "frame": "oval",
+      "composition": 3,
+      "photoBoxes": [
+        [
+          135,
+          301,
+          172,
+          214
+        ],
+        [
+          385,
+          301,
+          179,
+          214
+        ]
+      ]
+    }
+  },
+  {
+    "id": "lotus-kamal",
+    "name": "Kamal Bagh at Dawn",
+    "occasion": "Wedding",
+    "style": "Royal & Traditional · Royal Lotus Garden",
+    "photo": true,
+    "layout": 7,
+    "palette": [
+      "#793f46",
+      "#fff5e8",
+      "#ac8147"
+    ],
+    "fields": {
+      "host": "Aditi Sharma",
+      "partner": "Rohan Mehta",
+      "heading": "Haldi Celebration",
+      "date": "FRIDAY, 19 NOVEMBER 2027",
+      "time": "7:00 PM · DINNER & CELEBRATIONS",
+      "venue": "The Heritage Courtyard · Jaipur",
+      "message": "Together with our families, we invite you to celebrate a lifetime of love."
+    },
+    "royal": {
+      "category": "Royal Lotus Garden",
+      "artwork": "lotus-kamal",
+      "frame": "arch",
+      "composition": 0,
+      "photoBoxes": [
+        [
+          131,
+          326,
+          193,
+          207
+        ],
+        [
+          373,
+          327,
+          193,
+          205
+        ]
+      ]
+    }
+  },
+  {
+    "id": "elephant-baraat",
+    "name": "Shahi Baraat",
+    "occasion": "Wedding",
+    "style": "Royal & Traditional · Regal Elephant Procession",
+    "photo": true,
+    "layout": 8,
+    "palette": [
+      "#685035",
+      "#fff6df",
+      "#a07b35"
+    ],
+    "fields": {
+      "host": "Meera Rathore",
+      "partner": "Arjun Singh",
+      "heading": "Shaadi · Wedding Celebration",
+      "date": "THURSDAY, 18 NOVEMBER 2027",
+      "time": "5:30 PM · PHERAS FOLLOWED BY DINNER",
+      "venue": "The Lakeview Palace · Udaipur",
+      "message": "Together with our families, we invite you to celebrate a lifetime of love."
+    },
+    "royal": {
+      "category": "Regal Elephant Procession",
+      "artwork": "elephant-baraat",
+      "frame": "arch",
+      "composition": 4,
+      "photoBoxes": [
+        [
+          145,
+          310,
+          193,
+          229
+        ],
+        [
+          369,
+          312,
+          193,
+          229
+        ]
+      ]
+    }
+  },
+  {
+    "id": "elephant-gajraj",
+    "name": "Gajraj Palace Procession",
+    "occasion": "Wedding",
+    "style": "Royal & Traditional · Regal Elephant Procession",
+    "photo": true,
+    "layout": 9,
+    "palette": [
+      "#685035",
+      "#fff6df",
+      "#a07b35"
+    ],
+    "fields": {
+      "host": "Aditi Sharma",
+      "partner": "Rohan Mehta",
+      "heading": "Shaadi Celebration",
+      "date": "FRIDAY, 19 NOVEMBER 2027",
+      "time": "7:00 PM · DINNER & CELEBRATIONS",
+      "venue": "The Heritage Courtyard · Jaipur",
+      "message": "Together with our families, we invite you to celebrate a lifetime of love."
+    },
+    "royal": {
+      "category": "Regal Elephant Procession",
+      "artwork": "elephant-gajraj",
+      "frame": "oval",
+      "composition": 1,
+      "photoBoxes": [
+        [
+          135,
+          320,
+          193,
+          203
+        ],
+        [
+          376,
+          320,
+          194,
+          203
+        ]
+      ]
+    }
+  }
+]

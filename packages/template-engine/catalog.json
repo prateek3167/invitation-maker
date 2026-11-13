@@ -1,0 +1,1322 @@
+[
+  {
+    "id": "1",
+    "name": "Royal Heritage Vivah",
+    "occasion": "Wedding",
+    "style": "Royal & Traditional · Rajputana Arch",
+    "photo": true,
+    "layout": 0,
+    "palette": [
+      "#4a121a",
+      "#fff8ef",
+      "#d4af37"
+    ],
+    "fields": {
+      "host": "Kabir Rathore",
+      "partner": "Tara Shekhawat",
+      "heading": "Shaadi · The Royal Vivah",
+      "date": "Saturday, 20 November 2027",
+      "time": "5:30 PM · BARAAT & PHERAS",
+      "venue": "The Taj Lake Palace · Udaipur",
+      "message": "Together with our families, we invite you to celebrate a lifetime of love and togetherness."
+    }
+  },
+  {
+    "id": "2",
+    "name": "Modern Editorial Wedding",
+    "occasion": "Wedding",
+    "style": "Contemporary · Modern Editorial",
+    "photo": true,
+    "layout": 1,
+    "palette": [
+      "#162e34",
+      "#f4eadb",
+      "#b89965"
+    ],
+    "fields": {
+      "host": "Devendra Singhania",
+      "partner": "Radhika Kapoor",
+      "heading": "The Wedding Celebration",
+      "date": "Sunday, 12 December 2027",
+      "time": "6:00 PM ONWARDS",
+      "venue": "Umaid Bhawan Palace · Jodhpur",
+      "message": "We invite you to join us as we celebrate our love and begin our greatest adventure."
+    }
+  },
+  {
+    "id": "3",
+    "name": "Botanical Romance Wedding",
+    "occasion": "Wedding",
+    "style": "Elegant · Botanical Garden",
+    "photo": false,
+    "layout": 2,
+    "palette": [
+      "#2c3e2e",
+      "#fffaf2",
+      "#c79a5b"
+    ],
+    "fields": {
+      "host": "Vivaan Mehra",
+      "partner": "Siya Sen",
+      "heading": "The Garden Wedding",
+      "date": "Friday, 8 January 2027",
+      "time": "4:30 PM · SUNSET CEREMONY",
+      "venue": "Rambagh Palace Gardens · Jaipur",
+      "message": "Surrounded by blooming roses and ancient trees, we promise to walk through life together."
+    }
+  },
+  {
+    "id": "4",
+    "name": "Midnight Luxe Vivah",
+    "occasion": "Wedding",
+    "style": "Luxury · Midnight Peacock",
+    "photo": true,
+    "layout": 3,
+    "palette": [
+      "#0f1a30",
+      "#f8f6fc",
+      "#d4af37"
+    ],
+    "fields": {
+      "host": "Vikramaditya Chauhan",
+      "partner": "Padmavati Rana",
+      "heading": "Shubh Vivah Celebration",
+      "date": "Saturday, 27 February 2027",
+      "time": "6:30 PM · ROYAL BANQUET",
+      "venue": "Fairmont Heritage Palace · Jaipur",
+      "message": "Under a canopy of starlight, we request the honor of your presence and heartfelt blessings."
+    }
+  },
+  {
+    "id": "5",
+    "name": "Minimal Jharokha Wedding",
+    "occasion": "Wedding",
+    "style": "Contemporary · Sandstone Elegance",
+    "photo": true,
+    "layout": 4,
+    "palette": [
+      "#5a2a18",
+      "#fff5ea",
+      "#cfa068"
+    ],
+    "fields": {
+      "host": "Aditya Roy",
+      "partner": "Sanjana Malhotra",
+      "heading": "The Wedding Ceremony",
+      "date": "Sunday, 7 March 2027",
+      "time": "5:00 PM · PHERAS AT DUSK",
+      "venue": "The Leela Palace · Bengaluru",
+      "message": "Two stories become one. Join us as we exchange sacred vows in the company of loved ones."
+    }
+  },
+  {
+    "id": "6",
+    "name": "Vintage Royal Farman",
+    "occasion": "Wedding",
+    "style": "Royal & Traditional · Heritage Scroll",
+    "photo": false,
+    "layout": 5,
+    "palette": [
+      "#3d1620",
+      "#fff9f0",
+      "#b88d48"
+    ],
+    "fields": {
+      "host": "Arnav Varma",
+      "partner": "Diya Nair",
+      "heading": "Royal Decree · Shubh Vivah",
+      "date": "Friday, 16 April 2027",
+      "time": "6:00 PM · CEREMONY & RECEPTION",
+      "venue": "Kumarakom Heritage Resort · Kerala",
+      "message": "With the grace of God and the blessings of our elders, we cordially invite your presence."
+    }
+  },
+  {
+    "id": "7",
+    "name": "Art Deco Grand Vivah",
+    "occasion": "Wedding",
+    "style": "Luxury · Art Deco Glamour",
+    "photo": true,
+    "layout": 6,
+    "palette": [
+      "#241829",
+      "#fff6ee",
+      "#d6a354"
+    ],
+    "fields": {
+      "host": "Rohan Khanna",
+      "partner": "Alia Bhattacharya",
+      "heading": "Grand Vivah Gala",
+      "date": "Saturday, 22 May 2027",
+      "time": "7:00 PM ONWARDS",
+      "venue": "ITC Grand Bharat · Gurugram",
+      "message": "An opulent celebration of love, music, and an unforgettable journey ahead."
+    }
+  },
+  {
+    "id": "8",
+    "name": "Sacred Mandap Wedding",
+    "occasion": "Wedding",
+    "style": "Royal & Traditional · Sacred Lotus",
+    "photo": true,
+    "layout": 7,
+    "palette": [
+      "#5c1e28",
+      "#fffbe8",
+      "#dfa43a"
+    ],
+    "fields": {
+      "host": "Siddharth Oberoi",
+      "partner": "Kiara Advani",
+      "heading": "Shaadi Ki Shubh Bela",
+      "date": "Sunday, 14 November 2027",
+      "time": "5:30 PM · HASTAMELAP & PHERAS",
+      "venue": "Suryagarh Heritage Palace · Jaisalmer",
+      "message": "Step into our world of traditions, holy fire, and eternal promises."
+    }
+  },
+  {
+    "id": "9",
+    "name": "Phoolon Ki Holi Haldi",
+    "occasion": "Haldi",
+    "style": "Festive · Marigold Toran",
+    "photo": true,
+    "layout": 7,
+    "palette": [
+      "#7a450e",
+      "#fffbe6",
+      "#e5a00d"
+    ],
+    "fields": {
+      "host": "Tara",
+      "partner": "Kabir",
+      "heading": "Haldi & Phoolon Ki Holi",
+      "date": "Friday, 19 November 2027",
+      "time": "10:30 AM · CHANDAN RASAM",
+      "venue": "Gulab Bagh Courtyard · Udaipur",
+      "message": "A splash of turmeric, a shower of yellow petals, and endless laughter with family."
+    }
+  },
+  {
+    "id": "10",
+    "name": "Golden Radiance Haldi",
+    "occasion": "Haldi",
+    "style": "Contemporary · Golden Sunburst",
+    "photo": true,
+    "layout": 8,
+    "palette": [
+      "#6b3c0e",
+      "#fffce8",
+      "#e0a218"
+    ],
+    "fields": {
+      "host": "Radhika",
+      "partner": "Devendra",
+      "heading": "Haldi Utsav Celebration",
+      "date": "Saturday, 11 December 2027",
+      "time": "11:00 AM ONWARDS",
+      "venue": "The Courtyard · Jodhpur",
+      "message": "Bathed in auspicious gold and wrapped in family love. Come celebrate with us!"
+    }
+  },
+  {
+    "id": "11",
+    "name": "Terracotta Mandap Haldi",
+    "occasion": "Haldi",
+    "style": "Royal & Traditional · Heritage Haldi",
+    "photo": false,
+    "layout": 0,
+    "palette": [
+      "#5a2e12",
+      "#fff9ea",
+      "#d99a2a"
+    ],
+    "fields": {
+      "host": "Siya",
+      "partner": "Vivaan",
+      "heading": "Mangal Haldi Sanskar",
+      "date": "Thursday, 7 January 2027",
+      "time": "10:00 AM · MORNING RITUALS",
+      "venue": "Baradari Heritage Gardens · Patiala",
+      "message": "Join us as we bless the bride and groom with auspicious turmeric paste."
+    }
+  },
+  {
+    "id": "12",
+    "name": "Grand Palace Haldi",
+    "occasion": "Haldi",
+    "style": "Luxury · Royal Courtyard",
+    "photo": true,
+    "layout": 4,
+    "palette": [
+      "#633b15",
+      "#fffdf0",
+      "#dba832"
+    ],
+    "fields": {
+      "host": "Padmavati",
+      "partner": "Vikramaditya",
+      "heading": "Rajwada Haldi & Dhol",
+      "date": "Friday, 26 February 2027",
+      "time": "11:30 AM · POOL & HALDI",
+      "venue": "Nahargarh Palace Courtyard · Jaipur",
+      "message": "Music, masti, yellow hues and marigold blooms. Your presence completes our joy."
+    }
+  },
+  {
+    "id": "13",
+    "name": "Rang-De Mehndi Ki Raat",
+    "occasion": "Mehndi",
+    "style": "Festive · Henna Mandala",
+    "photo": true,
+    "layout": 8,
+    "palette": [
+      "#1a3b2b",
+      "#fdf8ee",
+      "#c59b35"
+    ],
+    "fields": {
+      "host": "Tara",
+      "partner": "Kabir",
+      "heading": "Rang-De Mehndi Ki Raat",
+      "date": "Friday, 19 November 2027",
+      "time": "4:30 PM · HENNA & LIVE FOLK BEATS",
+      "venue": "Zenana Deorhi · Udaipur",
+      "message": "Intricate henna, rhythmic dholak, colorful lehengas and memories in the making."
+    }
+  },
+  {
+    "id": "14",
+    "name": "Mughal Garden Mehndi",
+    "occasion": "Mehndi",
+    "style": "Elegant · Cypress & Rose",
+    "photo": true,
+    "layout": 2,
+    "palette": [
+      "#173a2f",
+      "#fff9ee",
+      "#ba8e45"
+    ],
+    "fields": {
+      "host": "Radhika",
+      "partner": "Devendra",
+      "heading": "Sufi & Floral Mehndi",
+      "date": "Saturday, 11 December 2027",
+      "time": "5:00 PM · LIVE SUFI & HIGH TEA",
+      "venue": "Mughal Pavilions · Agra",
+      "message": "Let the henna darken with love as evening rāgas fill the perfumed air."
+    }
+  },
+  {
+    "id": "15",
+    "name": "Regal Henna Arabesque",
+    "occasion": "Mehndi",
+    "style": "Royal & Traditional · Paisley Filigree",
+    "photo": false,
+    "layout": 0,
+    "palette": [
+      "#2e1820",
+      "#fffaf2",
+      "#c29648"
+    ],
+    "fields": {
+      "host": "Padmavati",
+      "partner": "Vikramaditya",
+      "heading": "Shubh Mehndi Ceremony",
+      "date": "Friday, 26 February 2027",
+      "time": "4:00 PM · TRADITIONAL MEHNDI",
+      "venue": "Manek Chowk · Jaipur",
+      "message": "Bless the hands of the bride as they are adorned with eternal motifs of love."
+    }
+  },
+  {
+    "id": "16",
+    "name": "Emerald Peacock Mehndi",
+    "occasion": "Mehndi",
+    "style": "Luxury · Mayura Plumes",
+    "photo": true,
+    "layout": 3,
+    "palette": [
+      "#0f2e27",
+      "#f4f9f6",
+      "#c59e4e"
+    ],
+    "fields": {
+      "host": "Kiara",
+      "partner": "Siddharth",
+      "heading": "Mor-Chowk Mehndi Utsav",
+      "date": "Saturday, 13 November 2027",
+      "time": "5:30 PM ONWARDS",
+      "venue": "Suryagarh Dunes · Jaisalmer",
+      "message": "Under desert twilight and dancing peacocks, join our henna celebration."
+    }
+  },
+  {
+    "id": "17",
+    "name": "Sur-Taal Grand Sangeet",
+    "occasion": "Sangeet",
+    "style": "Luxury · Starlit Chandelier",
+    "photo": true,
+    "layout": 9,
+    "palette": [
+      "#26143d",
+      "#faf6ff",
+      "#d9a84e"
+    ],
+    "fields": {
+      "host": "Tara",
+      "partner": "Kabir",
+      "heading": "Sur-Taal · The Grand Sangeet",
+      "date": "Saturday, 20 November 2027",
+      "time": "7:30 PM · PERFORMANCES & DJ",
+      "venue": "Jagmandir Island Palace · Udaipur",
+      "message": "Put on your dancing shoes for an unforgettable night of music, cocktails and dance."
+    }
+  },
+  {
+    "id": "18",
+    "name": "Art Deco Sangeet Gala",
+    "occasion": "Sangeet",
+    "style": "Contemporary · Glamour Ballroom",
+    "photo": true,
+    "layout": 6,
+    "palette": [
+      "#211a33",
+      "#f9f6fc",
+      "#cfa452"
+    ],
+    "fields": {
+      "host": "Radhika",
+      "partner": "Devendra",
+      "heading": "Glitz & Glamour Sangeet",
+      "date": "Friday, 10 December 2027",
+      "time": "8:00 PM · RETRO TO BOLLYWOOD",
+      "venue": "The Grand Ballroom · Jodhpur",
+      "message": "Cocktails, high-energy family choreography and non-stop celebration till late."
+    }
+  },
+  {
+    "id": "19",
+    "name": "Royal Darbar Sangeet",
+    "occasion": "Sangeet",
+    "style": "Royal & Traditional · Heritage Beats",
+    "photo": false,
+    "layout": 0,
+    "palette": [
+      "#381324",
+      "#fff8f0",
+      "#cca048"
+    ],
+    "fields": {
+      "host": "Padmavati",
+      "partner": "Vikramaditya",
+      "heading": "Maharaja Sangeet Sandhya",
+      "date": "Thursday, 25 February 2027",
+      "time": "7:00 PM · ROYAL RAAS & GIDDHA",
+      "venue": "Sheesh Mahal Courtyard · Jaipur",
+      "message": "Celebrate the harmony of two hearts with traditional beats and joyful melodies."
+    }
+  },
+  {
+    "id": "20",
+    "name": "Midnight Sparkle Sangeet",
+    "occasion": "Sangeet",
+    "style": "Luxury · Celestial Night",
+    "photo": true,
+    "layout": 3,
+    "palette": [
+      "#121c38",
+      "#f4f6fc",
+      "#d4aa50"
+    ],
+    "fields": {
+      "host": "Kiara",
+      "partner": "Siddharth",
+      "heading": "Starry Night Sangeet",
+      "date": "Friday, 12 November 2027",
+      "time": "8:00 PM · DJ NIGHT & TAPAS",
+      "venue": "The Thar Pavilion · Jaisalmer",
+      "message": "Dancing under the open desert sky. Let’s celebrate love in style!"
+    }
+  },
+  {
+    "id": "21",
+    "name": "Noor Royal Sagaai",
+    "occasion": "Engagement",
+    "style": "Royal & Traditional · Royal Seal",
+    "photo": true,
+    "layout": 0,
+    "palette": [
+      "#421828",
+      "#fff7f2",
+      "#cca252"
+    ],
+    "fields": {
+      "host": "Ananya",
+      "partner": "Kabir",
+      "heading": "The Royal Ring Ceremony & Sagaai",
+      "date": "Sunday, 15 August 2027",
+      "time": "6:00 PM · RING EXCHANGE & DINNER",
+      "venue": "Taj Falaknuma Palace · Hyderabad",
+      "message": "Two souls, two families, and one sacred promise of an eternal tomorrow."
+    }
+  },
+  {
+    "id": "22",
+    "name": "Rose Gold Sagaai",
+    "occasion": "Engagement",
+    "style": "Contemporary · Modern Romance",
+    "photo": true,
+    "layout": 1,
+    "palette": [
+      "#331f28",
+      "#fff4f6",
+      "#c78d7e"
+    ],
+    "fields": {
+      "host": "Radhika",
+      "partner": "Devendra",
+      "heading": "Engaged to be Married",
+      "date": "Saturday, 18 September 2027",
+      "time": "6:30 PM · COCKTAILS & DINNER",
+      "venue": "The Oberoi Grand · Mumbai",
+      "message": "He asked, she said yes! Celebrate our official beginning with us."
+    }
+  },
+  {
+    "id": "23",
+    "name": "Heirloom Scroll Sagaai",
+    "occasion": "Engagement",
+    "style": "Elegant · Classical Crest",
+    "photo": false,
+    "layout": 5,
+    "palette": [
+      "#2e1824",
+      "#fff8ef",
+      "#ba8c46"
+    ],
+    "fields": {
+      "host": "Siya",
+      "partner": "Vivaan",
+      "heading": "Shubh Sagaai Samaroh",
+      "date": "Friday, 29 October 2027",
+      "time": "5:30 PM · CEREMONY & FEAST",
+      "venue": "The Imperial Ballroom · New Delhi",
+      "message": "We joyfully invite you to witness our auspicious ring exchange ceremony."
+    }
+  },
+  {
+    "id": "24",
+    "name": "Starlit Sky Engagement",
+    "occasion": "Engagement",
+    "style": "Luxury · Starlit Romance",
+    "photo": true,
+    "layout": 3,
+    "palette": [
+      "#131e36",
+      "#f5f6fc",
+      "#cda24e"
+    ],
+    "fields": {
+      "host": "Padmavati",
+      "partner": "Vikramaditya",
+      "heading": "Royal Engagement Soirée",
+      "date": "Sunday, 5 December 2027",
+      "time": "7:00 PM · ROOFTOP DINNER",
+      "venue": "The Oberoi Amarvilas · Agra",
+      "message": "Overlooking the monument of love, we exchange our rings and promises."
+    }
+  },
+  {
+    "id": "25",
+    "name": "Museum Editorial Birthday",
+    "occasion": "Birthday",
+    "style": "Modern Editorial",
+    "photo": true,
+    "layout": 4,
+    "palette": [
+      "#482b22",
+      "#fff0d9",
+      "#d68d65"
+    ],
+    "fields": {
+      "host": "Kiara",
+      "partner": "Turns 5",
+      "heading": "A Magical Birthday",
+      "date": "Saturday, 17 April 2027",
+      "time": "4:00 PM",
+      "venue": "The Garden House · New Delhi",
+      "message": "Cake, confetti, giggles and a whole lot of magic!"
+    }
+  },
+  {
+    "id": "26",
+    "name": "Royal Heritage Birthday",
+    "occasion": "Birthday",
+    "style": "Royal Heritage",
+    "photo": true,
+    "layout": 5,
+    "palette": [
+      "#173e31",
+      "#e5f1d9",
+      "#a3ba7b"
+    ],
+    "fields": {
+      "host": "Aarav",
+      "partner": "Turns 30",
+      "heading": "Milestone Celebration",
+      "date": "Saturday, 8 May 2027",
+      "time": "7:30 PM",
+      "venue": "The Rooftop Lounge · Bengaluru",
+      "message": "Thirty years of wonderful stories and the best is yet to come."
+    }
+  },
+  {
+    "id": "27",
+    "name": "Art Deco Soirée Birthday",
+    "occasion": "Birthday",
+    "style": "Art Deco",
+    "photo": false,
+    "layout": 6,
+    "palette": [
+      "#4a2545",
+      "#ffdfca",
+      "#d89f64"
+    ],
+    "fields": {
+      "host": "Rhea",
+      "partner": "Turns 25",
+      "heading": "Silver Jubilee Birthday",
+      "date": "Friday, 11 June 2027",
+      "time": "8:00 PM",
+      "venue": "The Crystal Ballroom · Mumbai",
+      "message": "An evening of jazz, sparkling toasts, and dancing all night."
+    }
+  },
+  {
+    "id": "28",
+    "name": "Botanical Garden Birthday",
+    "occasion": "Birthday",
+    "style": "Botanical Romance",
+    "photo": true,
+    "layout": 7,
+    "palette": [
+      "#232a4b",
+      "#f9d7df",
+      "#e6bd7a"
+    ],
+    "fields": {
+      "host": "Meera",
+      "partner": "Sweet Sixteen",
+      "heading": "Sweet 16 Garden Party",
+      "date": "Sunday, 18 July 2027",
+      "time": "3:30 PM",
+      "venue": "Bloomfield Estate · Pune",
+      "message": "Pastel dresses, high tea, strawberry tarts and lovely friends."
+    }
+  },
+  {
+    "id": "29",
+    "name": "Midnight Velvet Birthday",
+    "occasion": "Birthday",
+    "style": "Midnight Luxe",
+    "photo": true,
+    "layout": 8,
+    "palette": [
+      "#613c42",
+      "#fff4ed",
+      "#b5a57b"
+    ],
+    "fields": {
+      "host": "Kabir",
+      "partner": "Turns 40",
+      "heading": "Fabulous at Forty",
+      "date": "Saturday, 14 August 2027",
+      "time": "8:00 PM",
+      "venue": "Skyline Terrace · Mumbai",
+      "message": "Vintage wine, close friends, good music, and four decades of memories."
+    }
+  },
+  {
+    "id": "30",
+    "name": "Minimal Typography Birthday",
+    "occasion": "Birthday",
+    "style": "Minimal Typography",
+    "photo": false,
+    "layout": 9,
+    "palette": [
+      "#102d43",
+      "#e4f4f0",
+      "#a9cfca"
+    ],
+    "fields": {
+      "host": "Ananya",
+      "partner": "Turns 21",
+      "heading": "Chapter Twenty-One",
+      "date": "Friday, 10 September 2027",
+      "time": "7:00 PM",
+      "venue": "The Loft · Bengaluru",
+      "message": "Twenty-one reasons to dance, laugh, and celebrate life!"
+    }
+  },
+  {
+    "id": "31",
+    "name": "Golden 50th Anniversary",
+    "occasion": "Anniversary",
+    "style": "Royal Heritage",
+    "photo": true,
+    "layout": 0,
+    "palette": [
+      "#3a1c24",
+      "#fff6ec",
+      "#d4af37"
+    ],
+    "fields": {
+      "host": "Savitri",
+      "partner": "Om Prakash",
+      "heading": "Golden 50th Wedding Anniversary",
+      "date": "Sunday, 24 October 2027",
+      "time": "6:30 PM",
+      "venue": "The Heritage Grand · Jaipur",
+      "message": "Fifty golden years of love, devotion, and a family that cherishes every step."
+    }
+  },
+  {
+    "id": "32",
+    "name": "Silver 25th Anniversary",
+    "occasion": "Anniversary",
+    "style": "Art Deco",
+    "photo": true,
+    "layout": 1,
+    "palette": [
+      "#162e34",
+      "#f4eadb",
+      "#b89965"
+    ],
+    "fields": {
+      "host": "Neha",
+      "partner": "Rohan",
+      "heading": "Silver Jubilee Anniversary",
+      "date": "Sunday, 6 June 2027",
+      "time": "7:00 PM",
+      "venue": "The Rosewood · Mumbai",
+      "message": "A quarter of a century of laughter, teamwork, and unconditional love."
+    }
+  },
+  {
+    "id": "33",
+    "name": "Watercolor Garden Anniversary",
+    "occasion": "Anniversary",
+    "style": "Botanical Romance",
+    "photo": false,
+    "layout": 2,
+    "palette": [
+      "#3b243d",
+      "#f6e3e9",
+      "#d49a9f"
+    ],
+    "fields": {
+      "host": "Pooja",
+      "partner": "Sunil",
+      "heading": "Ten Years of Togetherness",
+      "date": "Saturday, 11 September 2027",
+      "time": "6:30 PM",
+      "venue": "The Glasshouse · Bengaluru",
+      "message": "Ten years, two hearts, and a million reasons to keep loving each other."
+    }
+  },
+  {
+    "id": "34",
+    "name": "Midnight Stars Anniversary",
+    "occasion": "Anniversary",
+    "style": "Midnight Luxe",
+    "photo": true,
+    "layout": 3,
+    "palette": [
+      "#161b33",
+      "#e8e3fa",
+      "#c9a45b"
+    ],
+    "fields": {
+      "host": "Shalini",
+      "partner": "Vikram",
+      "heading": "Celebration of Forever",
+      "date": "Friday, 19 November 2027",
+      "time": "7:30 PM",
+      "venue": "The Leela Palace · Chennai",
+      "message": "Through every season, our love has grown stronger. Celebrate with us."
+    }
+  },
+  {
+    "id": "35",
+    "name": "Celestial Glow Baby Shower",
+    "occasion": "Baby Shower",
+    "style": "Celestial Glow",
+    "photo": true,
+    "layout": 4,
+    "palette": [
+      "#482b22",
+      "#fff0d9",
+      "#d68d65"
+    ],
+    "fields": {
+      "host": "Meera",
+      "partner": "& Baby",
+      "heading": "A Little One Is On The Way",
+      "date": "Sunday, 18 July 2027",
+      "time": "12:00 PM",
+      "venue": "Bloom Garden · Pune",
+      "message": "Tiny hands, big dreams, and so much love waiting to welcome you."
+    }
+  },
+  {
+    "id": "36",
+    "name": "Terracotta Godh Bharai",
+    "occasion": "Baby Shower",
+    "style": "Terracotta Boho",
+    "photo": true,
+    "layout": 5,
+    "palette": [
+      "#173e31",
+      "#e5f1d9",
+      "#a3ba7b"
+    ],
+    "fields": {
+      "host": "Priyanka",
+      "partner": "& Family",
+      "heading": "Godh Bharai Ceremony",
+      "date": "Saturday, 7 August 2027",
+      "time": "11:30 AM",
+      "venue": "Shree Kunj · Ahmedabad",
+      "message": "With sweet blessings and auspicious wishes, join us in welcoming our little blessing."
+    }
+  },
+  {
+    "id": "37",
+    "name": "Grand Palace Baby Shower",
+    "occasion": "Baby Shower",
+    "style": "Grand Palace",
+    "photo": false,
+    "layout": 6,
+    "palette": [
+      "#4a2545",
+      "#ffdfca",
+      "#d89f64"
+    ],
+    "fields": {
+      "host": "Ananya",
+      "partner": "& Karan",
+      "heading": "Welcome Little Prince",
+      "date": "Sunday, 22 August 2027",
+      "time": "1:00 PM",
+      "venue": "The Pavilion · New Delhi",
+      "message": "A sweet new adventure begins. Come shower mama and baby with love!"
+    }
+  },
+  {
+    "id": "38",
+    "name": "Pearl Elegance Baby Shower",
+    "occasion": "Baby Shower",
+    "style": "Pearl Elegance",
+    "photo": true,
+    "layout": 7,
+    "palette": [
+      "#232a4b",
+      "#f9d7df",
+      "#e6bd7a"
+    ],
+    "fields": {
+      "host": "Sneha",
+      "partner": "& Rahul",
+      "heading": "Baby Shower High Tea",
+      "date": "Saturday, 11 September 2027",
+      "time": "3:30 PM",
+      "venue": "The Rosewood Terrace · Mumbai",
+      "message": "Pastel macarons, tea and joy. Help us celebrate the sweetest arrival."
+    }
+  },
+  {
+    "id": "39",
+    "name": "Tropical Griha Pravesh",
+    "occasion": "Housewarming",
+    "style": "Tropical Modern",
+    "photo": true,
+    "layout": 8,
+    "palette": [
+      "#613c42",
+      "#fff4ed",
+      "#b5a57b"
+    ],
+    "fields": {
+      "host": "The Sharmas",
+      "partner": "Welcome Home",
+      "heading": "Shubh Griha Pravesh",
+      "date": "Sunday, 8 August 2027",
+      "time": "10:30 AM · POOJA & HAWAN",
+      "venue": "Villa 18, Green Acres · Noida",
+      "message": "With sacred fire and fresh beginnings, we invite you to bless our new hearth."
+    }
+  },
+  {
+    "id": "40",
+    "name": "Regal Mughal Housewarming",
+    "occasion": "Housewarming",
+    "style": "Regal Mughal",
+    "photo": false,
+    "layout": 9,
+    "palette": [
+      "#102d43",
+      "#e4f4f0",
+      "#a9cfca"
+    ],
+    "fields": {
+      "host": "The Vermas",
+      "partner": "Warm Welcome",
+      "heading": "Our New Nest",
+      "date": "Friday, 17 September 2027",
+      "time": "6:00 PM ONWARDS",
+      "venue": "Penthouse 4B, Sky Heights · Gurugram",
+      "message": "A home built on love and dreams. Join us for dinner, drinks, and laughter."
+    }
+  },
+  {
+    "id": "41",
+    "name": "Soft Pastel Griha Pravesh",
+    "occasion": "Housewarming",
+    "style": "Soft Pastel",
+    "photo": false,
+    "layout": 0,
+    "palette": [
+      "#301c2a",
+      "#f5d7bb",
+      "#d7a75c"
+    ],
+    "fields": {
+      "host": "The Kulkarnis",
+      "partner": "Invite You",
+      "heading": "Griha Pravesh Vastu Puja",
+      "date": "Saturday, 2 October 2027",
+      "time": "9:30 AM · VASTU SHANTI",
+      "venue": "Bunglow 7, Anand Nagar · Pune",
+      "message": "May our home be filled with peace, warmth, and the footsteps of dear friends."
+    }
+  },
+  {
+    "id": "42",
+    "name": "Graphic Pop Corporate",
+    "occasion": "Corporate",
+    "style": "Graphic Pop",
+    "photo": false,
+    "layout": 1,
+    "palette": [
+      "#162e34",
+      "#f4eadb",
+      "#b89965"
+    ],
+    "fields": {
+      "host": "NOVA",
+      "partner": "STUDIO",
+      "heading": "Annual Leadership Gala 2027",
+      "date": "Friday, 19 November 2027",
+      "time": "6:00 PM",
+      "venue": "The Imperial · New Delhi",
+      "message": "An evening of ideas, innovation and honoring extraordinary milestones."
+    }
+  },
+  {
+    "id": "43",
+    "name": "Ivory Gold Corporate",
+    "occasion": "Corporate",
+    "style": "Ivory Gold",
+    "photo": false,
+    "layout": 2,
+    "palette": [
+      "#3b243d",
+      "#f6e3e9",
+      "#d49a9f"
+    ],
+    "fields": {
+      "host": "VERTEX",
+      "partner": "GLOBAL",
+      "heading": "Global Innovation Summit",
+      "date": "Thursday, 2 December 2027",
+      "time": "5:30 PM",
+      "venue": "ITC Maurya · New Delhi",
+      "message": "Connecting visionaries, founders and leaders shaping tomorrow’s technology."
+    }
+  },
+  {
+    "id": "44",
+    "name": "Floral Arch Corporate",
+    "occasion": "Corporate",
+    "style": "Floral Arch",
+    "photo": false,
+    "layout": 3,
+    "palette": [
+      "#161b33",
+      "#e8e3fa",
+      "#c9a45b"
+    ],
+    "fields": {
+      "host": "AURA",
+      "partner": "AWARDS",
+      "heading": "Excellence Awards & Dinner",
+      "date": "Saturday, 18 December 2027",
+      "time": "7:00 PM",
+      "venue": "The Taj Mahal Hotel · Mumbai",
+      "message": "Celebrating dedication, leadership, and outstanding achievements."
+    }
+  },
+  {
+    "id": "45",
+    "name": "Cinematic Night Graduation",
+    "occasion": "Graduation",
+    "style": "Cinematic Night",
+    "photo": false,
+    "layout": 4,
+    "palette": [
+      "#482b22",
+      "#fff0d9",
+      "#d68d65"
+    ],
+    "fields": {
+      "host": "Ishita",
+      "partner": "Class of 2027",
+      "heading": "The Graduation Celebration",
+      "date": "Saturday, 22 May 2027",
+      "time": "5:00 PM",
+      "venue": "Skyline Terrace · Bengaluru",
+      "message": "The tassel was worth the hassle! Join us to celebrate this major milestone."
+    }
+  },
+  {
+    "id": "46",
+    "name": "Sculptural Minimal Graduation",
+    "occasion": "Graduation",
+    "style": "Sculptural Minimal",
+    "photo": false,
+    "layout": 5,
+    "palette": [
+      "#173e31",
+      "#e5f1d9",
+      "#a3ba7b"
+    ],
+    "fields": {
+      "host": "Aryaman",
+      "partner": "MBA Graduate",
+      "heading": "Doctoral Commencement",
+      "date": "Sunday, 6 June 2027",
+      "time": "4:30 PM",
+      "venue": "The Heritage Lawn · Ahmedabad",
+      "message": "Here’s to late night studies, great mentors and new horizons ahead."
+    }
+  },
+  {
+    "id": "47",
+    "name": "Rustic Charm Graduation",
+    "occasion": "Graduation",
+    "style": "Rustic Charm",
+    "photo": false,
+    "layout": 6,
+    "palette": [
+      "#4a2545",
+      "#ffdfca",
+      "#d89f64"
+    ],
+    "fields": {
+      "host": "Tanvi",
+      "partner": "Class of 2027",
+      "heading": "Graduation Party Soirée",
+      "date": "Friday, 18 June 2027",
+      "time": "6:00 PM",
+      "venue": "The Glasshouse · Pune",
+      "message": "Caps in the air, dreams everywhere. Come raise a glass with us!"
+    }
+  },
+  {
+    "id": "48",
+    "name": "Jewel Tone Diwali Soirée",
+    "occasion": "Festivals",
+    "style": "Jewel Tone",
+    "photo": false,
+    "layout": 7,
+    "palette": [
+      "#232a4b",
+      "#f9d7df",
+      "#e6bd7a"
+    ],
+    "fields": {
+      "host": "The Mehtas",
+      "partner": "Invite You",
+      "heading": "Diwali Gala & Taash Night",
+      "date": "Sunday, 31 October 2027",
+      "time": "7:00 PM ONWARDS",
+      "venue": "Lotus Residence · Ahmedabad",
+      "message": "An evening of glittering diyas, sweets, card games and festival warmth."
+    }
+  },
+  {
+    "id": "49",
+    "name": "Dreamy Sky Diwali Utsav",
+    "occasion": "Festivals",
+    "style": "Dreamy Sky",
+    "photo": false,
+    "layout": 8,
+    "palette": [
+      "#613c42",
+      "#fff4ed",
+      "#b5a57b"
+    ],
+    "fields": {
+      "host": "The Kapoors",
+      "partner": "Warm Welcome",
+      "heading": "Deepawali Celebration",
+      "date": "Saturday, 30 October 2027",
+      "time": "6:30 PM · PUJA & DINNER",
+      "venue": "Kapoor Estate · New Delhi",
+      "message": "May the divine lights of Diwali illuminate your year with health and prosperity."
+    }
+  },
+  {
+    "id": "50",
+    "name": "Museum Editorial Eid Gala",
+    "occasion": "Festivals",
+    "style": "Museum Editorial",
+    "photo": false,
+    "layout": 9,
+    "palette": [
+      "#102d43",
+      "#e4f4f0",
+      "#a9cfca"
+    ],
+    "fields": {
+      "host": "The Qureshis",
+      "partner": "Cordially Invite",
+      "heading": "Eid Mubarak Dawat",
+      "date": "Tuesday, 6 April 2027",
+      "time": "7:30 PM · EID FEAST",
+      "venue": "Noor Manzil · Lucknow",
+      "message": "Celebrate the blessings of Eid with traditional Awadhi delicacies and loved ones."
+    }
+  },
+  {
+    "id": "51",
+    "name": "Maharaja Royal Darbar Vivah",
+    "occasion": "Wedding",
+    "style": "Royal & Traditional · Maharaja Darbar",
+    "photo": true,
+    "layout": 0,
+    "palette": [
+      "#541212",
+      "#fff8ee",
+      "#d4af37"
+    ],
+    "fields": {
+      "host": "Vikramaditya",
+      "partner": "Radhika",
+      "heading": "Shaadi · The Royal Vivah",
+      "date": "Saturday, 27 November 2027",
+      "time": "6:00 PM · BARAAT & VIVAH SANSKAR",
+      "venue": "Umaid Bhawan Palace · Jodhpur",
+      "message": "With the divine blessings of our elders, we invite you to grace our royal wedding ceremony."
+    }
+  },
+  {
+    "id": "52",
+    "name": "Mughal Garden Romance",
+    "occasion": "Wedding",
+    "style": "Mughal Garden · Floral Romance",
+    "photo": true,
+    "layout": 2,
+    "palette": [
+      "#14382c",
+      "#fff9ee",
+      "#c5a059"
+    ],
+    "fields": {
+      "host": "Kabir",
+      "partner": "Tara",
+      "heading": "The Garden Wedding Ceremony",
+      "date": "Sunday, 12 December 2027",
+      "time": "5:00 PM · PHERAS AT SUNSET",
+      "venue": "Rambagh Palace Gardens · Jaipur",
+      "message": "Amidst blooming roses and starlit skies, join us as we begin our forever."
+    }
+  },
+  {
+    "id": "53",
+    "name": "Imperial Peacock Splendor",
+    "occasion": "Wedding",
+    "style": "Luxury · Imperial Peacock",
+    "photo": true,
+    "layout": 3,
+    "palette": [
+      "#0f2342",
+      "#f5f6fa",
+      "#d4af37"
+    ],
+    "fields": {
+      "host": "Devendra",
+      "partner": "Ananya",
+      "heading": "The Grand Vivah Celebration",
+      "date": "Friday, 19 November 2027",
+      "time": "6:30 PM · RECEPTION & DINNER",
+      "venue": "The Taj Lake Palace · Udaipur",
+      "message": "Together with our families, we request the honor of your presence and blessings."
+    }
+  },
+  {
+    "id": "54",
+    "name": "Rajputana Sandstone Jharokha",
+    "occasion": "Wedding",
+    "style": "Royal & Traditional · Rajputana Jharokha",
+    "photo": true,
+    "layout": 4,
+    "palette": [
+      "#6b2d18",
+      "#fff4e6",
+      "#d9a05b"
+    ],
+    "fields": {
+      "host": "Arjun",
+      "partner": "Meera",
+      "heading": "Shaadi Ki Shubh Ghadi",
+      "date": "Thursday, 18 November 2027",
+      "time": "5:30 PM · JAIMALA & PHERAS",
+      "venue": "Suryagarh Heritage Palace · Jaisalmer",
+      "message": "From royal courtyards to sacred vows, celebrate the union of two royal lineages."
+    }
+  },
+  {
+    "id": "55",
+    "name": "Contemporary Minimal Luxe",
+    "occasion": "Wedding",
+    "style": "Contemporary · Modern Luxury",
+    "photo": true,
+    "layout": 1,
+    "palette": [
+      "#1a1a1a",
+      "#faf8f5",
+      "#b89047"
+    ],
+    "fields": {
+      "host": "Siddharth",
+      "partner": "Kiara",
+      "heading": "The Wedding Celebration",
+      "date": "Sunday, 14 November 2027",
+      "time": "7:00 PM ONWARDS",
+      "venue": "The Leela Palace · New Delhi",
+      "message": "A celebration of modern love, cherished memories, and a lifetime together."
+    }
+  },
+  {
+    "id": "56",
+    "name": "Phoolon Ki Holi Haldi",
+    "occasion": "Haldi",
+    "style": "Festive · Sacred Lotus & Marigold",
+    "photo": true,
+    "layout": 7,
+    "palette": [
+      "#7a450e",
+      "#fffbe6",
+      "#e5a00d"
+    ],
+    "fields": {
+      "host": "Tara",
+      "partner": "Kabir",
+      "heading": "Haldi & Phoolon Ki Holi",
+      "date": "Friday, 26 November 2027",
+      "time": "10:30 AM · HALDI RASAM & FLOWER SHOWER",
+      "venue": "Gulab Bagh Courtyard · Udaipur",
+      "message": "A splash of turmeric, a shower of yellow petals, and endless joy and music."
+    }
+  },
+  {
+    "id": "57",
+    "name": "Rang-De Mehndi Arabesque",
+    "occasion": "Mehndi",
+    "style": "Festive · Henna Mandala & Paisley",
+    "photo": true,
+    "layout": 8,
+    "palette": [
+      "#1c3829",
+      "#fffbee",
+      "#cca249"
+    ],
+    "fields": {
+      "host": "Radhika",
+      "partner": "Vikramaditya",
+      "heading": "Mehndi Ki Raat & Folk Beats",
+      "date": "Friday, 26 November 2027",
+      "time": "4:30 PM · HENNA & LIVE FOLK MUSIC",
+      "venue": "Zenana Courtyard · Jodhpur",
+      "message": "Let the fragrance of henna and the rhythm of dhol mark the start of festivities."
+    }
+  },
+  {
+    "id": "58",
+    "name": "Sur-Taal Starlit Sangeet",
+    "occasion": "Sangeet",
+    "style": "Luxury · Starlit Celebration",
+    "photo": true,
+    "layout": 9,
+    "palette": [
+      "#21123b",
+      "#f9f6ff",
+      "#d9a84e"
+    ],
+    "fields": {
+      "host": "Meera",
+      "partner": "Arjun",
+      "heading": "Sur-Taal · The Sangeet Gala",
+      "date": "Saturday, 27 November 2027",
+      "time": "7:30 PM · DANCE, MUSIC & COCKTAILS",
+      "venue": "Jagmandir Island Palace · Udaipur",
+      "message": "Bring your best moves and festive spirit for an unforgettable musical night."
+    }
+  },
+  {
+    "id": "59",
+    "name": "Noor Royal Sagaai",
+    "occasion": "Engagement",
+    "style": "Luxury · Royal Ring Ceremony",
+    "photo": false,
+    "layout": 0,
+    "palette": [
+      "#542438",
+      "#fff3f6",
+      "#cca08d"
+    ],
+    "fields": {
+      "host": "Ananya",
+      "partner": "Devendra",
+      "heading": "The Royal Ring Ceremony & Sagaai",
+      "date": "Sunday, 15 August 2027",
+      "time": "6:00 PM · RING EXCHANGE & DINNER",
+      "venue": "Taj Falaknuma Palace · Hyderabad",
+      "message": "Two souls, two families, and one sacred promise of eternity."
+    }
+  },
+  {
+    "id": "60",
+    "name": "Grand Velvet Heritage Vivah",
+    "occasion": "Wedding",
+    "style": "Royal & Traditional · Heritage Scroll",
+    "photo": false,
+    "layout": 5,
+    "palette": [
+      "#421218",
+      "#fff8ee",
+      "#c99a4e"
+    ],
+    "fields": {
+      "host": "Harshwardhan",
+      "partner": "Mansi",
+      "heading": "Shubh Vivah · Royal Heritage",
+      "date": "Friday, 3 December 2027",
+      "time": "5:30 PM · HASTAMELAP & PHERAS",
+      "venue": "The Fort Heritage · Pune",
+      "message": "With joyous hearts and proud families, we invite you to witness our sacred vows."
+    }
+  }
+]

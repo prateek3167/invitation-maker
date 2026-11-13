@@ -1,0 +1,160 @@
+{
+  "tool": "built-in image_gen",
+  "specs": [
+    [
+      "royal-portrait-gulabi",
+      "Royal Couple Portrait",
+      "Gulabi Sheesh Mahal",
+      "Jaipur-inspired rose-pink mirror-mosaic palace courtyard and golden jasmine drapes",
+      "arch"
+    ],
+    [
+      "royal-portrait-noor",
+      "Royal Couple Portrait",
+      "Noor-e-Mahal",
+      "Midnight emerald velvet portrait salon, tall carved gilded frames, antique lamps, sculpted marble columns and burgundy silk canopy, dramatic warm cinematic illumination",
+      "oval"
+    ],
+    [
+      "mughal-charbagh",
+      "Mughal Garden",
+      "Charbagh Reverie",
+      "Birds-eye perspective along a symmetrical white marble Mughal charbagh with cypress avenues, geometrical rills, foreground carved fountain, pietra dura floral inlay and rose beds, ivory jade and dusty rose",
+      "arch"
+    ],
+    [
+      "mughal-moonlight",
+      "Mughal Garden",
+      "Moonlit Shalimar",
+      "Oblique moonlit garden pavilion reflected in a long turquoise canal, four small illuminated fountains, delicate jasmine vines on stone lattices, indigo night sky and silver-gold marble, contemplative romantic atmosphere",
+      "oval"
+    ],
+    [
+      "peacock-neelam",
+      "Imperial Peacock",
+      "Neelam Mayura",
+      "Two magnificent richly detailed Indian peacocks on carved marble balustrades at outer sides, fan plumage sweeping upper corners, cobalt blue enamel, emerald gemstone tones, tiny antiqued gold inlay, elegant palace alcove",
+      "oval"
+    ],
+    [
+      "peacock-emerald",
+      "Imperial Peacock",
+      "Emerald Mor Chowk",
+      "One elaborate peacock mosaic mural across uppermost palace wall, green glass tesserae, a proud peacock in lower corner on ivory pedestal, emerald silk panels and gold jaali details, regal jade and champagne",
+      "arch"
+    ],
+    [
+      "darbar-chandelier",
+      "Maharaja Darbar",
+      "Darbar of A Thousand Lights",
+      "Expansive opulent Indian palace durbar hall seen down grand central aisle, layered crystal chandeliers, deep ruby velvet curtains, gold lotus capitals on columns, warmly glowing candle lamps, cream marble",
+      "arch"
+    ],
+    [
+      "darbar-sheesh",
+      "Maharaja Darbar",
+      "Amber Sheesh Darbar",
+      "Intimate amber palace mirrored hall with intricate tiny mirror mosaics on vaulted ceiling, golden alcoves, saffron brocade swags, low antique lamps, pearl ivory and burnished copper, exquisite evening reflections",
+      "oval"
+    ],
+    [
+      "jharokha-gulabi",
+      "Rajputana Jharokha",
+      "Gulabi Jharokha",
+      "Close frontal view of intricately carved pink sandstone Rajasthan double jharokha balcony windows, lotus carving and pierced jaali screens, deep dusty-rose exterior, bougainvillea cascading at sides, refined morning light",
+      "arch"
+    ],
+    [
+      "jharokha-jaisalmer",
+      "Rajputana Jharokha",
+      "Jaisalmer Sandstone",
+      "Angled golden-honey sandstone haveli facade, projecting carved chhatri balconies, two large scalloped niches, intricate stone filigree, desert sunset, muted ochre and antique teal silk accents, tactile stonework",
+      "oval"
+    ],
+    [
+      "palace-udaipur",
+      "Royal Palace Heritage",
+      "Udaipur Lake Palace",
+      "Dreamlike white royal palace above a tranquil lake, distant chhatri domes, grand foreground marble gateway and pillars framing the lake view at top, floating flower petals and warm dawn rose light, ivory and champagne",
+      "arch"
+    ],
+    [
+      "palace-rajwada",
+      "Royal Palace Heritage",
+      "Rajwada Grand Entrance",
+      "Monumental ornate Rajasthani palace gateway with large carved teak doors partly open at outer edges, towering domed chhatris, ceremonial orange marigold festoons, intricately carved tall pillars, deep claret and old gold",
+      "oval"
+    ],
+    [
+      "mandap-marigold",
+      "Golden Mandap",
+      "Marigold Suvarna Mandap",
+      "Luxurious real wedding mandap with four ornate gold pillars at outer edges, canopy of densely woven marigolds and ivory jasmine with hanging bells, saffron silk drapes, brass ceremonial lamps at lower corners, warm sunlight",
+      "arch"
+    ],
+    [
+      "mandap-rose",
+      "Golden Mandap",
+      "Gulab Mandap at Dusk",
+      "Open-air lakeside golden mandap at twilight, canopy of blush roses and white mogra, sculptural gold columns with gauzy pastel drapery, tiny lamps around ceremonial platform, pale blush champagne and mauve",
+      "oval"
+    ],
+    [
+      "scroll-kishangarh",
+      "Vintage Royal Scroll",
+      "Kishangarh Heirloom",
+      "Luxurious antique ivory parchment scroll unfurling vertically with aged gold rollers at very top and bottom, richly painted original Indian miniature-style garden vignettes at upper corners, delicate handpainted flowers and gold illumination, vermilion and sepia",
+      "oval"
+    ],
+    [
+      "scroll-mewar",
+      "Vintage Royal Scroll",
+      "Mewar Painted Chronicle",
+      "Royal antique folded manuscript page on parchment, original Mewar-inspired miniature painting of a palace with a tiny distant horse procession along top band, painted lapis floral corner illuminations and subtle gold leaf texture, warm vellum and ink-blue",
+      "arch"
+    ],
+    [
+      "lotus-padma",
+      "Royal Lotus Garden",
+      "Padma Mahal",
+      "Pastel pink and white lotus pond in foreground lower corners, royal ivory pavilion with scalloped marble arches above, pink lotus buds and lush pads along margins, soft misty garden dawn, sage blush and creamy gold",
+      "oval"
+    ],
+    [
+      "lotus-kamal",
+      "Royal Lotus Garden",
+      "Kamal Bagh at Dawn",
+      "Expansive ornamental royal garden with lotus pool flowing down left edge and a softly painted white marble baradari pavilion high on right, peach-pink lotuses and water reflections, pale lilac pearl and muted pistachio",
+      "arch"
+    ],
+    [
+      "elephant-baraat",
+      "Regal Elephant Procession",
+      "Shahi Baraat",
+      "Two richly but respectfully adorned Indian elephants in ceremonial embroidered red and gold caparisons, walking at outer left and right foreground margins under a grand palace gateway, distant festive musicians along upper frieze, grand ivory burgundy antique gold wedding procession",
+      "arch"
+    ],
+    [
+      "elephant-gajraj",
+      "Regal Elephant Procession",
+      "Gajraj Palace Procession",
+      "Original intricate Indian miniature-painting-inspired panoramic elephant wedding procession winding across the top quarter before a honey sandstone fort, tiny richly dressed celebrants, decorated elephants naturally walking, saffron crimson and parchment gold with painterly handcrafted depth",
+      "oval"
+    ]
+  ],
+  "promptTemplates": {
+    "primary": "Use case: historical-scene. Asset: detailed photogenic BACKGROUND ART for a premium traditional Indian wedding invitation, full-bleed portrait 5:7. Category {category}; variation {name}. Scene: {scene}. Rich realistic handcrafted illustration with photographic light and tactile dimensional materials, culturally grounded architecture and ornament. Design architecture/scenery densely in TOP 25% and outer 15% sides, a decorative bottom corner vignette. Reserve TWO side-by-side {frame} portrait spaces centered x=34% and66%, y=42%, each about24%width,23%height, with quiet dark/pale neutral inside and beautiful gold frame edges for later uploaded bride/groom photographs. Keep lower CENTER x20%-80%,y59%-91% calm light ivory or parchment, low contrast and free of motifs for editable text. Frame and landscape must integrate naturally; no basic flat border-only card. No typography, no text or letters, no watermark, no logo, no identifiable real couple. Original heritage-inspired artwork, no claim of exact historical reconstruction.",
+    "resumed": "Use case: historical-scene. Asset: rich photogenic BACKGROUND ART for premium traditional Indian wedding invitation, full-bleed portrait 5:7. {category}, {name}. Scene: {scene}. Detailed culturally grounded royal architecture, refined tactile materials and cinematic light. Main scenery across TOP25% and outer sides, detailed bottom corners. Reserve TWO side-by-side {frame} spaces centered x34% and66%,y42%, each24%width23%height with quiet neutral interiors for later bride/groom photographs. Lower CENTER x20-80%,y59-91% must be quiet LIGHT IVORY parchment/marble for editable text, not patterned. Rich dimensional original artwork, not a basic border card. No typography, letters, watermark, logos or identifiable people."
+  },
+  "resumedIds": [
+    "mandap-marigold",
+    "scroll-kishangarh",
+    "scroll-mewar",
+    "lotus-padma",
+    "lotus-kamal",
+    "elephant-baraat",
+    "elephant-gajraj"
+  ],
+  "firstPrompt": "Use case: historical-scene. Asset: premium Indian wedding invitation BACKGROUND ART, portrait 5:7 aspect. Royal Couple Portrait — Gulabi Sheesh Mahal. Rich photogenic painterly-real architectural scene: Jaipur-inspired rose-pink palace courtyard, richly carved cusped arches and gold mirror mosaics, silk drapes and jasmine garlands, marble foreground, warm dusk golden light, lush crimson roses at bottom corners. Composition for a working invitation: detailed architecture occupies top 23% and outer sides; reserve central upper-middle two adjacent portrait niches at x=28% and72%, y=39%, each roughly22% width22% height, unobstructed subdued pale stone inside for later bride/groom photo overlay. Lower middle x20–80%, y60–91% is softly lit plain ivory marble with ample quiet space for editable wedding text. Artwork should be full bleed, elegant dimensional and tactile, not just borders or flat clip art. No people, no letters, no text, no logos, no watermark, no existing palace branding. Original imaginative heritage-inspired setting, restrained refined gold rather than glitter.",
+  "demoPortraits": "Use case: photorealistic-natural. Asset: clearly fictional wedding portrait demonstration sheet. Two equal side by side vertical studio portrait photographs separated by a thin plain white vertical gutter. Left: fictional adult Indian bride in tasteful red-and-gold bridal lehenga, delicate jewelry, smiling naturally, bust portrait looking toward camera. Right: fictional adult Indian groom in ivory sherwani and subtle cream safa, smiling, bust portrait looking toward camera. Matching natural flattering warm daylight and softly blurred pale cream palace garden background. Photogenic genuine skin texture, respectful sophisticated styling, no celebrities or identifiable real people, no text, no logos. Both faces centered in their respective half and entire heads visible. Landscape 4:3 composition."
+}
