@@ -24,9 +24,16 @@ import {
   Heart,
   Languages,
   ScrollText,
+  Wand2,
+  Copy,
 } from 'lucide-react';
 import type { Invitation, Format } from '../../../../packages/editor-core/document';
-import { templates, presets } from '../../../../packages/editor-core/document';
+import {
+  templates,
+  presets,
+  generateInvitationCopy,
+  type GeneratedInvitationCopy,
+} from '../../../../packages/editor-core/document';
 import type { CanvasElement } from '../../../../packages/editor-core/canvas';
 import { WEDDING_ELEMENT_TEMPLATES } from '../../../../packages/editor-core/canvas';
 import {
@@ -89,6 +96,105 @@ export default function SidebarTools({
     onChange(updated);
     setHindiConverted(true);
     setTimeout(() => setHindiConverted(false), 3000);
+  };
+
+  // AI Copywriter State
+  const [aiCeremony, setAiCeremony] = useState<'vivah' | 'haldi' | 'mehndi' | 'sangeet' | 'reception' | 'sagaai'>('vivah');
+  const [aiTone, setAiTone] = useState<'royal' | 'traditional' | 'romantic' | 'playful' | 'formal'>('royal');
+  const [aiVoice, setAiVoice] = useState<'couple' | 'bride_parents' | 'groom_parents' | 'friends'>('couple');
+  const [aiLang, setAiLang] = useState<'hindi' | 'english' | 'hinglish'>('hindi');
+  const [aiBride, setAiBride] = useState(doc.fields.partner || 'Aarushi');
+  const [aiGroom, setAiGroom] = useState(doc.fields.host || 'Siddharth');
+  const [aiSurname, setAiSurname] = useState('Parivar');
+  const [aiGenerated, setAiGenerated] = useState<GeneratedInvitationCopy[]>(() =>
+    generateInvitationCopy({
+      ceremony: 'vivah',
+      tone: 'royal',
+      voice: 'couple',
+      language: 'hindi',
+      brideName: doc.fields.partner || 'Aarushi',
+      groomName: doc.fields.host || 'Siddharth',
+      familySurname: 'Parivar',
+    })
+  );
+  const [aiAppliedId, setAiAppliedId] = useState<string | null>(null);
+  const [copiedText, setCopiedText] = useState<string | null>(null);
+
+  const handleGenerateAi = () => {
+    const results = generateInvitationCopy({
+      ceremony: aiCeremony,
+      tone: aiTone,
+      voice: aiVoice,
+      language: aiLang,
+      brideName: aiBride.trim() || 'Aarushi',
+      groomName: aiGroom.trim() || 'Siddharth',
+      familySurname: aiSurname.trim() || 'Parivar',
+    });
+    setAiGenerated(results);
+  };
+
+  const handleApplyAiCopy = (copy: GeneratedInvitationCopy) => {
+    onUpdateDocument({
+      fields: {
+        ...doc.fields,
+        heading: copy.heading,
+        host: aiGroom.trim() || doc.fields.host,
+        partner: aiBride.trim() || doc.fields.partner,
+        message: copy.message,
+      },
+    });
+
+    let updatedElements = [...elements];
+    let messageFound = false;
+
+    updatedElements = updatedElements.map(el => {
+      if (el.type !== 'text') return el;
+      const textVal = el.text || '';
+      if (el.fieldBinding === 'heading' || textVal.includes('॥') || textVal.toLowerCase().includes('ganesh')) {
+        return { ...el, text: copy.heading, fontFamily: copy.recommendedFont };
+      }
+      if (el.fieldBinding === 'host' || el.fieldBinding === 'partner' || (el.fontSize && el.fontSize >= 32)) {
+        return { ...el, text: copy.title, fontFamily: copy.recommendedFont };
+      }
+      if (el.fieldBinding === 'message' || textVal.length > 40) {
+        messageFound = true;
+        return { ...el, text: copy.message, fontFamily: copy.recommendedFont };
+      }
+      return el;
+    });
+
+    if (!messageFound) {
+      const maxZ = Math.max(...updatedElements.map(e => e.zIndex || 0), 0);
+      updatedElements.push({
+        id: `el_ai_msg_${Date.now()}`,
+        name: 'Wedding Message',
+        type: 'text',
+        x: 80,
+        y: 420,
+        width: 540,
+        height: 100,
+        rotation: 0,
+        zIndex: maxZ + 1,
+        text: copy.message,
+        fontSize: 16,
+        fontFamily: copy.recommendedFont,
+        color: ink,
+        textAlign: 'center',
+        lineHeight: 1.5,
+      });
+    }
+
+    onChange(updatedElements);
+    setAiAppliedId(copy.id);
+    setTimeout(() => setAiAppliedId(null), 3000);
+  };
+
+  const handleCopySnippet = (text: string, label: string) => {
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(text);
+      setCopiedText(label);
+      setTimeout(() => setCopiedText(null), 2000);
+    }
   };
 
   // Add Element helper
@@ -218,6 +324,15 @@ export default function SidebarTools({
         >
           <UploadCloud size={20} />
           <span>Uploads</span>
+        </button>
+        <button
+          type="button"
+          className={activeTab === 'ai' ? 'active' : ''}
+          onClick={() => onTabChange('ai')}
+          title="AI Wedding Copywriter"
+        >
+          <Wand2 size={20} />
+          <span>AI Writer</span>
         </button>
         <button
           type="button"
@@ -991,6 +1106,457 @@ export default function SidebarTools({
                     </div>
                   );
                 })}
+            </div>
+          </div>
+        )}
+
+        {/* AI WEDDING COPYWRITER TAB */}
+        {activeTab === 'ai' && (
+          <div className="sidebar-tab-pane">
+            <div className="pane-header">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <Wand2 size={18} style={{ color: '#d4af37' }} />
+                <h3>AI Wedding Copywriter</h3>
+              </div>
+              <p>स्मार्ट निमंत्रण एवं वैदिक श्लोक सहायक</p>
+            </div>
+
+            {/* Input Controls */}
+            <div
+              style={{
+                padding: '0.75rem',
+                background: 'rgba(212, 175, 55, 0.08)',
+                borderRadius: '8px',
+                border: '1px solid rgba(212, 175, 55, 0.25)',
+                marginBottom: '1rem',
+              }}
+            >
+              <div style={{ marginBottom: '0.6rem' }}>
+                <label
+                  style={{
+                    fontSize: '0.75rem',
+                    fontWeight: 600,
+                    display: 'block',
+                    marginBottom: '0.25rem',
+                    color: '#666',
+                  }}
+                >
+                  Ceremony (समारोह)
+                </label>
+                <select
+                  value={aiCeremony}
+                  onChange={e => setAiCeremony(e.target.value as any)}
+                  style={{
+                    width: '100%',
+                    padding: '0.4rem 0.5rem',
+                    borderRadius: '4px',
+                    border: '1px solid #ccc',
+                    fontSize: '0.85rem',
+                  }}
+                >
+                  <option value="vivah">Vivah / Shaadi (शुभ विवाह)</option>
+                  <option value="haldi">Haldi (हल्दी उत्सव)</option>
+                  <option value="mehndi">Mehndi (मेहंदी की रात)</option>
+                  <option value="sangeet">Sangeet (संगीत संध्या)</option>
+                  <option value="reception">Reception (प्रीतिभोज)</option>
+                  <option value="sagaai">Sagaai (सगाई / Engagement)</option>
+                </select>
+              </div>
+
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr',
+                  gap: '0.5rem',
+                  marginBottom: '0.6rem',
+                }}
+              >
+                <div>
+                  <label
+                    style={{
+                      fontSize: '0.75rem',
+                      fontWeight: 600,
+                      display: 'block',
+                      marginBottom: '0.25rem',
+                      color: '#666',
+                    }}
+                  >
+                    Tone (शैली)
+                  </label>
+                  <select
+                    value={aiTone}
+                    onChange={e => setAiTone(e.target.value as any)}
+                    style={{
+                      width: '100%',
+                      padding: '0.4rem 0.5rem',
+                      borderRadius: '4px',
+                      border: '1px solid #ccc',
+                      fontSize: '0.85rem',
+                    }}
+                  >
+                    <option value="royal">Royal & Regal (शाही)</option>
+                    <option value="traditional">Traditional (पारंपरिक)</option>
+                    <option value="romantic">Romantic (रोमांटिक)</option>
+                    <option value="playful">Playful (मस्ती भरा)</option>
+                    <option value="formal">Formal (औपचारिक)</option>
+                  </select>
+                </div>
+                <div>
+                  <label
+                    style={{
+                      fontSize: '0.75rem',
+                      fontWeight: 600,
+                      display: 'block',
+                      marginBottom: '0.25rem',
+                      color: '#666',
+                    }}
+                  >
+                    Voice (पक्ष)
+                  </label>
+                  <select
+                    value={aiVoice}
+                    onChange={e => setAiVoice(e.target.value as any)}
+                    style={{
+                      width: '100%',
+                      padding: '0.4rem 0.5rem',
+                      borderRadius: '4px',
+                      border: '1px solid #ccc',
+                      fontSize: '0.85rem',
+                    }}
+                  >
+                    <option value="couple">Couple (वर-वधू)</option>
+                    <option value="bride_parents">Bride Parents (कन्या पक्ष)</option>
+                    <option value="groom_parents">Groom Parents (वर पक्ष)</option>
+                    <option value="friends">Friends & Siblings (मित्रगण)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div style={{ marginBottom: '0.6rem' }}>
+                <label
+                  style={{
+                    fontSize: '0.75rem',
+                    fontWeight: 600,
+                    display: 'block',
+                    marginBottom: '0.25rem',
+                    color: '#666',
+                  }}
+                >
+                  Language (भाषा)
+                </label>
+                <div style={{ display: 'flex', gap: '0.35rem' }}>
+                  {(['hindi', 'english', 'hinglish'] as const).map(l => (
+                    <button
+                      key={l}
+                      type="button"
+                      onClick={() => setAiLang(l)}
+                      style={{
+                        flex: 1,
+                        padding: '0.35rem 0.4rem',
+                        borderRadius: '4px',
+                        border: aiLang === l ? '1px solid #8b181b' : '1px solid #ccc',
+                        background: aiLang === l ? '#8b181b' : '#fff',
+                        color: aiLang === l ? '#fff' : '#333',
+                        fontSize: '0.75rem',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {l === 'hindi' ? 'हिंदी' : l === 'english' ? 'English' : 'Hinglish'}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr',
+                  gap: '0.5rem',
+                  marginBottom: '0.6rem',
+                }}
+              >
+                <div>
+                  <label
+                    style={{
+                      fontSize: '0.75rem',
+                      fontWeight: 600,
+                      display: 'block',
+                      marginBottom: '0.25rem',
+                      color: '#666',
+                    }}
+                  >
+                    Bride Name
+                  </label>
+                  <input
+                    type="text"
+                    value={aiBride}
+                    onChange={e => setAiBride(e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '0.4rem 0.5rem',
+                      borderRadius: '4px',
+                      border: '1px solid #ccc',
+                      fontSize: '0.85rem',
+                    }}
+                  />
+                </div>
+                <div>
+                  <label
+                    style={{
+                      fontSize: '0.75rem',
+                      fontWeight: 600,
+                      display: 'block',
+                      marginBottom: '0.25rem',
+                      color: '#666',
+                    }}
+                  >
+                    Groom Name
+                  </label>
+                  <input
+                    type="text"
+                    value={aiGroom}
+                    onChange={e => setAiGroom(e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '0.4rem 0.5rem',
+                      borderRadius: '4px',
+                      border: '1px solid #ccc',
+                      fontSize: '0.85rem',
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div style={{ marginBottom: '0.6rem' }}>
+                <label
+                  style={{
+                    fontSize: '0.75rem',
+                    fontWeight: 600,
+                    display: 'block',
+                    marginBottom: '0.25rem',
+                    color: '#666',
+                  }}
+                >
+                  Family Surname (परिवार का उपनाम)
+                </label>
+                <input
+                  type="text"
+                  value={aiSurname}
+                  onChange={e => setAiSurname(e.target.value)}
+                  placeholder="e.g. Sharma or Kapoor"
+                  style={{
+                    width: '100%',
+                    padding: '0.4rem 0.5rem',
+                    borderRadius: '4px',
+                    border: '1px solid #ccc',
+                    fontSize: '0.85rem',
+                  }}
+                />
+              </div>
+
+              <button
+                type="button"
+                onClick={handleGenerateAi}
+                style={{
+                  width: '100%',
+                  padding: '0.6rem',
+                  background: 'linear-gradient(135deg, #8b181b, #541212)',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '6px',
+                  fontWeight: 600,
+                  fontSize: '0.85rem',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.4rem',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.15)',
+                }}
+              >
+                <Sparkles size={16} />
+                <span>Generate Wording & Shlokas</span>
+              </button>
+            </div>
+
+            {/* Generated Options Cards */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', paddingBottom: '2rem' }}>
+              {aiGenerated.map((opt, idx) => {
+                const isApplied = aiAppliedId === opt.id;
+                return (
+                  <div
+                    key={opt.id || idx}
+                    style={{
+                      background: '#fff',
+                      borderRadius: '8px',
+                      border: '1px solid #e2d9c8',
+                      padding: '0.9rem',
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+                      position: 'relative',
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        marginBottom: '0.4rem',
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontSize: '0.75rem',
+                          fontWeight: 700,
+                          color: '#8b181b',
+                          background: '#fff0ee',
+                          padding: '0.2rem 0.5rem',
+                          borderRadius: '12px',
+                        }}
+                      >
+                        {opt.heading}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => handleCopySnippet(opt.heading, `h_${idx}`)}
+                        style={{ border: 'none', background: 'none', cursor: 'pointer', color: '#888' }}
+                        title="Copy heading"
+                      >
+                        {copiedText === `h_${idx}` ? (
+                          <Check size={14} color="#16a34a" />
+                        ) : (
+                          <Copy size={14} />
+                        )}
+                      </button>
+                    </div>
+
+                    <h4
+                      style={{
+                        margin: '0 0 0.2rem 0',
+                        fontSize: '0.95rem',
+                        fontWeight: 700,
+                        color: '#222',
+                      }}
+                    >
+                      {opt.title}
+                    </h4>
+                    <p
+                      style={{
+                        margin: '0 0 0.5rem 0',
+                        fontSize: '0.8rem',
+                        color: '#666',
+                        fontStyle: 'italic',
+                      }}
+                    >
+                      {opt.subtitle}
+                    </p>
+
+                    <div
+                      style={{
+                        background: '#fdfcf9',
+                        padding: '0.6rem',
+                        borderRadius: '6px',
+                        border: '1px dashed #d4af37',
+                        marginBottom: '0.6rem',
+                      }}
+                    >
+                      <p style={{ margin: 0, fontSize: '0.82rem', color: '#333', lineHeight: 1.5 }}>
+                        {opt.message}
+                      </p>
+                    </div>
+
+                    {opt.rhymeOrQuote && (
+                      <div
+                        style={{
+                          background: '#fff9ee',
+                          padding: '0.5rem',
+                          borderRadius: '6px',
+                          marginBottom: '0.6rem',
+                          borderLeft: '3px solid #d4af37',
+                        }}
+                      >
+                        <span
+                          style={{
+                            fontSize: '0.7rem',
+                            fontWeight: 600,
+                            color: '#8a6200',
+                            textTransform: 'uppercase',
+                            display: 'block',
+                            marginBottom: '0.2rem',
+                          }}
+                        >
+                          Vedic Shloka / Folk Verse
+                        </span>
+                        <p
+                          style={{
+                            margin: 0,
+                            fontSize: '0.78rem',
+                            color: '#554212',
+                            fontStyle: 'italic',
+                          }}
+                        >
+                          {opt.rhymeOrQuote}
+                        </p>
+                      </div>
+                    )}
+
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        marginTop: '0.6rem',
+                        borderTop: '1px solid #eee',
+                        paddingTop: '0.6rem',
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontSize: '0.72rem',
+                          color: '#6366f1',
+                          background: '#eef2ff',
+                          padding: '0.15rem 0.4rem',
+                          borderRadius: '4px',
+                          fontWeight: 600,
+                        }}
+                      >
+                        {opt.hashtag}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => handleApplyAiCopy(opt)}
+                        style={{
+                          background: isApplied ? '#16a34a' : '#8b181b',
+                          color: '#fff',
+                          border: 'none',
+                          padding: '0.35rem 0.75rem',
+                          borderRadius: '4px',
+                          fontSize: '0.78rem',
+                          fontWeight: 600,
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.3rem',
+                          transition: 'background 0.2s',
+                        }}
+                      >
+                        {isApplied ? (
+                          <>
+                            <Check size={14} />
+                            <span>Applied!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Wand2 size={13} />
+                            <span>Apply to Canvas</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}

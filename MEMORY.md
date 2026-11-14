@@ -8,6 +8,30 @@ Read AGENTS.md and PLAN.md, then [requirements](docs/product/requirements.md), [
 
 Current truth: [implementation status](docs/development/status.md), [setup](docs/development/setup.md), [roadmap](docs/product/roadmap.md) and [ADR 0001](docs/decisions/0001-server-foundation.md).
 
+## AI Wedding Content & Shloka Assistant & Auspicious Celebration Audio Engine — 2026-11-14
+
+User explicitly requested continuing automated phase-wise development into a complete, production-ready implementation (Phase 10):
+- **AI Wedding Copywriting & Shloka Assistant (`packages/editor-core/ai-assistant.ts`)**:
+  - `generateInvitationCopy`: Intelligent generative wording assistant tailored for Indian weddings.
+  - Full ceremony coverage: Vivah (शुभ विवाह), Haldi (हल्दी उत्सव), Mehndi (मेहंदी की रात), Sangeet (संगीत संध्या), Reception (प्रीतिभोज), Sagaai (सगाई).
+  - Tones: Royal & Regal (शाही), Traditional (पारंपरिक), Romantic (रोमांटिक), Playful (मस्ती भरा), Formal (औपचारिक).
+  - Voices: Couple (वर-वधू), Bride's Parents (कन्या पक्ष), Groom's Parents (वर पक्ष), Friends & Siblings (मित्रगण).
+  - Languages: Hindi (Devanagari), English, Hinglish.
+  - Dynamically injects bride/groom names, family surnames, authentic Vedic shlokas, rhyming folk couplets, wedding hashtags, and recommended typography.
+- **Dedicated "✨ AI Writer" Tool in Canva-like Editor Sidebar (`apps/web/components/canvas/sidebar-tools.tsx`)**:
+  - Ceremony, tone, voice, and language pickers with bride, groom, and family surname controls.
+  - 1-click option cards showing heading badges, titles, subtitles, framed message bodies, Vedic shlokas, and hashtags.
+  - 1-click "Apply to Invitation" synchronization that updates document fields and canvas text elements with live confirmation feedback.
+  - 1-click copy-to-clipboard buttons for shlokas, headings, and hashtags.
+- **Authentic Indian Wedding Audio Synthesizer (`apps/web/lib/audio.ts`)**:
+  - Zero-dependency Web Audio API implementation providing 100% offline celebration music with zero asset loading failure risks.
+  - Presets: Mangal Shehnai & Tanpura (मंगल शहनाई), Royal Sitar Raga (रॉयल सितार), and Bansuri & Temple Chimes (मधुर बांसुरी).
+  - Tuned with authentic Raag Bilawal / Yaman frequencies, Tanpura root harmonics (Sa-Pa drone), and acoustic envelope shaping.
+- **Floating Celebration Audio Player on Digital Guest Hub (`apps/web/app/invite/[id]/page.tsx`)**:
+  - Floating pill widget with 1-click play/mute toggle and track selector popover.
+  - Visual animated equalizer indicators and track name display.
+- Fully verified: 61 unit & integration tests pass across 16 test suites, production build compiles all routes without errors, structure checks pass (206 maintained files).
+
 ## Interactive RSVP, Guest Management & WhatsApp / QR Sharing Hub — 2026-11-14
 
 User explicitly requested continuing automated phase-wise development into a production-ready application (Phase 9A/9B):

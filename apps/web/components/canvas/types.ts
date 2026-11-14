@@ -5,7 +5,8 @@ export type ActiveSidebarTab =
   | 'elements'
   | 'backgrounds'
   | 'uploads'
-  | 'layers';
+  | 'layers'
+  | 'ai';
 
 export type HandleType = 'nw' | 'n' | 'ne' | 'e' | 'se' | 's' | 'sw' | 'w' | 'rotate';
 
