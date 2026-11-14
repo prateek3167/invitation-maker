@@ -50,6 +50,7 @@ import SidebarTools from './canvas/sidebar-tools';
 import PropertiesPanel from './canvas/properties-panel';
 import TopToolbar from './canvas/top-toolbar';
 import SuiteBar from './canvas/suite-bar';
+import GuestManager from './rsvp/guest-manager';
 import type { ActiveSidebarTab } from './canvas/types';
 
 const labels: Record<keyof Fields, string> = {
@@ -133,6 +134,7 @@ export default function Editor({
   const [downloadOpen, setDownloadOpen] = useState(false);
   const [downloadType, setDownloadType] = useState<'png' | 'jpg' | 'pdf'>('png');
   const [downloadScope, setDownloadScope] = useState<'card' | 'suite_pdf' | 'suite_images'>('card');
+  const [showGuestManager, setShowGuestManager] = useState(false);
 
   const ref = useRef(doc);
   ref.current = doc;
@@ -495,6 +497,10 @@ export default function Editor({
             void persist().catch(() => {});
           }}
           onDownload={() => setDownloadOpen(true)}
+          onOpenRsvp={() => setShowGuestManager(true)}
+          rsvpCount={
+            doc.rsvpResponses?.filter(r => r.attending === 'attending').reduce((acc, r) => acc + (r.guestCount || 1), 0) || 0
+          }
           canUndo={history.current.length > 0}
           canRedo={future.current.length > 0}
           onUndo={handleUndo}
@@ -1091,6 +1097,19 @@ export default function Editor({
             CMYK and print bleed are not included.
           </p>
         </Dialog>
+      )}
+
+      {showGuestManager && (
+        <GuestManager
+          document={doc}
+          elements={currentElements}
+          onUpdateDocument={patch => {
+            setDoc(prev => ({ ...prev, ...patch }));
+            setDirty(true);
+          }}
+          onUpdateElements={handleElementsChange}
+          onClose={() => setShowGuestManager(false)}
+        />
       )}
     </Dialog>
   );

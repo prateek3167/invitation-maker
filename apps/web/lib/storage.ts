@@ -20,6 +20,28 @@ export async function listDrafts(): Promise<Invitation[]> {
     tx.onerror = () => { db.close(); reject(tx.error); };
   });
 }
+export async function loadDraft(id: string): Promise<Invitation | null> {
+  const db = await open();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction('drafts', 'readonly');
+    const request = tx.objectStore('drafts').get(id);
+    tx.oncomplete = () => {
+      db.close();
+      const result = request.result as Invitation | undefined;
+      if (result) {
+        try {
+          validateInvitation(result);
+          resolve(result);
+        } catch {
+          resolve(null);
+        }
+      } else {
+        resolve(null);
+      }
+    };
+    tx.onerror = () => { db.close(); reject(tx.error); };
+  });
+}
 export async function saveDraft(doc: Invitation): Promise<Invitation> {
   validateInvitation(doc);
   const db = await open();

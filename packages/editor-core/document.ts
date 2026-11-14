@@ -1,6 +1,7 @@
 import catalog from '../template-engine/catalog.json' with { type: 'json' };
 import royalCatalog from '../template-engine/royal-catalog.json' with { type: 'json' };
 import type { CanvasElement } from './canvas';
+import type { RsvpSettings, RsvpResponse } from './rsvp';
 
 export type Fields = { host: string; partner: string; heading: string; date: string; time: string; venue: string; message: string };
 export type Photo = { data: string; x: number; y: number; zoom: number };
@@ -17,11 +18,15 @@ export type Invitation = {
   canvasElements?: CanvasElement[];
   suiteCards?: Invitation[];
   eventTag?: string;
+  rsvpSettings?: RsvpSettings;
+  rsvpResponses?: RsvpResponse[];
+  shareSlug?: string;
 };
 
 export * from './canvas';
 export * from './suite';
 export * from './shlokas';
+export * from './rsvp';
 export const templates: Template[] = [...catalog, ...royalCatalog];
 export const royalCategories = [...new Set(royalCatalog.map(t => t.royal.category))];
 export const weddingEvents = ['Shaadi', 'Haldi', 'Mehndi', 'Sangeet', 'Sagaai'] as const;
@@ -82,6 +87,9 @@ export function validateInvitation(value: unknown): asserts value is Invitation 
   }
   if (d.suiteCards !== undefined) {
     if (!Array.isArray(d.suiteCards) || d.suiteCards.length > 25) throw new Error('Invalid suite cards.');
+  }
+  if (d.rsvpResponses !== undefined) {
+    if (!Array.isArray(d.rsvpResponses) || d.rsvpResponses.length > 2000) throw new Error('Invalid RSVP responses.');
   }
 }
 export function contentIssues(d: Invitation): string[] {

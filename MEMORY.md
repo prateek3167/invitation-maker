@@ -8,6 +8,36 @@ Read AGENTS.md and PLAN.md, then [requirements](docs/product/requirements.md), [
 
 Current truth: [implementation status](docs/development/status.md), [setup](docs/development/setup.md), [roadmap](docs/product/roadmap.md) and [ADR 0001](docs/decisions/0001-server-foundation.md).
 
+## Interactive RSVP, Guest Management & WhatsApp / QR Sharing Hub — 2026-11-14
+
+User explicitly requested continuing automated phase-wise development into a production-ready application (Phase 9A/9B):
+- **RSVP & Guest Management Engine (`packages/editor-core/rsvp.ts`)**:
+  - `RsvpSettings`: Configurable RSVP controls (`enabled, deadline, allowPlusOnes, maxPartySize, collectDietary, collectCeremonies, welcomeMessage`).
+  - `RsvpResponse`: Guest attendance records (`guestName, phoneOrEmail, attending, guestCount, ceremonies, dietary, notes, submittedAt`).
+  - `calculateRsvpStats`: Aggregates confirmed guest headcounts, party counts, dietary breakdowns (Pure Veg, Jain, Swaminarayan), and ceremony-specific attendance (Haldi, Mehndi, Sangeet, Shaadi).
+  - `exportRsvpToCsv`: Generates safe RFC-4180 CSV with spreadsheet formula injection protection (prepends `'` to inputs beginning with `=, +, -, @`) for caterers and wedding planners.
+  - `generateSampleRsvpResponses`: Seeds realistic Indian wedding guest responses for instant preview and onboarding.
+  - Transparent persistence in `Invitation` document (`rsvpSettings`, `rsvpResponses`, `shareSlug`) across IndexedDB and Account API.
+- **Pure TypeScript QR Code Generator (`apps/web/lib/qrcode.ts`)**:
+  - Zero-dependency Model 2 QR Code generator with Reed-Solomon Galois Field GF(256) error correction.
+  - Generates scalable vector SVG and base64 Data URLs for on-canvas QR badges and physical print downloads.
+- **Sharing & Calendar Integrations (`apps/web/lib/share.ts`)**:
+  - Auspicious 1-click WhatsApp wedding invite formatter with couple names, muhurat timings, venue, and deep-link.
+  - Direct 1-click Google Calendar URL and standard `.ics` iCalendar export.
+  - Google Maps venue navigation search deep-link.
+- **Host RSVP & Guest Management Dialog (`apps/web/components/rsvp/guest-manager.tsx`)**:
+  - Metrics overview cards (Confirmed Guests, Total Parties, Veg/Jain meals, Declined).
+  - Searchable and filterable Guest List table with RSVP status badges, dietary tags, and ceremony pills.
+  - Modal form to record offline/phone RSVPs.
+  - Share tab with live QR code display, SVG download, WhatsApp trigger, and link copier.
+  - RSVP settings tab to configure deadlines, party limits, and dietary collection.
+- **Public Digital Invitation & RSVP Hub (`apps/web/app/invite/[id]/page.tsx`)**:
+  - Mobile-first responsive guest page with ceremony multi-card carousel.
+  - Live ticking wedding countdown timer (Days, Hours, Minutes, Seconds).
+  - Venue actions: Open in Google Maps, Add to Calendar, Forward on WhatsApp.
+  - Interactive RSVP submission form with instant personalized confirmation.
+- Fully verified: 53 unit & integration tests pass across 14 test suites, production build compiles all routes including `/invite/[id]`, structure check clean (202 maintained files).
+
 ## Culturally Rich Traditional Elements & Hindi/Devanagari Fonts — 2026-11-14
 
 User explicitly requested building Culturally Rich Traditional Elements & Hindi/Devanagari Fonts:

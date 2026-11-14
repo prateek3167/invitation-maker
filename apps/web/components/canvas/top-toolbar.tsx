@@ -8,6 +8,7 @@ import {
   Sparkles,
   FileText,
   Crown,
+  Users,
 } from 'lucide-react';
 import type { Invitation } from '../../../../packages/editor-core/document';
 
@@ -18,6 +19,8 @@ interface TopToolbarProps {
   dirty: boolean;
   onSave: () => void;
   onDownload: () => void;
+  onOpenRsvp?: () => void;
+  rsvpCount?: number;
   canUndo: boolean;
   canRedo: boolean;
   onUndo: () => void;
@@ -36,6 +39,8 @@ export default function TopToolbar({
   dirty,
   onSave,
   onDownload,
+  onOpenRsvp,
+  rsvpCount,
   canUndo,
   canRedo,
   onUndo,
@@ -124,6 +129,20 @@ export default function TopToolbar({
       </div>
 
       <div className="toolbar-right">
+        {onOpenRsvp && (
+          <button
+            type="button"
+            className="button secondary toolbar-rsvp-btn"
+            onClick={onOpenRsvp}
+            title="Guest RSVP & Sharing Hub"
+          >
+            <Users size={15} />
+            <span>RSVP &amp; Share</span>
+            {rsvpCount !== undefined && rsvpCount > 0 && (
+              <span className="rsvp-badge-count">{rsvpCount}</span>
+            )}
+          </button>
+        )}
         <button
           type="button"
           className="button secondary toolbar-save-btn"
