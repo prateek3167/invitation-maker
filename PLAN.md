@@ -1,5 +1,18 @@
 # Phased Implementation Plan
 
+## Authorized Canva-like interactive template editor (Phase 8 expansion) — 2026-11-14
+
+The user explicitly requested enhancing the Template Editor into a full Canva-like visual design and editing studio with on-canvas drag-and-drop, individual element customization, text formatting, photo editing, design elements library, layers management, undo/redo, auto-save, and export parity.
+
+- [x] Phase 1: Establish canvas elements schema, types (`CanvasElement`), backward-compatible `Invitation.canvasElements`, template deconstruction engine (`decomposeTemplateToElements` for all 80 templates), and bidirectional field sync.
+- [x] Phase 2: Extend unified SVG renderer (`renderSvg`) to render `CanvasElement` trees with pixel precision (transforms, rotations, text styling, clip-paths, shapes) while maintaining export parity for PNG/JPG/PDF.
+- [x] Phase 3: Build interactive canvas workspace (`InteractiveCanvas`) with direct on-canvas element selection, drag-to-move, 8-handle resizing, rotation handle, alignment guides/snapping, zoom, and keyboard shortcuts.
+- [x] Phase 4: Implement Left Sidebar tool palette: Templates, Text, Photos (single & royal bride/groom), Design Elements Library (shapes, traditional wedding ornaments, toran, kalash, lanterns, peacock plumes, borders), Backgrounds, Uploads, and Layers panel (reorder, lock, hide, depth).
+- [x] Phase 5: Implement Right Properties Panel (context-sensitive text/photo/shape/background inspector) and Top Toolbar (undo/redo, zoom, title, save status, dual mode toggle, download).
+- [x] Phase 6: Full integration with existing draft persistence (IndexedDB + Account API), tests update, regression verification, and performance/accessibility auditing.
+
+Verified: 35 unit/integration tests pass; Next.js production build succeeds (`Route (app)` static & dynamic API routes); structure checks pass (191 maintained files); interactive Canva visual editing studio verified with drag-to-move, 8 resize handles, rotation, alignment snapping, layer management, design elements library (ornaments/shapes/borders), and seamless dual-mode toggle.
+
 ## Authorized wedding template catalog enhancement & luxury collection — 2026-11-13
 
 The user explicitly requested navigating to the Template Catalog, enhancing/redesigning existing templates, and adding modern, professional, premium wedding invitation templates (Royal & Traditional, Luxury, Photogenic, Contemporary, Elegant, Mughal Garden, Imperial Peacock, Maharaja Darbar, Rajputana Jharokha, and wedding events: Haldi, Mehndi, Sangeet, Sagaai, Shaadi).

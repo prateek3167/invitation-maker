@@ -151,6 +151,7 @@ function artDecoBorders(accent: string): string {
 export function renderSvg(d: Invitation, artworkData?: string): string {
   validateInvitation(d);
   if (d.photo?.data.startsWith('asset:')) throw new Error('Resolve the private photo before rendering.');
+  if (d.canvasElements && d.canvasElements.length > 0) return renderFromCanvasElements(d, artworkData);
   const template = documentTemplate(d), [ink, paper, accent] = d.palette;
   if (template.royal) return renderRoyal(d, artworkData);
 
@@ -326,4 +327,131 @@ function renderRoyal(d: Invitation, artworkData?: string): string {
   const core = `<image href="${artworkData}" width="700" height="980" preserveAspectRatio="xMidYMid slice"/>${frames}${panel}${text('WITH THE BLESSINGS OF OUR FAMILIES',nameY-16,8,ink,60,'Arial, sans-serif',false,1.8)}${text(joinedNames,nameY+27,nameSize,ink,100,family,d.font==='italic')}${text(d.fields.heading,nameY+70,17,ink,42,family,true)}<path d="M290 ${nameY+90+headingExtra}h120" stroke="${gold}" stroke-width="1.4"/>${text(d.fields.date,nameY+118+headingExtra,12,ink,50,family)}${text(d.fields.time,nameY+143+headingExtra,10,ink,60,family)}${text(d.fields.venue,nameY+178+headingExtra,12,ink,48,family)}${text(d.fields.message,nameY+218+headingExtra,10,ink,58,family,true)}${text('A MOMENT TO REMEMBER',900,7,ink,50,'Arial, sans-serif',false,2)}`;
   const {width,height} = presets[d.format], ratio = width/height, viewW = ratio >=700/980?980*ratio:700, viewH = ratio>=700/980?980:700/ratio;
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="${-(viewW-700)/2} ${-(viewH-980)/2} ${viewW} ${viewH}" role="img" aria-label="${esc(d.fields.heading)}"><rect x="${-(viewW-700)/2}" y="${-(viewH-980)/2}" width="${viewW}" height="${viewH}" fill="${paper}"/>${core}</svg>`;
+}
+
+function renderFromCanvasElements(d: Invitation, artworkData?: string): string {
+  const [ink, paper, accent] = d.palette;
+  const elements = [...(d.canvasElements || [])].sort((a, b) => (a.zIndex ?? 0) - (b.zIndex ?? 0));
+  const defs: string[] = [];
+  const body: string[] = [];
+
+  for (const el of elements) {
+    if (el.hidden) continue;
+    const opacity = el.opacity ?? 1;
+    const rot = el.rotation || 0;
+    const transform = rot !== 0 ? `transform="rotate(${rot} ${el.x + el.width / 2} ${el.y + el.height / 2})"` : '';
+
+    if (el.type === 'background') {
+      if (el.src && artworkData) {
+        body.push(`<image href="${esc(artworkData)}" x="${el.x}" y="${el.y}" width="${el.width}" height="${el.height}" preserveAspectRatio="xMidYMid slice" opacity="${opacity}"/>`);
+      } else if (el.src && /^data:image\//.test(el.src)) {
+        body.push(`<image href="${esc(el.src)}" x="${el.x}" y="${el.y}" width="${el.width}" height="${el.height}" preserveAspectRatio="xMidYMid slice" opacity="${opacity}"/>`);
+      } else {
+        body.push(`<rect x="${el.x}" y="${el.y}" width="${el.width}" height="${el.height}" fill="${el.fill || paper}" opacity="${opacity}"/>`);
+      }
+    } else if (el.type === 'image') {
+      const clipId = `clip-${el.id}`;
+      let clipShape = `<rect x="${el.x}" y="${el.y}" width="${el.width}" height="${el.height}" rx="8"/>`;
+      if (el.frameShape === 'oval') {
+        clipShape = `<ellipse cx="${el.x + el.width / 2}" cy="${el.y + el.height / 2}" rx="${el.width / 2}" ry="${el.height / 2}"/>`;
+      } else if (el.frameShape === 'circle') {
+        clipShape = `<circle cx="${el.x + el.width / 2}" cy="${el.y + el.height / 2}" r="${Math.min(el.width, el.height) / 2}"/>`;
+      } else if (el.frameShape === 'arch') {
+        const r = el.width / 2;
+        clipShape = `<path d="M${el.x} ${el.y + el.height}V${el.y + r}A${r} ${r} 0 0 1 ${el.x + el.width} ${el.y + r}V${el.y + el.height}Z"/>`;
+      }
+      defs.push(`<clipPath id="${clipId}">${clipShape}</clipPath>`);
+
+      if (el.src && el.src.startsWith('data:image/')) {
+        const zoom = el.zoom || 1;
+        const cropX = el.cropX ?? 50;
+        const cropY = el.cropY ?? 50;
+        const imgX = el.x - el.width * (zoom - 1) * cropX / 100;
+        const imgY = el.y - el.height * (zoom - 1) * cropY / 100;
+        body.push(`<g ${transform} opacity="${opacity}">
+          <g clip-path="url(#${clipId})">
+            <image href="${esc(el.src)}" x="${imgX}" y="${imgY}" width="${el.width * zoom}" height="${el.height * zoom}" preserveAspectRatio="xMidYMid slice"/>
+          </g>
+          <g fill="none" stroke="${el.stroke || accent}" stroke-width="${el.strokeWidth || 2}">${clipShape}</g>
+        </g>`);
+      } else {
+        body.push(`<g ${transform} opacity="${opacity}">
+          <rect x="${el.x}" y="${el.y}" width="${el.width}" height="${el.height}" fill="${paper}" opacity="0.95"/>
+          <g stroke="${el.stroke || accent}" fill="none" stroke-width="1.3" opacity="0.8">
+            <circle cx="${el.x + el.width / 2}" cy="${el.y + el.height * 0.38}" r="${el.width * 0.14}" fill="${el.stroke || accent}" fill-opacity="0.22"/>
+            <path d="M${el.x + el.width * 0.28} ${el.y + el.height * 0.78} Q${el.x + el.width * 0.3} ${el.y + el.height * 0.54} ${el.x + el.width / 2} ${el.y + el.height * 0.56} Q${el.x + el.width * 0.7} ${el.y + el.height * 0.54} ${el.x + el.width * 0.72} ${el.y + el.height * 0.78} Z" fill="${el.stroke || accent}" fill-opacity="0.26"/>
+          </g>
+          <text text-anchor="middle" x="${el.x + el.width / 2}" y="${el.y + el.height * 0.88}" fill="${el.stroke || accent}" font-family="Arial, sans-serif" font-size="10" letter-spacing="2" opacity="0.85">ADD PHOTOGRAPH</text>
+          <g fill="none" stroke="${el.stroke || accent}" stroke-width="${el.strokeWidth || 2}">${clipShape}</g>
+        </g>`);
+      }
+    } else if (el.type === 'text') {
+      const family = el.fontFamily || (d.font === 'modern' ? 'Arial, sans-serif' : 'Georgia, serif');
+      const size = el.fontSize || 16;
+      const weight = el.fontWeight || 'normal';
+      const style = el.fontStyle || (d.font === 'italic' ? 'italic' : 'normal');
+      const color = el.color || ink;
+      const align = el.textAlign || 'center';
+      const spacing = el.letterSpacing || 0;
+      const textX = align === 'center' ? el.x + el.width / 2 : align === 'right' ? el.x + el.width : el.x;
+      const anchor = align === 'center' ? 'middle' : align === 'right' ? 'end' : 'start';
+      const rows = lines(el.text || '', Math.max(8, Math.floor(el.width / (size * 0.5))));
+
+      body.push(`<g ${transform} opacity="${opacity}">
+        <text text-anchor="${anchor}" fill="${color}" font-family="${family}" font-size="${size}" font-weight="${weight}" font-style="${style}" letter-spacing="${spacing}">
+          ${rows.map((row, i) => `<tspan x="${textX}" y="${el.y + size * 0.9 + i * size * (el.lineHeight || 1.25)}">${esc(row)}</tspan>`).join('')}
+        </text>
+      </g>`);
+    } else if (el.type === 'shape') {
+      const fill = el.fill || 'none';
+      const stroke = el.stroke || 'none';
+      const strokeW = el.strokeWidth || 1;
+      const dash = el.strokeDasharray ? `stroke-dasharray="${el.strokeDasharray}"` : '';
+      if (el.shapeType === 'circle' || el.shapeType === 'ellipse') {
+        body.push(`<ellipse ${transform} cx="${el.x + el.width / 2}" cy="${el.y + el.height / 2}" rx="${el.width / 2}" ry="${el.height / 2}" fill="${fill}" stroke="${stroke}" stroke-width="${strokeW}" ${dash} opacity="${opacity}"/>`);
+      } else if (el.shapeType === 'line') {
+        body.push(`<line ${transform} x1="${el.x}" y1="${el.y + el.height / 2}" x2="${el.x + el.width}" y2="${el.y + el.height / 2}" stroke="${stroke || accent}" stroke-width="${strokeW}" ${dash} opacity="${opacity}"/>`);
+      } else {
+        body.push(`<rect ${transform} x="${el.x}" y="${el.y}" width="${el.width}" height="${el.height}" rx="8" fill="${fill}" stroke="${stroke}" stroke-width="${strokeW}" ${dash} opacity="${opacity}"/>`);
+      }
+    } else if (el.type === 'ornament') {
+      const stroke = el.stroke || accent;
+      const fill = el.fill || accent;
+      let ornamentSvg = '';
+      if (el.shapeType === 'kalash') {
+        ornamentSvg = auspiciousKalash(stroke);
+      } else if (el.shapeType === 'mandala') {
+        ornamentSvg = royalMandalaCenterpiece(el.x + el.width / 2, el.y + el.height / 2, Math.min(el.width, el.height) / 2, stroke);
+      } else if (el.shapeType === 'toran') {
+        ornamentSvg = marigoldToran(stroke);
+      } else if (el.shapeType === 'lanterns') {
+        ornamentSvg = hangingLanterns(stroke);
+      } else if (el.shapeType === 'peacock') {
+        ornamentSvg = peacockPlumes(stroke);
+      } else if (el.shapeType === 'henna') {
+        ornamentSvg = hennaArabesque(stroke);
+      } else if (el.shapeType === 'filigree') {
+        ornamentSvg = `${cornerFiligree(32, 32, 1, 1, stroke)}${cornerFiligree(668, 32, -1, 1, stroke)}${cornerFiligree(32, 948, 1, -1, stroke)}${cornerFiligree(668, 948, -1, -1, stroke)}`;
+      } else if (el.shapeType === 'border') {
+        ornamentSvg = `<rect x="${el.x}" y="${el.y}" width="${el.width}" height="${el.height}" fill="none" stroke="${stroke}" stroke-width="${el.strokeWidth || 1.2}"/>`;
+      } else if (el.shapeType === 'divider') {
+        ornamentSvg = `<g stroke="${stroke}" opacity="${opacity}">
+          <line x1="${el.x}" y1="${el.y + el.height / 2}" x2="${el.x + el.width}" y2="${el.y + el.height / 2}" stroke-width="1.2"/>
+          <circle cx="${el.x + el.width / 2}" cy="${el.y + el.height / 2}" r="4" fill="${fill}"/>
+          <circle cx="${el.x + el.width / 2 - 16}" cy="${el.y + el.height / 2}" r="2" fill="${fill}"/>
+          <circle cx="${el.x + el.width / 2 + 16}" cy="${el.y + el.height / 2}" r="2" fill="${fill}"/>
+        </g>`;
+      } else if (el.svgContent) {
+        ornamentSvg = `<g transform="translate(${el.x}, ${el.y})">${el.svgContent}</g>`;
+      }
+      body.push(`<g ${transform} opacity="${opacity}">${ornamentSvg}</g>`);
+    }
+  }
+
+  const { width, height } = presets[d.format];
+  const ratio = width / height;
+  const viewW = ratio >= 700 / 980 ? 980 * ratio : 700;
+  const viewH = ratio >= 700 / 980 ? 980 : 700 / ratio;
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="${-(viewW - 700) / 2} ${-(viewH - 980) / 2} ${viewW} ${viewH}" role="img" aria-label="${esc(d.fields.heading)}"><defs>${defs.join('')}</defs><rect x="${-(viewW - 700) / 2}" y="${-(viewH - 980) / 2}" width="${viewW}" height="${viewH}" fill="${paper}"/>${body.join('')}</svg>`;
 }

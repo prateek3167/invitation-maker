@@ -2,7 +2,7 @@ import type { NextConfig } from 'next';
 import path from 'node:path';
 
 const config: NextConfig = {
-  turbopack: { root: path.resolve(process.cwd(), '../..') },
+  turbopack: { root: path.resolve(import.meta.dirname, '../..') },
   poweredByHeader: false,
   serverExternalPackages: ['@electric-sql/pglite', 'pg', 'better-auth', 'playwright-core', 'nodemailer', 'sharp'],
   outputFileTracingIncludes: { '/api/**/*': ['../../packages/database/migrations/*.sql', './public/royal/*.webp'] },

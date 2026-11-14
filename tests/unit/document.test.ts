@@ -1,6 +1,6 @@
 import { serverArtwork } from '../../packages/template-engine/artwork';
 import { describe, expect, it } from 'vitest';
-import { contentIssues, createInvitation, filterTemplates, occasions, presets, templates, validateInvitation } from '../../packages/editor-core/document';
+import { contentIssues, createInvitation, filterTemplates, occasions, presets, templates, validateInvitation, decomposeTemplateToElements, syncFieldsFromElements, syncElementsFromFields } from '../../packages/editor-core/document';
 import { renderSvg } from '../../packages/template-engine/render';
 
 describe('canonical invitation documents', () => {
@@ -52,5 +52,49 @@ describe('canonical invitation documents', () => {
     const d = createInvitation(templates[0], 'required'); d.fields.host = '';
     expect(contentIssues(d)).toContain('Add a host or first name.');
     expect(contentIssues(d)).toContain('Add your photo before downloading this photo design.');
+  });
+  it('deconstructs both vector and royal templates into editable canvas elements with field sync', () => {
+    const vectorDoc = createInvitation(templates.find(t => !t.royal && t.photo)!);
+    const vectorEls = decomposeTemplateToElements(vectorDoc);
+    expect(vectorEls.length).toBeGreaterThan(8);
+    expect(vectorEls.some(el => el.type === 'image' && el.slot === 'single')).toBe(true);
+    expect(vectorEls.some(el => el.type === 'text' && el.fieldBinding === 'host')).toBe(true);
+
+    const royalDoc = createInvitation(templates.find(t => t.royal)!);
+    const royalEls = decomposeTemplateToElements(royalDoc);
+    expect(royalEls.length).toBeGreaterThan(10);
+    expect(royalEls.some(el => el.type === 'image' && el.slot === 'bride')).toBe(true);
+    expect(royalEls.some(el => el.type === 'image' && el.slot === 'groom')).toBe(true);
+    expect(royalEls.some(el => el.type === 'background')).toBe(true);
+
+    // Test field sync
+    const syncedFields = syncFieldsFromElements(vectorEls.map(el => el.fieldBinding === 'host' ? { ...el, text: 'Customized Name' } : el), vectorDoc.fields);
+    expect(syncedFields.host).toBe('Customized Name');
+
+    const syncedEls = syncElementsFromFields(vectorEls, { ...vectorDoc.fields, venue: 'Grand Palace Hall' });
+    expect(syncedEls.find(el => el.fieldBinding === 'venue')?.text).toBe('Grand Palace Hall');
+  });
+  it('renders SVG faithfully when canvasElements are provided', () => {
+    const doc = createInvitation(templates[0]);
+    doc.canvasElements = decomposeTemplateToElements(doc);
+    const svg = renderSvg(doc);
+    expect(svg).toContain('width="1500" height="2100"');
+    expect(svg).toContain(doc.fields.host);
+    expect(svg).toContain('A MOMENT TO REMEMBER');
+
+    // Add a custom ornament
+    doc.canvasElements.push({
+      id: 'custom-kalash',
+      type: 'ornament',
+      name: 'Test Kalash',
+      x: 350,
+      y: 100,
+      width: 50,
+      height: 50,
+      zIndex: 99,
+      shapeType: 'kalash',
+    });
+    const svgWithOrnament = renderSvg(doc);
+    expect(svgWithOrnament).toContain('Q350,44 359,58');
   });
 });

@@ -1,5 +1,6 @@
 import catalog from '../template-engine/catalog.json' with { type: 'json' };
 import royalCatalog from '../template-engine/royal-catalog.json' with { type: 'json' };
+import type { CanvasElement } from './canvas';
 
 export type Fields = { host: string; partner: string; heading: string; date: string; time: string; venue: string; message: string };
 export type Photo = { data: string; x: number; y: number; zoom: number };
@@ -13,7 +14,10 @@ export type Invitation = {
   photo: null | Photo;
   portraits?: { bride: Photo | null; groom: Photo | null };
   templateSnapshot?: Template;
+  canvasElements?: CanvasElement[];
 };
+
+export * from './canvas';
 export const templates: Template[] = [...catalog, ...royalCatalog];
 export const royalCategories = [...new Set(royalCatalog.map(t => t.royal.category))];
 export const weddingEvents = ['Shaadi', 'Haldi', 'Mehndi', 'Sangeet', 'Sagaai'] as const;
@@ -65,6 +69,9 @@ export function validateInvitation(value: unknown): asserts value is Invitation 
     if (!t.royal || !d.portraits || Object.keys(d.portraits).some(key => !['bride', 'groom'].includes(key)) || !Object.hasOwn(d.portraits, 'bride') || !Object.hasOwn(d.portraits, 'groom')) throw new Error('Unsupported portrait slots.');
     for (const photo of [d.portraits.bride, d.portraits.groom]) if (photo !== null && !validPhoto(photo)) throw new Error('Invalid portrait or crop.');
     if ((d.portraits.bride?.data.length || 0) + (d.portraits.groom?.data.length || 0) > 8_000_000) throw new Error('Use smaller bride and groom photos (combined processed limit 6 MB).');
+  }
+  if (d.canvasElements !== undefined) {
+    if (!Array.isArray(d.canvasElements) || d.canvasElements.length > 500) throw new Error('Invalid canvas elements.');
   }
 }
 export function contentIssues(d: Invitation): string[] {

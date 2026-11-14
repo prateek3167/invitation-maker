@@ -8,6 +8,26 @@ Read AGENTS.md and PLAN.md, then [requirements](docs/product/requirements.md), [
 
 Current truth: [implementation status](docs/development/status.md), [setup](docs/development/setup.md), [roadmap](docs/product/roadmap.md) and [ADR 0001](docs/decisions/0001-server-foundation.md).
 
+## Canva-Like Interactive Visual Template Editor — 2026-11-14
+
+User explicitly requested enhancing the Template Editor into a full Canva-like interactive design studio:
+- **Core Canvas Schema (`packages/editor-core/canvas.ts`)**:
+  - `CanvasElement` defines `type: 'text' | 'image' | 'shape' | 'ornament' | 'background'`, `x, y, width, height, rotation, opacity, locked, hidden, zIndex`.
+  - Typography attributes: `fontFamily, fontSize, fontWeight, fontStyle, color, textAlign, letterSpacing, lineHeight`.
+  - Image attributes: `frameShape ('arch' | 'oval' | 'circle' | 'rect'), zoom, cropX, cropY, filter, slot ('single' | 'bride' | 'groom')`.
+  - Shape & Ornament attributes: `shapeType, fill, stroke, strokeWidth, strokeDasharray, svgContent`.
+  - `decomposeTemplateToElements`: Automatically deconstructs all 80 templates into individually editable visual elements on canvas.
+  - `syncFieldsFromElements` and `syncElementsFromFields`: Bidirectional synchronization between canvas elements and canonical `Invitation.fields`.
+- **Unified SVG & Export Parity (`packages/template-engine/render.ts`)**:
+  - `renderFromCanvasElements` renders elements in exact zIndex order with full support for transforms, clipPaths, shapes, text wrapping, and traditional Indian wedding ornaments (Kalash, Mandala, Toran, Lanterns, Peacock, Henna arabesque, Dividers, Borders).
+  - Preserves 100% fidelity for high-resolution PNG, JPG, and 300 DPI PDF raster exports without pipeline changes.
+- **Interactive Canvas Studio (`apps/web/components/canvas/`)**:
+  - `interactive-canvas.tsx`: Interactive SVG canvas with direct selection, drag-to-move, 8-point resize handles (`nw, n, ne, e, se, s, sw, w`), top rotation handle stem with angle snapping, horizontal/vertical center alignment guides, floating zoom (40%–200%), and inline text editing.
+  - `sidebar-tools.tsx`: 7-tab sidebar dock (Templates, Text & Auspicious Phrasing, Couple Photos & Frames, Traditional Ornaments & Shapes, Luxury Color Stories & Formats, Uploads, Layers Stack).
+  - `properties-panel.tsx`: Context-sensitive inspector for text, photos, shapes, ornaments, backgrounds, canvas alignment, and layer arrangement.
+  - `top-toolbar.tsx`: Undo/Redo history stack, real-time draft save status, title editing, download, and dual-mode switcher ("Visual Studio" ↔ "Guided Details").
+- Fully tested and verified: 35 unit & integration tests pass, Next.js production build succeeds, structure checks pass (191 maintained files). All changes backward-compatible with legacy drafts and database schemas.
+
 ## Current implementation
 
 - Next.js/React, strict TypeScript, Tailwind/PostCSS and shared design-token CSS.
@@ -69,3 +89,15 @@ User explicitly authorized comprehensive upgrade of the Template Catalog: enhanc
 - Studio editor upgraded with luxury wedding color palettes (Royal Ruby & Gold, Emerald & Gold, Turmeric & Marigold) and enabled wedding ceremony preset switching across all wedding cards.
 - Quick wedding category navigation pills (`All designs (80)`, `👑 Royal collection (20)`, `✨ Shaadi & Weddings`, `💛 Haldi`, `🌿 Mehndi`, `🎶 Sangeet`, `💍 Sagaai & Ring`) and badges added in studio.
 - Tests updated; all 33 unit/integration tests and browser checks pass. Backward compatibility preserved for existing drafts and royal collection.
+
+## Canva-like interactive template editor (Phase 8 authorized — 2026-11-14)
+
+User requested a full Canva-like visual design and editing studio for invitation templates:
+- Key capabilities: direct on-canvas drag, move, resize (8 handles), rotate, align, duplicate, delete; rich text styling; photo crop/filters/frames; design elements library (traditional wedding ornaments, shapes, borders); layers management panel (reorder, lock, hide, depth); undo/redo; auto-save and export parity.
+- Architectural plan divided into 6 sequential phases:
+  1. Data model (`CanvasElement`), deconstruction engine (`decomposeTemplateToElements`), and field sync.
+  2. Unified SVG renderer (`renderSvg`) support for element trees with export parity.
+  3. Interactive canvas workspace (`InteractiveCanvas`) with transform handles, guides, snapping, and zoom.
+  4. Left sidebar tool palette (Templates, Text, Photos, Elements, Backgrounds, Uploads, Layers).
+  5. Context-sensitive properties inspector and top toolbar.
+  6. Integration with persistence, dual-mode toggle, test suite validation, and regression checks.
