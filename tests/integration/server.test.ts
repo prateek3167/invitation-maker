@@ -16,7 +16,7 @@ describe('real PostgreSQL-compatible foundation', () => {
   afterAll(async () => { await database?.client.close(); });
   it('applies versioned migrations once and enforces relational checks', async () => {
     await migrateEmbedded(database.client);
-    const applied = await database.client.query('SELECT * FROM schema_migrations'); expect(applied.rows).toHaveLength(7);
+    const applied = await database.client.query('SELECT * FROM schema_migrations'); expect(applied.rows).toHaveLength(8);
     await expect(database.client.query("INSERT INTO event_projects(owner_id,title,occasion) VALUES('missing','No owner','Wedding')")).rejects.toThrow();
     await expect(database.client.query("INSERT INTO event_projects(owner_id,title,occasion) VALUES('alice','','Wedding')")).rejects.toThrow();
   });

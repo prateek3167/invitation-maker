@@ -1,5 +1,9 @@
 # REST API Contract (Draft v1)
 
+## Canvas/suite persistence audit - 2026-11-14
+
+Existing invitation create/update envelopes now preserve validated `canvasElements`, flat `suiteCards` (maximum 25), `eventTag`, manual `rsvpSettings` and `rsvpResponses` (maximum 2,000 per card). Unknown ownership fields are discarded. Canvas elements are bounded/allowlisted; custom SVG accepts only inert parsed XML, never script, events or links. All nested photo references receive owner checks, private normalization and authorized hydration. Root UUID/revision stays stable when switching suite cards. Existing immutable template snapshots remain enforced, including suite children; invalid content returns a validation error. The existing 8.5 MB request cap remains. No public share/guest-response endpoint exists; `/invite/[id]` is explicitly device-only. [Audit](../development/audit-2026-11-14.md).
+
 ## Royal portrait extension (2026-11-13)
 
 Existing card create/update envelopes accept optional `portraits:{bride:Photo|null,groom:Photo|null}` for validated royal templates. Each Photo retains `{data,x,y,zoom}` and private owner checks; combined portrait data is capped at8,000,000 encoded characters within the existing8.5MB JSON cap. Non-royal templates cannot add portrait slots. Royal snapshots include allowlisted artwork keys, validated category/frame/composition and bounded photoBoxes. Private validation/storage and authorized card/project/account export hydration include both portraits. Existing single-photo documents remain compatible. No anonymous image endpoint or paid entitlement is introduced. Worker snapshots embed full trusted artwork and both portrait bytes. See [collection contract](../design/royal-collection.md).

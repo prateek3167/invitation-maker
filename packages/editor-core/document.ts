@@ -2,6 +2,7 @@ import catalog from '../template-engine/catalog.json' with { type: 'json' };
 import royalCatalog from '../template-engine/royal-catalog.json' with { type: 'json' };
 import type { CanvasElement } from './canvas';
 import type { RsvpSettings, RsvpResponse } from './rsvp';
+import { validateCanvasElements } from './canvas-validation';
 
 export type Fields = { host: string; partner: string; heading: string; date: string; time: string; venue: string; message: string };
 export type Photo = { data: string; x: number; y: number; zoom: number };
@@ -63,7 +64,7 @@ export function getTemplate(id: string): Template {
   if (!template) throw new Error('This template is not available.');
   return template;
 }
-export function validateInvitation(value: unknown): asserts value is Invitation {
+export function validateInvitation(value: unknown, nested = false): asserts value is Invitation {
   if (!value || typeof value !== 'object') throw new Error('Invalid invitation document.');
   const d = value as Invitation;
   if (d.schemaVersion !== 1 || typeof d.id !== 'string' || !d.id || typeof d.templateId !== 'string') throw new Error('Unsupported invitation document.');
@@ -81,16 +82,30 @@ export function validateInvitation(value: unknown): asserts value is Invitation 
     if ((d.portraits.bride?.data.length || 0) + (d.portraits.groom?.data.length || 0) > 8_000_000) throw new Error('Use smaller bride and groom photos (combined processed limit 6 MB).');
   }
   if (d.canvasElements !== undefined) {
-    if (!Array.isArray(d.canvasElements) || d.canvasElements.length > 500) throw new Error('Invalid canvas elements.');
+    validateCanvasElements(d.canvasElements);
   }
   if (d.eventTag !== undefined && (typeof d.eventTag !== 'string' || d.eventTag.length > 60)) {
     throw new Error('Invalid event tag.');
   }
   if (d.suiteCards !== undefined) {
-    if (!Array.isArray(d.suiteCards) || d.suiteCards.length > 25) throw new Error('Invalid suite cards.');
+    if (nested || !Array.isArray(d.suiteCards) || d.suiteCards.length > 25) throw new Error('Invalid suite cards.');
+    const ids = new Set<string>();
+    for (const card of d.suiteCards) {
+      validateInvitation(card, true);
+      if (ids.has(card.id)) throw new Error('Suite cards must have unique identities.');
+      ids.add(card.id);
+    }
+  }
+  if (d.shareSlug !== undefined && (typeof d.shareSlug !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(d.shareSlug))) throw new Error('Invalid share identifier.');
+  if (d.rsvpSettings !== undefined) {
+    const s = d.rsvpSettings;
+    if (!s || typeof s !== 'object' || ['enabled', 'allowPlusOnes', 'collectDietary', 'collectCeremonies'].some(k => typeof s[k as keyof RsvpSettings] !== 'boolean') || !Number.isInteger(s.maxPartySize) || s.maxPartySize < 1 || s.maxPartySize > 50 || (s.welcomeMessage !== undefined && (typeof s.welcomeMessage !== 'string' || s.welcomeMessage.length > 1000)) || (s.deadline !== undefined && s.deadline !== '' && (typeof s.deadline !== 'string' || s.deadline.length > 40 || !Number.isFinite(Date.parse(s.deadline))))) throw new Error('Invalid RSVP settings.');
   }
   if (d.rsvpResponses !== undefined) {
     if (!Array.isArray(d.rsvpResponses) || d.rsvpResponses.length > 2000) throw new Error('Invalid RSVP responses.');
+    for (const r of d.rsvpResponses) {
+      if (!r || typeof r !== 'object' || typeof r.id !== 'string' || r.id.length > 100 || typeof r.guestName !== 'string' || !r.guestName.trim() || r.guestName.length > 200 || typeof r.phoneOrEmail !== 'string' || r.phoneOrEmail.length > 200 || !['attending', 'declined', 'tentative'].includes(r.attending) || !Number.isInteger(r.guestCount) || r.guestCount < 0 || r.guestCount > 50 || !['vegetarian', 'jain', 'swaminarayan', 'non_vegetarian', 'vegan', 'none'].includes(r.dietary) || !Array.isArray(r.ceremonies) || r.ceremonies.length > 10 || r.ceremonies.some(c => !['haldi', 'mehndi', 'sangeet', 'sagaai', 'shaadi'].includes(c)) || (r.notes !== undefined && (typeof r.notes !== 'string' || r.notes.length > 2000)) || typeof r.submittedAt !== 'string' || !Number.isFinite(Date.parse(r.submittedAt))) throw new Error('Invalid RSVP response.');
+    }
   }
 }
 export function contentIssues(d: Invitation): string[] {

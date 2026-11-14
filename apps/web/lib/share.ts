@@ -4,6 +4,7 @@
  */
 
 import type { Invitation } from '../../../packages/editor-core/document';
+import { eventStart, calendarStamp, calendarEscape, foldCalendarLine } from '../../../packages/editor-core/calendar';
 
 export interface ShareOptions {
   baseUrl?: string;
@@ -71,12 +72,8 @@ export function generateGoogleCalendarUrl(doc: Invitation, origin?: string): str
   const details = `${doc.fields.message || 'Wedding Celebration'}\n\nInvitation & RSVP: ${inviteUrl}`;
   const location = doc.fields.venue || '';
 
-  // Approximate next weekend or current year date if not strictly parseable
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, '0');
-  const day = String(now.getDate() + 7).padStart(2, '0');
-  const dates = `${year}${month}${day}T133000Z/${year}${month}${day}T183000Z`;
+  const start = eventStart(doc);
+  const dates = `${calendarStamp(start)}/${calendarStamp(new Date(start.getTime() + 3 * 60 * 60_000))}`;
 
   return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${dates}&details=${encodeURIComponent(details)}&location=${encodeURIComponent(location)}`;
 }
@@ -87,11 +84,12 @@ export function generateGoogleCalendarUrl(doc: Invitation, origin?: string): str
 export function generateIcsCalendarFile(doc: Invitation, origin?: string): string {
   const inviteUrl = getGuestInviteUrl(doc, origin);
   const title = `Wedding: ${doc.fields.host || 'Bride'} & ${doc.fields.partner || 'Groom'}`;
-  const description = `${doc.fields.message || 'Wedding Celebration'}\\n\\nInvitation & RSVP: ${inviteUrl}`;
-  const location = (doc.fields.venue || '').replace(/,/g, '\\,');
+  const description = `${doc.fields.message || 'Wedding Celebration'}\n\nInvitation & RSVP: ${inviteUrl}`;
+  const location = doc.fields.venue || '';
 
   const now = new Date();
-  const stamp = now.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+  const stamp = calendarStamp(now);
+  const start = eventStart(doc);
 
   return [
     'BEGIN:VCALENDAR',
@@ -100,16 +98,16 @@ export function generateIcsCalendarFile(doc: Invitation, origin?: string): strin
     'CALSCALE:GREGORIAN',
     'METHOD:PUBLISH',
     'BEGIN:VEVENT',
-    `UID:wedding-${doc.id}@invitationmaker.com`,
+    `UID:wedding-${doc.id.replace(/[^a-z0-9-]/gi, "")}@invitationmaker.local`,
     `DTSTAMP:${stamp}`,
-    `DTSTART:${stamp}`,
-    `DTEND:${stamp}`,
-    `SUMMARY:${title}`,
-    `DESCRIPTION:${description}`,
-    `LOCATION:${location}`,
+    `DTSTART:${calendarStamp(start)}`,
+    `DTEND:${calendarStamp(new Date(start.getTime() + 3 * 60 * 60_000))}`,
+    `SUMMARY:${calendarEscape(title)}`,
+    `DESCRIPTION:${calendarEscape(description)}`,
+    `LOCATION:${calendarEscape(location)}`,
     `URL:${inviteUrl}`,
     'STATUS:CONFIRMED',
     'END:VEVENT',
     'END:VCALENDAR',
-  ].join('\r\n');
+  ].map(foldCalendarLine).join('\r\n') + '\r\n';
 }

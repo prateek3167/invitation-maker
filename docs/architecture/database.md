@@ -1,5 +1,9 @@
 # Database Design (PostgreSQL)
 
+## Additive canvas/suite protection - 2026-11-14
+
+New migration **0008_canvas_asset_references.sql** adds `invitation_canvas_assets`, an indexed deferred private-asset FK and an ownership-checking document trigger. It backfills references for existing documents and protects both canvas and suite photos during unused-media cleanup. Existing migrations 0001-0007 are unchanged. Isolated fixtures exercise migrations; no existing user database was provisioned or destructively changed during this audit. [Evidence and rollback boundary](../development/audit-2026-11-14.md).
+
 Migration0007_royal_portrait_assets.sql adds invitation_portrait_assets with per-invitation bride/groom references, asset index, deferred asset FK and an owner-checking trigger. Updates rebuild references from the canonical portraits object; card deletion cascades slot rows. Unused-photo cleanup excludes either referenced portrait and legacy photos. Migrations0001–0006 remain unchanged. Both portraits participate in private hydration/recovery. Public backgrounds ship with the application and must be retained for pinned templates.
 
 Current security/media/export/publishing schema is migrations 0001–0006. The v0.2/planned entries below are historical where superseded. 0002 adds role/MFA; 0003 private_assets adds owner/hash/size/dimensions; 0004 export_jobs adds immutable snapshots/idempotency/leases/expiry; 0005 adds immutable template_versions and publication pointers; 0006 adds invitation asset references, owner enforcement trigger/deferred FK and indexes. Legacy inline documents remain readable; new account documents store asset references and optional templateSnapshot. APIs hydrate private bytes. See [ADR 0002](../decisions/0002-private-media-and-durable-exports.md) and [latest validation](../development/delivery-2026-11-13.md).

@@ -35,7 +35,7 @@ import {
   type GeneratedInvitationCopy,
 } from '../../../../packages/editor-core/document';
 import type { CanvasElement } from '../../../../packages/editor-core/canvas';
-import { WEDDING_ELEMENT_TEMPLATES } from '../../../../packages/editor-core/canvas';
+import { WEDDING_ELEMENT_TEMPLATES, syncElementsFromFields } from '../../../../packages/editor-core/canvas';
 import {
   VEDIC_SHLOKAS,
   convertDocumentToHindi,
@@ -93,7 +93,7 @@ export default function SidebarTools({
       font: 'serif',
     });
     const updated = applyDevanagariFontsToElements(elements);
-    onChange(updated);
+    onUpdateDocument({ ...hindiPreset, canvasElements: syncElementsFromFields(updated, hindiPreset.fields) });
     setHindiConverted(true);
     setTimeout(() => setHindiConverted(false), 3000);
   };
@@ -103,8 +103,8 @@ export default function SidebarTools({
   const [aiTone, setAiTone] = useState<'royal' | 'traditional' | 'romantic' | 'playful' | 'formal'>('royal');
   const [aiVoice, setAiVoice] = useState<'couple' | 'bride_parents' | 'groom_parents' | 'friends'>('couple');
   const [aiLang, setAiLang] = useState<'hindi' | 'english' | 'hinglish'>('hindi');
-  const [aiBride, setAiBride] = useState(doc.fields.partner || 'Aarushi');
-  const [aiGroom, setAiGroom] = useState(doc.fields.host || 'Siddharth');
+  const [aiBride, setAiBride] = useState(doc.fields.host || 'Aarushi');
+  const [aiGroom, setAiGroom] = useState(doc.fields.partner || 'Siddharth');
   const [aiSurname, setAiSurname] = useState('Parivar');
   const [aiGenerated, setAiGenerated] = useState<GeneratedInvitationCopy[]>(() =>
     generateInvitationCopy({
@@ -134,57 +134,10 @@ export default function SidebarTools({
   };
 
   const handleApplyAiCopy = (copy: GeneratedInvitationCopy) => {
-    onUpdateDocument({
-      fields: {
-        ...doc.fields,
-        heading: copy.heading,
-        host: aiGroom.trim() || doc.fields.host,
-        partner: aiBride.trim() || doc.fields.partner,
-        message: copy.message,
-      },
-    });
-
-    let updatedElements = [...elements];
-    let messageFound = false;
-
-    updatedElements = updatedElements.map(el => {
-      if (el.type !== 'text') return el;
-      const textVal = el.text || '';
-      if (el.fieldBinding === 'heading' || textVal.includes('॥') || textVal.toLowerCase().includes('ganesh')) {
-        return { ...el, text: copy.heading, fontFamily: copy.recommendedFont };
-      }
-      if (el.fieldBinding === 'host' || el.fieldBinding === 'partner' || (el.fontSize && el.fontSize >= 32)) {
-        return { ...el, text: copy.title, fontFamily: copy.recommendedFont };
-      }
-      if (el.fieldBinding === 'message' || textVal.length > 40) {
-        messageFound = true;
-        return { ...el, text: copy.message, fontFamily: copy.recommendedFont };
-      }
-      return el;
-    });
-
-    if (!messageFound) {
-      const maxZ = Math.max(...updatedElements.map(e => e.zIndex || 0), 0);
-      updatedElements.push({
-        id: `el_ai_msg_${Date.now()}`,
-        name: 'Wedding Message',
-        type: 'text',
-        x: 80,
-        y: 420,
-        width: 540,
-        height: 100,
-        rotation: 0,
-        zIndex: maxZ + 1,
-        text: copy.message,
-        fontSize: 16,
-        fontFamily: copy.recommendedFont,
-        color: ink,
-        textAlign: 'center',
-        lineHeight: 1.5,
-      });
-    }
-
-    onChange(updatedElements);
+    const fields = { ...doc.fields, heading: copy.heading, host: aiBride.trim() || doc.fields.host, partner: aiGroom.trim() || doc.fields.partner, message: copy.message };
+    const canvasElements = syncElementsFromFields(elements, fields).map(element =>
+      element.type === 'text' && element.fieldBinding ? { ...element, fontFamily: copy.recommendedFont } : element);
+    onUpdateDocument({ fields, canvasElements });
     setAiAppliedId(copy.id);
     setTimeout(() => setAiAppliedId(null), 3000);
   };
@@ -329,10 +282,10 @@ export default function SidebarTools({
           type="button"
           className={activeTab === 'ai' ? 'active' : ''}
           onClick={() => onTabChange('ai')}
-          title="AI Wedding Copywriter"
+          title="Offline Wedding Copywriter"
         >
           <Wand2 size={20} />
-          <span>AI Writer</span>
+          <span>Copywriter</span>
         </button>
         <button
           type="button"
@@ -1117,7 +1070,7 @@ export default function SidebarTools({
             <div className="pane-header">
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <Wand2 size={18} style={{ color: '#d4af37' }} />
-                <h3>AI Wedding Copywriter</h3>
+                <h3>Offline Wedding Copywriter</h3>
               </div>
               <p>स्मार्ट निमंत्रण एवं वैदिक श्लोक सहायक</p>
             </div>

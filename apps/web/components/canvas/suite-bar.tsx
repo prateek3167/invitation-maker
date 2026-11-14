@@ -83,14 +83,8 @@ export default function SuiteBar({
             <div
               key={card.id || idx}
               className={`suite-card-thumb ${isActive ? 'active' : ''}`}
-              onClick={() => onSelectCard(idx)}
-              role="button"
-              tabIndex={0}
-              onKeyDown={e => {
-                if (e.key === 'Enter' || e.key === ' ') onSelectCard(idx);
-              }}
-              aria-label={`Select ${card.eventTag || card.fields.heading || `Card ${idx + 1}`}`}
             >
+              <button type="button" className="suite-card-select" onClick={() => onSelectCard(idx)} aria-label={`Select ${card.eventTag || card.fields.heading || `Card ${idx + 1}`}`}>
               {/* Card Mini Art Preview */}
               <div
                 className="card-thumb-art"
@@ -116,6 +110,7 @@ export default function SuiteBar({
                 <span className="card-index-pill">{idx + 1}</span>
                 <strong className="card-event-name">{card.eventTag || ceremony.name}</strong>
               </div>
+              </button>
 
               {/* Hover Quick Actions */}
               <div className="card-thumb-actions" onClick={e => e.stopPropagation()}>

@@ -81,7 +81,7 @@ export default function PropertiesPanel({
   const sendToBack = () => {
     if (!selectedEl) return;
     const minZ = Math.min(...elements.map(e => e.zIndex || 0), 0);
-    updateSelected({ zIndex: Math.max(0, minZ - 1) });
+    updateSelected({ zIndex: minZ - 1 });
   };
 
   const bringForward = () => {
@@ -91,7 +91,7 @@ export default function PropertiesPanel({
 
   const sendBackward = () => {
     if (!selectedEl) return;
-    updateSelected({ zIndex: Math.max(0, (selectedEl.zIndex || 0) - 1) });
+    updateSelected({ zIndex: (selectedEl.zIndex || 0) - 1 });
   };
 
   // Canvas Alignment helpers
@@ -295,7 +295,7 @@ export default function PropertiesPanel({
                     min="10"
                     max="96"
                     value={selectedEl.fontSize || 16}
-                    onChange={e => updateSelected({ fontSize: Number(e.target.value) })}
+                    onChange={e => updateSelected({ fontSize: Math.max(1, Math.min(1000, Number(e.target.value) || 16)) })}
                   />
                 </label>
               </div>

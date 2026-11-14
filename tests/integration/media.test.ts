@@ -9,6 +9,7 @@ import { createProject, createCard, updateCard, getCard, removeProject } from '.
 import { hydratePhoto, normalizePhoto, readAsset, deleteUnusedPhotos } from '../../packages/database/media';
 import { createInvitation, templates } from '../../packages/editor-core/document';
 import { renderSvg } from '../../packages/template-engine/render';
+import { decomposeTemplateToElements } from '../../packages/editor-core/canvas';
 let database: Awaited<ReturnType<typeof createEmbeddedDatabase>>, directory: string;
 const prior = process.env.PRIVATE_MEDIA_DIRECTORY;
 beforeAll(async () => {
@@ -50,4 +51,29 @@ it('strips metadata, deduplicates private photos, isolates owners and preserves 
   expect(await deleteUnusedPhotos(database.db, 'media-owner')).toBe(0);
   await removeProject(database.db, 'media-owner', event.id); expect(await deleteUnusedPhotos(database.db, 'media-owner')).toBe(1);
   await expect(readAsset(database.db, 'media-owner', id)).rejects.toMatchObject({ status: 404 });
+});
+
+it('persists canvas/suite photos, hydrates all copies, protects references from cleanup and rejects foreign assets', async () => {
+  const event = await createProject(database.db, 'media-owner', { title: 'Suite assets', occasion: 'Wedding' });
+  const source = createInvitation(templates.find(t => !t.photo)!);
+  const image = await sharp({ create: { width: 120, height: 120, channels: 3, background: '#bb8877' } }).png().toBuffer();
+  const src = `data:image/png;base64,${image.toString('base64')}`;
+  source.canvasElements = [...decomposeTemplateToElements(source), { id: 'extra-image', type: 'image', name: 'Custom photo', x: 100, y: 100, width: 100, height: 100, zIndex: 100, src }];
+  source.suiteCards = [{ ...structuredClone(source), id: crypto.randomUUID(), eventTag: 'Haldi' }];
+  const card = await createCard(database.db, 'media-owner', event.id, { document: source });
+  const reference = card.canvasElements!.at(-1)!.src!;
+  expect(reference).toMatch(/^asset:/);
+  expect(card.suiteCards![0].canvasElements!.at(-1)!.src).toBe(reference);
+  expect(await deleteUnusedPhotos(database.db, 'media-owner')).toBe(0);
+  const portable = await hydratePhoto(database.db, 'media-owner', await getCard(database.db, 'media-owner', card.id));
+  expect(portable.canvasElements!.at(-1)!.src).toMatch(/^data:image\/jpeg;base64,/);
+  expect(portable.suiteCards![0].canvasElements!.at(-1)!.src).toBe(portable.canvasElements!.at(-1)!.src);
+  const saved = await updateCard(database.db, 'media-owner', card.id, portable);
+  expect(saved.canvasElements!.at(-1)!.src).toBe(reference);
+  const foreign = await createProject(database.db, 'other-owner', { title: 'Foreign suite', occasion: 'Wedding' });
+  await expect(createCard(database.db, 'other-owner', foreign.id, { document: saved })).rejects.toMatchObject({status:404});
+  await expect(database.client.query('UPDATE invitations SET document=$1::jsonb WHERE id=$2', [JSON.stringify({ ...saved, canvasElements: [{ ...saved.canvasElements!.at(-1)!, src: 'asset:11111111-1111-4111-8111-111111111111' }] }), saved.id])).rejects.toThrow();
+  await removeProject(database.db, 'media-owner', event.id);
+  expect(await deleteUnusedPhotos(database.db, 'media-owner')).toBe(1);
+  await removeProject(database.db, 'other-owner', foreign.id);
 });

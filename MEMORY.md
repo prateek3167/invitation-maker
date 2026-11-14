@@ -1,5 +1,15 @@
 # Invitation Maker — Project Memory
 
+## Current audit and user constraint - 2026-11-14
+
+The latest user requests whole-project execution-based review, fixes, regression and a readiness report. They explicitly do **not** want hosting or an external database configured here. Persist context in this repository, not a claimed account-level memory. [Audit report](docs/development/audit-2026-11-14.md) is the authoritative current assessment and supersedes older completion/test-count claims below.
+
+Confirmed defects were account field loss; unsafe canvas/SVG and nested validation; suite aggregate identity/history; private canvas/suite photo reference/hydration gaps; unreadable QR; guessed calendar dates; false public sharing/RSVP; duplicate visual rendering; repeated gallery thumbnail work; hidden mobile/tablet controls; copywriter name/binding races and ineffective remote SVG font imports. Fixes and meaningful tests are recorded in the audit. Public guest delivery and billing remain unimplemented; licensed bundled fonts and operational/UAT gates remain open. Do not claim production readiness.
+
+Final audit verification: **70 unit/integration passed + 1 external-PostgreSQL skipped; 15/15 Chrome E2E passed (4.3 minutes)**. Production build, both strict TypeScript projects and structure pass (214 maintained files); npm audit reports zero known vulnerabilities. Catalog/editor/preview/worker now normalize through one editable renderer, including canvasless schema-v1 documents; empty canvases remain empty. Rich layout decorations are shared and movable; historical canvasless text positioning can change, but fields/photos/template snapshots are retained. Gallery memoization reduced the 80-design browser workflow to 41.4 seconds. Removed only two backed-up root build traces (1,027 bytes); retained the real app build and all private state. Evidence is under `.cache/audit-2026-11-14` and `test-results`.
+
+Backup before edits: `C:/Users/USER/AppData/Local/Temp/invitation-maker-audit-20261114-151546/source-config-assets-data.tar.gz`, SHA-256 `3441c48268c9f42698f6180aea15b41b74f789f718732cfb8dc078588f9c428b`; extracted/verified including all 1,054 local private-data files. The interrupted first archive is invalid. Preserve data/secrets and applied migrations. New migration 0008 tracks owner-checked suite/canvas assets; no deployment/destructive database work authorized.
+
 Updated 2026-11-14 (Asia/Calcutta). This is repository-local context, not account-level assistant memory.
 
 ## Start here

@@ -1,5 +1,5 @@
 'use client';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState, useMemo } from 'react';
 import {
   Check,
   CheckCheck,
@@ -22,6 +22,7 @@ import {
   getTemplate,
   presets,
   weddingEvents,
+  validateInvitation,
   type Fields,
   type Invitation,
   type Format,
@@ -91,25 +92,25 @@ export default function Editor({
   const savedLabel = storage === 'account' ? 'Saved to your account' : 'Saved on this device';
 
   // Ensure canvasElements is populated
-  const initialWithCanvas: Invitation = {
+  const initialWithCanvas: Invitation = useMemo(() => ({
     ...initial,
     canvasElements:
-      initial.canvasElements && initial.canvasElements.length > 0
+      initial.canvasElements !== undefined
         ? initial.canvasElements
         : decomposeTemplateToElements(initial),
-  };
+  }), [initial]);
 
   // Initialize multi-card suite
-  const initialSuite: Invitation[] =
+  const initialSuite: Invitation[] = useMemo(() =>
     initial.suiteCards && initial.suiteCards.length > 0
       ? initial.suiteCards.map(c => ({
           ...c,
           canvasElements:
-            c.canvasElements && c.canvasElements.length > 0
+            c.canvasElements !== undefined
               ? c.canvasElements
               : decomposeTemplateToElements(c),
         }))
-      : [initialWithCanvas];
+      : [initialWithCanvas], [initial, initialWithCanvas]);
 
   const [suiteCards, setSuiteCards] = useState<Invitation[]>(initialSuite);
   const [cardIndex, setCardIndex] = useState(0);
@@ -145,6 +146,7 @@ export default function Editor({
   cardIndexRef.current = cardIndex;
 
   const revision = useRef(initial.revision);
+  const rootDocument = useRef(initial);
   const change = useRef(0);
   const savedChange = useRef(initial.revision ? 0 : -1);
   const queue = useRef<Promise<unknown>>(Promise.resolve());
@@ -152,6 +154,7 @@ export default function Editor({
 
   // Undo / Redo stacks
   const history = useRef<Invitation[]>([]);
+  const gesture = useRef({ active: false, recorded: false });
   const future = useRef<Invitation[]>([]);
 
   const input = useRef<HTMLInputElement>(null);
@@ -181,12 +184,26 @@ export default function Editor({
   }, []);
 
   const update = (patch: Partial<Invitation>, pushHistory = true) => {
+    const next = { ...ref.current, ...patch };
+    if (patch.palette && !patch.canvasElements) {
+      next.canvasElements = (next.canvasElements || []).map(element => {
+        const copy = { ...element };
+        for (const key of ['fill', 'stroke', 'color'] as const) {
+          const index = ref.current.palette.indexOf(copy[key] || '');
+          if (index >= 0) copy[key] = patch.palette![index];
+        }
+        return copy;
+      });
+    }
+    if (patch.font) next.canvasElements = (next.canvasElements || []).map(element => element.type === 'text' ? { ...element, fontFamily: patch.font === 'modern' ? 'Arial, sans-serif' : 'Georgia, serif', fontStyle: patch.font === 'italic' ? 'italic' : 'normal' } : element);
+    try { validateInvitation({ ...next, suiteCards: undefined }); }
+    catch (error) { setError(error instanceof Error ? error.message : 'Invalid edit.'); return; }
     if (pushHistory) {
-      history.current = [...history.current.slice(-29), ref.current];
-      future.current = []; // Clear redo stack on new modification
+      history.current = [...history.current.slice(-29), { ...ref.current, suiteCards: suiteRef.current }];
+      future.current = [];
     }
     change.current++;
-    const next = { ...ref.current, ...patch };
+    if (next.id === initial.id) rootDocument.current = next;
 
     // Update active card in suite
     const currentIdx = cardIndexRef.current;
@@ -219,101 +236,63 @@ export default function Editor({
     setStatus('Unsaved changes');
   };
 
-  const handleSelectCard = (index: number) => {
-    if (index < 0 || index >= suiteCards.length) return;
-    setCardIndex(index);
-    const target = suiteCards[index];
-    ref.current = target;
-    setDoc(target);
-    setSelectedId(null);
-  };
-
-  const handleAddCard = (ceremonyId: string) => {
-    const newCard = createEventCard(doc, ceremonyId);
-    const nextSuite = [...suiteCards, newCard];
-    setSuiteCards(nextSuite);
-    setCardIndex(nextSuite.length - 1);
-    ref.current = newCard;
-    setDoc(newCard);
-    setSelectedId(null);
-    update({ suiteCards: nextSuite });
-    setStatus(`Added ${newCard.eventTag || 'new ceremony'} card`);
-  };
-
-  const handleGenerateSuite = () => {
-    const fullSuite = generateWeddingSuite(doc);
-    setSuiteCards(fullSuite);
-    setCardIndex(0);
-    const first = fullSuite[0];
-    ref.current = first;
-    setDoc(first);
-    setSelectedId(null);
-    update({ suiteCards: fullSuite });
-    setStatus('Complete 5-Card Wedding Suite generated!');
-  };
-
-  const handleDuplicateCard = (index: number) => {
-    const source = suiteCards[index];
-    const clone: Invitation = {
-      ...structuredClone(source),
-      id: crypto.randomUUID(),
-      title: `${source.title} (Copy)`,
-      revision: 0,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-    const nextSuite = [
-      ...suiteCards.slice(0, index + 1),
-      clone,
-      ...suiteCards.slice(index + 1),
-    ];
-    setSuiteCards(nextSuite);
-    setCardIndex(index + 1);
-    ref.current = clone;
-    setDoc(clone);
-    update({ suiteCards: nextSuite });
-    setStatus('Card duplicated in suite');
-  };
-
-  const handleDeleteCard = (index: number) => {
-    if (suiteCards.length <= 1) return;
-    const nextSuite = suiteCards.filter((_, i) => i !== index);
-    const nextIndex = Math.min(cardIndex, nextSuite.length - 1);
-    setSuiteCards(nextSuite);
-    setCardIndex(nextIndex);
-    const active = nextSuite[nextIndex];
+  const selectSuite = (cards: Invitation[], index: number, recordHistory = true) => {
+    if (!cards.length || cards.length > 25) { setError('A suite supports between 1 and 25 cards.'); return; }
+    if (recordHistory) {
+      history.current = [...history.current.slice(-29), { ...ref.current, suiteCards: suiteRef.current }];
+      future.current = [];
+      change.current++;
+      setDirty(true);
+      setStatus('Unsaved changes');
+    }
+    const clean = cards.map(card => { const copy = { ...card }; delete copy.suiteCards; return copy; });
+    const activeIndex = Math.max(0, Math.min(index, clean.length - 1));
+    const active = { ...clean[activeIndex], suiteCards: clean };
+    suiteRef.current = clean;
+    cardIndexRef.current = activeIndex;
     ref.current = active;
+    setSuiteCards(clean);
+    setCardIndex(activeIndex);
     setDoc(active);
-    update({ suiteCards: nextSuite });
-    setStatus('Card removed from suite');
+    setSelectedId(null);
+    setError('');
   };
 
-  const handleMoveCard = (fromIndex: number, toIndex: number) => {
-    if (
-      fromIndex < 0 ||
-      fromIndex >= suiteCards.length ||
-      toIndex < 0 ||
-      toIndex >= suiteCards.length
-    ) {
-      return;
-    }
-    const nextSuite = [...suiteCards];
-    const [moved] = nextSuite.splice(fromIndex, 1);
-    nextSuite.splice(toIndex, 0, moved);
-    setSuiteCards(nextSuite);
-    if (cardIndex === fromIndex) {
-      setCardIndex(toIndex);
-    }
-    update({ suiteCards: nextSuite });
+  const handleSelectCard = (index: number) => {
+    if (index >= 0 && index < suiteRef.current.length) selectSuite(suiteRef.current, index, false);
+  };
+  const handleAddCard = (ceremonyId: string) => {
+    selectSuite([...suiteRef.current, createEventCard(ref.current, ceremonyId)], suiteRef.current.length);
+  };
+  const handleGenerateSuite = () => selectSuite(generateWeddingSuite(ref.current), 0);
+  const handleDuplicateCard = (index: number) => {
+    const cards = [...suiteRef.current];
+    const source = cards[index];
+    if (!source) return;
+    const clone = { ...structuredClone(source), id: crypto.randomUUID(), title: (source.title + ' (Copy)').slice(0, 120), revision: 0, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
+    cards.splice(index + 1, 0, clone);
+    selectSuite(cards, index + 1);
+  };
+  const handleDeleteCard = (index: number) => {
+    if (suiteRef.current.length <= 1) return;
+    const activeId = ref.current.id;
+    const cards = suiteRef.current.filter((_, i) => i !== index);
+    selectSuite(cards, Math.max(0, cards.findIndex(card => card.id === activeId)));
+  };
+  const handleMoveCard = (from: number, to: number) => {
+    const cards = [...suiteRef.current];
+    if (from < 0 || to < 0 || from >= cards.length || to >= cards.length) return;
+    const [moved] = cards.splice(from, 1); cards.splice(to, 0, moved);
+    selectSuite(cards, cards.findIndex(card => card.id === ref.current.id));
   };
 
   const handleUndo = () => {
     if (!history.current.length) return;
     const previous = history.current.pop()!;
-    future.current.push(ref.current);
+    future.current.push({ ...ref.current, suiteCards: suiteRef.current });
     change.current++;
-    ref.current = previous;
-    setDoc(previous);
+    const cards = previous.suiteCards || [previous];
+    selectSuite(cards, Math.max(0, cards.findIndex(card => card.id === previous.id)), false);
     setDirty(true);
     setStatus('Unsaved changes');
   };
@@ -321,13 +300,24 @@ export default function Editor({
   const handleRedo = () => {
     if (!future.current.length) return;
     const next = future.current.pop()!;
-    history.current.push(ref.current);
+    history.current.push({ ...ref.current, suiteCards: suiteRef.current });
     change.current++;
-    ref.current = next;
-    setDoc(next);
+    const cards = next.suiteCards || [next];
+    selectSuite(cards, Math.max(0, cards.findIndex(card => card.id === next.id)), false);
     setDirty(true);
     setStatus('Unsaved changes');
   };
+
+  useEffect(() => {
+    const shortcut = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement;
+      if (target.closest('input, textarea, select, [contenteditable="true"]') || !(event.ctrlKey || event.metaKey)) return;
+      if (event.key.toLowerCase() === 'z') { event.preventDefault(); if (event.shiftKey) handleRedo(); else handleUndo(); }
+      else if (event.key.toLowerCase() === 'y') { event.preventDefault(); handleRedo(); }
+    };
+    window.addEventListener('keydown', shortcut);
+    return () => window.removeEventListener('keydown', shortcut);
+  });
 
   // Sync canvas elements changes with document fields
   const handleElementsChange = (elements: CanvasElement[]) => {
@@ -335,7 +325,8 @@ export default function Editor({
     update({
       canvasElements: elements,
       fields: updatedFields,
-    });
+    }, !gesture.current.active || !gesture.current.recorded);
+    if (gesture.current.active) gesture.current.recorded = true;
   };
 
   // Persist draft to storage
@@ -343,7 +334,7 @@ export default function Editor({
     const task = queue.current.catch(() => {}).then(async () => {
       const version = change.current;
       if (savedChange.current === version && revision.current > 0) {
-        return { ...ref.current, revision: revision.current };
+        return { ...rootDocument.current, revision: revision.current };
       }
       if (alive.current) setStatus('Saving…');
       try {
@@ -353,16 +344,22 @@ export default function Editor({
           return copy;
         });
         const payload: Invitation = {
-          ...ref.current,
-          suiteCards: cleanSuite.length > 1 ? cleanSuite : undefined,
+          ...(cleanSuite.find(card => card.id === initial.id) || rootDocument.current),
+          id: initial.id,
+          suiteCards: cleanSuite.length > 1 || cleanSuite[0]?.id !== initial.id ? cleanSuite : undefined,
           revision: revision.current,
         };
         const saved = await persistDocument(payload);
+        rootDocument.current = saved;
         revision.current = saved.revision;
         savedChange.current = version;
         if (alive.current && change.current === version) {
-          ref.current = saved;
-          setDoc(saved);
+          const cards = saved.suiteCards || [saved];
+          const active = cards.find(card => card.id === ref.current.id) || cards[0];
+          suiteRef.current = cards;
+          ref.current = { ...active, suiteCards: cards };
+          setSuiteCards(cards);
+          setDoc(ref.current);
         }
         if (alive.current) {
           setDirty(change.current !== version);
@@ -380,7 +377,7 @@ export default function Editor({
     });
     queue.current = task;
     return task;
-  }, [onSaved, persistDocument, savedLabel]);
+  }, [initial, onSaved, persistDocument, savedLabel]);
 
   // Debounced auto-save
   useEffect(() => {
@@ -439,6 +436,10 @@ export default function Editor({
 
   const download = async () => {
     if (issues.length) return;
+    if (downloadScope !== 'card') {
+      const invalid = suiteRef.current.flatMap((card, i) => contentIssues(card).map(issue => 'Card ' + (i + 1) + ': ' + issue));
+      if (invalid.length) { setError(invalid.join(' ')); return; }
+    }
     setExporting(true);
     setError('');
     try {
@@ -486,7 +487,7 @@ export default function Editor({
   };
 
   const currentElements =
-    doc.canvasElements && doc.canvasElements.length > 0
+    doc.canvasElements !== undefined
       ? doc.canvasElements
       : decomposeTemplateToElements(doc, artworkData);
 
@@ -538,6 +539,7 @@ export default function Editor({
               onChange={handleElementsChange}
               onUpdateDocument={async patch => {
                 if (patch.templateId && patch.templateId !== doc.templateId) {
+                  if (storage === 'account' && doc.id === initial.id) { setError('Account invitations retain their template version. Create a new invitation to use another design.'); return; }
                   const newT = getTemplate(patch.templateId);
                   let currentArt = artworkData;
                   if (newT.royal) {
@@ -565,7 +567,7 @@ export default function Editor({
                     canvasElements: newElements,
                   });
                 } else if (patch.fields) {
-                  const newElements = syncElementsFromFields(currentElements, patch.fields);
+                  const newElements = syncElementsFromFields(patch.canvasElements || currentElements, patch.fields);
                   update({ ...patch, canvasElements: newElements });
                 } else {
                   update(patch);
@@ -578,6 +580,8 @@ export default function Editor({
             {/* Center Column: Interactive Canvas + Bottom Multi-Card Suite Bar */}
             <div className="canva-center-column">
               <InteractiveCanvas
+                onGestureStart={() => { gesture.current = { active: true, recorded: false }; }}
+                onGestureEnd={() => { gesture.current.active = false; }}
                 document={doc}
                 elements={currentElements}
                 selectedId={selectedId}
@@ -1137,10 +1141,7 @@ export default function Editor({
         <GuestManager
           document={doc}
           elements={currentElements}
-          onUpdateDocument={patch => {
-            setDoc(prev => ({ ...prev, ...patch }));
-            setDirty(true);
-          }}
+          onUpdateDocument={patch => update(patch)}
           onUpdateElements={handleElementsChange}
           onClose={() => setShowGuestManager(false)}
         />

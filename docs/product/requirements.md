@@ -1,5 +1,9 @@
 # Product Requirements Document (PRD)
 
+## Current audit scope - 2026-11-14
+
+Catalog: **80 designs (60 base + 20 royal; 57 photo-capable / 23 non-photo)**. Guided/visual editing, suites and manual guests exist; public publication/remote RSVP and billing do not. The user requests local testing without hosting or external database setup. [Current audit and acceptance boundaries](../development/audit-2026-11-14.md) supersede older counts and completion claims below.
+
 ## Approved Royal Indian collection extension (2026-11-13)
 
 The user authorized20 additional rich illustrated wedding designs:two unique backgrounds in each of ten royal/traditional Indian categories. Total catalog:70 (49 photo-capable,21 non-photo); original50 remain. Royal templates have independent bride/groom uploads/crops, editable names/date/time/venue/message/fonts/palette and Shaadi/Haldi/Mehndi/Sangeet/Sagaai heading presets. Gallery/demo images must not become saved user photos. Existing auth/privacy/draft/export functionality remains required. See [collection specification/provenance](../design/royal-collection.md).

@@ -54,6 +54,9 @@ export const audit = pgTable('audit_events', {
   action: text('action').notNull(), resourceId: uuid('resource_id').notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 });
+export const canvasAssets = pgTable('invitation_canvas_assets', {
+  invitationId: uuid('invitation_id').notNull(), assetId: uuid('asset_id').notNull(),
+});
 export const portraitAssets = pgTable('invitation_portrait_assets', {
   invitationId: uuid('invitation_id').notNull(), slot: text('slot').notNull(), assetId: uuid('asset_id').notNull(),
 });

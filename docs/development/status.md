@@ -1,5 +1,9 @@
 # Invitation Maker — Account Foundation v0.2
 
+## Latest assessment - 2026-11-14
+
+Use the [whole-project audit](audit-2026-11-14.md) for current feature status, defects, regression evidence and open release gates. The catalog has 80 entries. Visual editing/suites/manual guest management are implemented locally; online publishing/RSVP and billing remain incomplete. The user excludes hosting and external database setup from this audit. Older milestone totals below are historical.
+
 Updated: 2026-11-13 (Asia/Calcutta). The user authorized the next server-backed phase. This milestone adds working accounts and private event collections while retaining the device-local studio. It is not a public launch or completion of the roadmap.
 
 ## Current milestone

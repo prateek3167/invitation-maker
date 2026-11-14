@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   Users,
   CheckCircle2,
@@ -8,10 +8,6 @@ import {
   Download,
   Plus,
   Trash2,
-  Copy,
-  ExternalLink,
-  MessageCircle,
-  Calendar,
   Utensils,
   Sparkles,
   Settings,
@@ -32,10 +28,8 @@ import {
 } from '../../../../packages/editor-core/rsvp';
 import {
   getGuestInviteUrl,
-  generateWhatsAppShareUrl,
   generateGoogleCalendarUrl,
 } from '../../lib/share';
-import { generateQrCodeSvg, generateQrCodeDataUrl } from '../../lib/qrcode';
 
 interface GuestManagerProps {
   document: Invitation;
@@ -47,16 +41,15 @@ interface GuestManagerProps {
 
 export default function GuestManager({
   document: doc,
-  elements = [],
   onUpdateDocument,
-  onUpdateElements,
   onClose,
 }: GuestManagerProps) {
+  const dialog = useRef<HTMLDialogElement>(null);
+  useEffect(() => { const node = dialog.current; node?.showModal(); return () => node?.close(); }, []);
   const [activeTab, setActiveTab] = useState<'guests' | 'share' | 'settings'>('guests');
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [showAddModal, setShowAddModal] = useState(false);
-  const [copiedLink, setCopiedLink] = useState(false);
 
   // New guest state for offline entry
   const [newGuestName, setNewGuestName] = useState('');
@@ -71,11 +64,8 @@ export default function GuestManager({
   const stats = calculateRsvpStats(responses);
 
   const inviteUrl = getGuestInviteUrl(doc);
-  const qrSvg = generateQrCodeSvg(inviteUrl, {
-    size: 200,
-    color: doc.palette[0] || '#541212',
-    includeCenterBadge: true,
-  });
+  let calendarUrl: string | undefined;
+  try { calendarUrl = generateGoogleCalendarUrl(doc); } catch { /* Invalid dates stay editable. */ }
 
   // Handle adding offline guest
   const handleAddGuest = (e: React.FormEvent) => {
@@ -130,38 +120,6 @@ export default function GuestManager({
     URL.revokeObjectURL(url);
   };
 
-  // Add QR Code element to card canvas
-  const handleAddQrToCanvas = () => {
-    if (!onUpdateElements) return;
-    const qrDataUrl = generateQrCodeDataUrl(inviteUrl, {
-      size: 160,
-      color: doc.palette[0] || '#541212',
-      includeCenterBadge: true,
-    });
-    const maxZ = Math.max(...elements.map(e => e.zIndex || 0), 0);
-    const newEl: CanvasElement = {
-      id: `el_qr_${Date.now()}`,
-      type: 'image',
-      name: 'RSVP QR Code',
-      x: 520,
-      y: 810,
-      width: 110,
-      height: 110,
-      src: qrDataUrl,
-      frameShape: 'rect',
-      zIndex: maxZ + 1,
-    };
-    onUpdateElements([...elements, newEl]);
-  };
-
-  // Copy share link
-  const handleCopyLink = () => {
-    navigator.clipboard.writeText(inviteUrl);
-    setCopiedLink(true);
-    setTimeout(() => setCopiedLink(false), 2500);
-  };
-
-  // Filtered responses
   const filteredResponses = responses.filter(r => {
     const matchesSearch =
       r.guestName.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -171,7 +129,7 @@ export default function GuestManager({
   });
 
   return (
-    <div className="guest-manager-overlay">
+    <dialog ref={dialog} className="guest-manager-overlay" aria-label="Guest manager" onCancel={event => { event.preventDefault(); event.stopPropagation(); onClose(); }} style={{ margin: 0, border: 0, width: '100vw', height: '100dvh', maxWidth: 'none', maxHeight: 'none' }}>
       <div className="guest-manager-dialog">
         {/* Header */}
         <div className="guest-manager-header">
@@ -181,7 +139,7 @@ export default function GuestManager({
             </div>
             <div>
               <h2>Guest Management &amp; RSVP</h2>
-              <p>Track attendance, dietary choices, ceremony RSVPs &amp; share invitation</p>
+              <p>Manage manual guest entries, dietary choices and ceremony attendance</p>
             </div>
           </div>
           <button type="button" className="close-btn" onClick={onClose} aria-label="Close">
@@ -248,7 +206,7 @@ export default function GuestManager({
             onClick={() => setActiveTab('share')}
           >
             <Share2 size={15} />
-            <span>Share &amp; QR Code</span>
+            <span>Device preview &amp; calendar</span>
           </button>
           <button
             type="button"
@@ -268,14 +226,14 @@ export default function GuestManager({
                 <Search size={14} />
                 <input
                   type="text"
-                  placeholder="Search guests by name or contact…"
+                  aria-label="Search guests" placeholder="Search guests by name or contact…"
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
                 />
               </div>
 
               <div className="filter-select-wrap">
-                <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
+                <select aria-label="Guest attendance filter" value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
                   <option value="all">All Responses</option>
                   <option value="attending">Attending</option>
                   <option value="declined">Declined</option>
@@ -306,7 +264,7 @@ export default function GuestManager({
               <div className="guest-empty-box">
                 <Users size={36} />
                 <h3>No RSVPs Received Yet</h3>
-                <p>Share your digital invitation link or load sample guests to test the dashboard.</p>
+                <p>Record guests manually or load clearly marked sample entries to test the dashboard.</p>
                 <button type="button" className="button secondary" onClick={handleLoadSamples}>
                   <Sparkles size={14} /> Load 5 Sample Indian Wedding RSVPs
                 </button>
@@ -390,91 +348,13 @@ export default function GuestManager({
           </div>
         )}
 
-        {/* TAB 2: SHARE & QR CODE */}
         {activeTab === 'share' && (
-          <div className="guest-tab-content share-tab-grid">
-            {/* Left: QR Code Showcase */}
-            <div className="share-qr-card">
-              <div
-                className="qr-code-svg-wrap"
-                dangerouslySetInnerHTML={{ __html: qrSvg }}
-              />
-              <span className="qr-caption">Scan to view Digital Invitation &amp; RSVP</span>
-
-              <div className="qr-actions-row">
-                <button
-                  type="button"
-                  className="button secondary sm"
-                  onClick={handleAddQrToCanvas}
-                >
-                  <Plus size={14} /> Add QR to Canvas
-                </button>
-
-                <a
-                  href={`data:image/svg+xml;utf8,${encodeURIComponent(qrSvg)}`}
-                  download={`${(doc.title || 'wedding').replace(/\s+/g, '_')}_qr.svg`}
-                  className="button secondary sm"
-                >
-                  <Download size={14} /> Download SVG
-                </a>
-              </div>
-            </div>
-
-            {/* Right: Sharing Intents */}
-            <div className="share-links-card">
-              <h3>1-Click Invitation Links</h3>
-              <p>Send your invitation suite directly to guests on WhatsApp or social networks.</p>
-
-              <div className="share-link-input-group">
-                <input type="text" readOnly value={inviteUrl} />
-                <button type="button" className="button sm" onClick={handleCopyLink}>
-                  <Copy size={13} /> {copiedLink ? 'Copied!' : 'Copy'}
-                </button>
-              </div>
-
-              <div className="share-buttons-stack">
-                <a
-                  href={generateWhatsAppShareUrl(doc)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="share-channel-btn whatsapp"
-                >
-                  <MessageCircle size={18} />
-                  <div>
-                    <strong>Share on WhatsApp</strong>
-                    <small>Pre-formatted auspicious greeting &amp; RSVP link</small>
-                  </div>
-                  <ExternalLink size={14} />
-                </a>
-
-                <a
-                  href={generateGoogleCalendarUrl(doc)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="share-channel-btn calendar"
-                >
-                  <Calendar size={18} />
-                  <div>
-                    <strong>Add to Google Calendar</strong>
-                    <small>1-click calendar invite for family &amp; friends</small>
-                  </div>
-                  <ExternalLink size={14} />
-                </a>
-
-                <a
-                  href={inviteUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="share-channel-btn preview"
-                >
-                  <ExternalLink size={18} />
-                  <div>
-                    <strong>Open Live Guest Invitation Page</strong>
-                    <small>Preview the responsive mobile-friendly RSVP hub</small>
-                  </div>
-                </a>
-              </div>
-            </div>
+          <div className="guest-tab-content">
+            <h3>Device preview and calendar</h3>
+            <p role="status">Online publishing and guest RSVP delivery are not connected. Invitations remain private drafts. This preview works only in the browser where the draft is saved; do not send its address to guests.</p>
+            <a href={inviteUrl} target="_blank" rel="noopener noreferrer" className="button secondary">Open device preview</a>
+            {calendarUrl ? <a href={calendarUrl} target="_blank" rel="noopener noreferrer" className="button secondary">Add to Google Calendar (India time)</a> : <p>Enter an English or ISO date and a time such as 7:00 PM to enable the calendar.</p>}
+            <p>Guest entries and CSV exports are managed manually. Online RSVP collection requires a future publishing service.</p>
           </div>
         )}
 
@@ -580,7 +460,7 @@ export default function GuestManager({
             <div className="add-guest-modal">
               <div className="dialog-top">
                 <h3>Record Offline Guest RSVP</h3>
-                <button type="button" onClick={() => setShowAddModal(false)}>
+                <button type="button" aria-label="Cancel guest entry" onClick={() => setShowAddModal(false)}>
                   <X size={18} />
                 </button>
               </div>
@@ -676,6 +556,6 @@ export default function GuestManager({
           </div>
         )}
       </div>
-    </div>
+    </dialog>
   );
 }

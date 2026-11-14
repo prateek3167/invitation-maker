@@ -69,6 +69,7 @@ export type CanvasElement = {
     | 'diya'
     | 'namaste'
     | 'marigold_garland'
+    | 'template-decoration'
     | 'customSvg';
   fill?: string;
   stroke?: string;
@@ -512,18 +513,6 @@ export function decomposeTemplateToElements(document: Invitation, artworkData?: 
     9: 'Palace Hanging Lanterns & Stars',
   };
 
-  const ornamentShapeTypes: Record<number, CanvasElement['shapeType']> = {
-    0: 'filigree',
-    1: 'border',
-    2: 'border',
-    3: 'peacock',
-    4: 'border',
-    5: 'filigree',
-    6: 'border',
-    7: 'toran',
-    8: 'henna',
-    9: 'lanterns',
-  };
 
   elements.push({
     id: 'decor-borders',
@@ -534,7 +523,7 @@ export function decomposeTemplateToElements(document: Invitation, artworkData?: 
     width: 652,
     height: 932,
     zIndex: zIndex++,
-    shapeType: ornamentShapeTypes[template.layout] || 'border',
+    shapeType: 'template-decoration',
     stroke: accent,
     strokeWidth: 1.2,
     opacity: 0.85,
@@ -841,7 +830,10 @@ export function syncFieldsFromElements(elements: CanvasElement[], currentFields:
   for (const el of elements) {
     if (el.type === 'text' && el.fieldBinding && el.text !== undefined) {
       if (['host', 'partner', 'heading', 'date', 'time', 'venue', 'message'].includes(el.fieldBinding)) {
-        updated[el.fieldBinding as keyof Fields] = el.text;
+        if (el.id === 'names-couple') {
+          const names = el.text.split(' & ');
+          if (names.length === 2) { updated.host = names[0]; updated.partner = names[1]; }
+        } else updated[el.fieldBinding as keyof Fields] = el.text;
       }
     }
   }
@@ -851,7 +843,7 @@ export function syncFieldsFromElements(elements: CanvasElement[], currentFields:
 export function syncElementsFromFields(elements: CanvasElement[], fields: Fields): CanvasElement[] {
   return elements.map(el => {
     if (el.type === 'text' && el.fieldBinding && ['host', 'partner', 'heading', 'date', 'time', 'venue', 'message'].includes(el.fieldBinding)) {
-      return { ...el, text: fields[el.fieldBinding as keyof Fields] };
+      return { ...el, text: el.id === 'names-couple' ? `${fields.host} & ${fields.partner}` : fields[el.fieldBinding as keyof Fields] };
     }
     return el;
   });

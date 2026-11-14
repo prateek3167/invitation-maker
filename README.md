@@ -2,6 +2,8 @@
 
 A Next.js invitation studio with guided editing, device-local drafts and an authenticated account workspace for multi-card events.
 
+Latest local analysis: [audit, fixes, test evidence and production-readiness gates](docs/development/audit-2026-11-14.md). Public invitation publishing, online RSVP delivery and billing are not implemented; device previews and manual guest tools are labelled accordingly.
+
 ## Quick start
 
 Requires Node.js 22 or newer and npm.

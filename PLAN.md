@@ -1,5 +1,19 @@
 # Phased Implementation Plan
 
+## Authorized complete audit and regression remediation — 2026-11-14
+
+The user requests whole-project analysis, actual workflow testing, fixes and a comprehensive evidence-based readiness report. Existing source claims are not acceptance evidence.
+
+- [x] Inventory all maintained sources/assets, dependencies, configuration, database and generated/runtime folders; verify a recovery backup before cleanup.
+- [x] Execute baseline structure/type/unit/integration/build/browser/deployment checks and extend tests for advanced editing, suites, cross-browser-context sharing/RSVP, QR decoding, responsive layouts and hostile input.
+- [x] Fix reproducible persistence, suite/history, validation/security, rendering/parity, sharing/calendar/QR and accessibility defects within approved functionality.
+- [x] Verify removals by references and preserve data/secrets/migration history; test migrations and recovery against isolated fixtures.
+- [x] Run complete final regression; record feature matrix, defect severities/evidence, test outcomes, measured performance, external-service limitations and production blockers in docs/development/audit-2026-11-14.md.
+
+Backup: source/configuration/assets/Git/runtime data archive and extraction verified in the owned temporary audit directory. Reproducible dependencies/build/npm/test caches are excluded; lockfiles and source are included. No existing live data is to be deleted or overwritten.
+
+Verified locally: 70 unit/integration tests pass (one external PostgreSQL check skipped), 15 Chrome E2E scenarios pass, and production build/strict types/structure pass. All 80 templates open in the editor; 60 base detail previews match the editor composition exactly; the canonical-normalization unit contract covers all 80. No public deployment or external database was configured. Public publishing/online RSVP/billing and font/operational/UAT release gates remain open; this audit does not mark the full product roadmap complete.
+
 ## Authorized CI Quality Gate Resolution & E2E Test Hardening — 2026-11-14
 
 Following GitHub Actions CI Run #5 diagnosis, resolved all root causes causing Playwright E2E failures on mobile viewports and account persistence:

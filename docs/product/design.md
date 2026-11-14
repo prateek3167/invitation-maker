@@ -1,5 +1,9 @@
 # UI/UX and Visual Design System
 
+## Current audit - 2026-11-14
+
+Visual artwork now comes from the shared canonical renderer with separate interaction targets. Mobile mode/history controls and tablet properties are available; suite actions support focus/touch. Guest management explicitly distinguishes manual entries/device preview from unimplemented online delivery. [Audit and UI acceptance](../development/audit-2026-11-14.md).
+
 ## Implemented royal extension (2026-11-13)
 
 Twenty new original artworks supply rich palace/garden/peacock/darbar/jharokha/mandap/scroll/lotus/procession scenes, with two distinct variations per category. Individually aligned arch/oval portraits overlay each artwork; editable typography and color-controlled stationery panels preserve readability. A gallery collection/category selector and independent Bride/Groom controls reuse the current design system. See the [collection guide](../design/royal-collection.md), [prompt set](../design/royal-art-prompts.json) and [asset manifest](../design/royal-art-manifest.json).

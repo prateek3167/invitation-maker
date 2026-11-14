@@ -5,7 +5,7 @@ import type { Invitation } from '../../../../packages/editor-core/document';
 import { presets } from '../../../../packages/editor-core/document';
 import type { CanvasElement } from '../../../../packages/editor-core/canvas';
 import type { DragState, HandleType, SnapGuide } from './types';
-import { getTraditionalOrnamentSvg } from '../../../../packages/template-engine/traditional-elements';
+import { renderSvg } from '../../../../packages/template-engine/render';
 
 interface InteractiveCanvasProps {
   document: Invitation;
@@ -16,6 +16,8 @@ interface InteractiveCanvasProps {
   zoom: number;
   onZoomChange: (zoom: number) => void;
   artworkData?: string;
+  onGestureStart?: () => void;
+  onGestureEnd?: () => void;
 }
 
 function clientToSvg(svg: SVGSVGElement, clientX: number, clientY: number): { x: number; y: number } {
@@ -28,20 +30,6 @@ function clientToSvg(svg: SVGSVGElement, clientX: number, clientY: number): { x:
   return { x: svgPt.x, y: svgPt.y };
 }
 
-function lines(str: string, maxLen = 30): string[] {
-  const words = str.split(/\s+/).filter(Boolean);
-  if (!words.length) return [''];
-  const out: string[] = [];
-  let cur = '';
-  for (const w of words) {
-    if (!cur) cur = w;
-    else if ((cur + ' ' + w).length <= maxLen) cur += ' ' + w;
-    else { out.push(cur); cur = w; }
-  }
-  if (cur) out.push(cur);
-  return out;
-}
-
 export default function InteractiveCanvas({
   document: doc,
   elements,
@@ -51,29 +39,40 @@ export default function InteractiveCanvas({
   zoom,
   onZoomChange,
   artworkData,
+  onGestureStart,
+  onGestureEnd,
 }: InteractiveCanvasProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [dragState, setDragState] = useState<DragState | null>(null);
   const [snapGuides, setSnapGuides] = useState<SnapGuide[]>([]);
   const [inlineEditingId, setInlineEditingId] = useState<string | null>(null);
+  const [fitWidth, setFitWidth] = useState(350);
 
   const { width: presetW, height: presetH } = presets[doc.format];
   const ratio = presetW / presetH;
+  useEffect(() => {
+    const node = containerRef.current;
+    if (!node) return;
+    const fit = () => setFitWidth(Math.max(120, Math.min(node.clientWidth - 60, (node.clientHeight - 60) * ratio)));
+    const observer = new ResizeObserver(fit);
+    observer.observe(node); fit();
+    return () => observer.disconnect();
+  }, [ratio]);
   const viewW = ratio >= 700 / 980 ? 980 * ratio : 700;
   const viewH = ratio >= 700 / 980 ? 980 : 700 / ratio;
   const minX = -(viewW - 700) / 2;
   const minY = -(viewH - 980) / 2;
 
   const selectedEl = elements.find(el => el.id === selectedId) || null;
-  const [ink, paper, accent] = doc.palette;
+  const [ink, paper] = doc.palette;
 
   // Keyboard navigation & shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Ignore if user is typing in an input, textarea, or contentEditable
       const target = e.target as HTMLElement;
-      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) {
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT' || target.isContentEditable) {
         return;
       }
 
@@ -136,6 +135,7 @@ export default function InteractiveCanvas({
     if (el.locked || !svgRef.current) return;
 
     const pt = clientToSvg(svgRef.current, e.clientX, e.clientY);
+    onGestureStart?.();
     setDragState({
       mode: 'move',
       elementId: el.id,
@@ -157,6 +157,7 @@ export default function InteractiveCanvas({
     e.stopPropagation();
 
     const pt = clientToSvg(svgRef.current, e.clientX, e.clientY);
+    onGestureStart?.();
     setDragState({
       mode: handle === 'rotate' ? 'rotate' : 'resize',
       elementId: selectedEl.id,
@@ -263,11 +264,13 @@ export default function InteractiveCanvas({
   };
 
   const handlePointerUp = () => {
+    onGestureEnd?.();
     setDragState(null);
     setSnapGuides([]);
   };
 
   const sortedElements = [...elements].sort((a, b) => (a.zIndex || 0) - (b.zIndex || 0));
+  const waitingForArtwork = !artworkData && elements.some(element => element.type === 'background' && element.src?.startsWith('royal/'));
 
   return (
     <div
@@ -294,6 +297,7 @@ export default function InteractiveCanvas({
           height={presetH}
           viewBox={`${minX} ${minY} ${viewW} ${viewH}`}
           className="canvas-interactive-svg"
+          style={{ width: fitWidth, height: fitWidth / ratio, maxHeight: 'none' }}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
           onPointerCancel={handlePointerUp}
@@ -301,365 +305,19 @@ export default function InteractiveCanvas({
           {/* Base Background Paper */}
           <rect x={minX} y={minY} width={viewW} height={viewH} fill={paper} />
 
-          {/* Render All Elements */}
-          {sortedElements.map(el => {
-            if (el.hidden) return null;
-            const isSelected = el.id === selectedId;
-            const rot = el.rotation || 0;
-            const cx = el.x + el.width / 2;
-            const cy = el.y + el.height / 2;
-            const transform = rot ? `rotate(${rot} ${cx} ${cy})` : undefined;
-            const opacity = el.opacity ?? 1;
-
-            if (el.type === 'background') {
-              if (artworkData) {
-                return (
-                  <image
-                    key={el.id}
-                    href={artworkData}
-                    x={el.x}
-                    y={el.y}
-                    width={el.width}
-                    height={el.height}
-                    preserveAspectRatio="xMidYMid slice"
-                    opacity={opacity}
-                    onPointerDown={e => handlePointerDownElement(e, el)}
-                  />
-                );
-              }
-              return (
-                <rect
-                  key={el.id}
-                  x={el.x}
-                  y={el.y}
-                  width={el.width}
-                  height={el.height}
-                  fill={el.fill || paper}
-                  opacity={opacity}
-                  onPointerDown={e => handlePointerDownElement(e, el)}
-                />
-              );
-            }
-
-            if (el.type === 'image') {
-              const clipId = `clip_interactive_${el.id}`;
-              const shape = el.frameShape || 'arch';
-              const photoData =
-                el.photoSlot === 'bride'
-                  ? doc.portraits?.bride?.data
-                  : el.photoSlot === 'groom'
-                  ? doc.portraits?.groom?.data
-                  : doc.photo?.data;
-
-              return (
-                <g
-                  key={el.id}
-                  transform={transform}
-                  opacity={opacity}
-                  className={`canvas-element ${isSelected ? 'selected' : ''}`}
-                  onPointerDown={e => handlePointerDownElement(e, el)}
-                  style={{ cursor: el.locked ? 'default' : 'move' }}
-                >
-                  <defs>
-                    <clipPath id={clipId}>
-                      {shape === 'arch' && (
-                        <path
-                          d={`M${el.x} ${el.y + el.width / 2} A${el.width / 2} ${el.width / 2} 0 0 1 ${
-                            el.x + el.width
-                          } ${el.y + el.width / 2} L${el.x + el.width} ${el.y + el.height} L${el.x} ${
-                            el.y + el.height
-                          } Z`}
-                        />
-                      )}
-                      {shape === 'oval' && (
-                        <ellipse cx={cx} cy={cy} rx={el.width / 2} ry={el.height / 2} />
-                      )}
-                      {shape === 'circle' && (
-                        <circle cx={cx} cy={cy} r={Math.min(el.width, el.height) / 2} />
-                      )}
-                      {shape === 'rect' && (
-                        <rect x={el.x} y={el.y} width={el.width} height={el.height} rx="8" />
-                      )}
-                    </clipPath>
-                  </defs>
-
-                  {photoData ? (
-                    <image
-                      href={photoData}
-                      clipPath={`url(#${clipId})`}
-                      x={el.x - el.width * ((el.zoom || 1) - 1) * 0.5 + ((el.cropX || 50) - 50) * 2}
-                      y={el.y - el.height * ((el.zoom || 1) - 1) * 0.5 + ((el.cropY || 50) - 50) * 2}
-                      width={el.width * (el.zoom || 1)}
-                      height={el.height * (el.zoom || 1)}
-                      preserveAspectRatio="xMidYMid slice"
-                    />
-                  ) : (
-                    <g clipPath={`url(#${clipId})`}>
-                      <rect x={el.x} y={el.y} width={el.width} height={el.height} fill="#f4ece1" />
-                      <circle
-                        cx={cx}
-                        cy={el.y + el.height * 0.38}
-                        r={el.width * 0.14}
-                        fill={el.stroke || accent}
-                        fillOpacity="0.25"
-                      />
-                      <path
-                        d={`M${el.x + el.width * 0.28} ${el.y + el.height * 0.78} Q${
-                          el.x + el.width * 0.3
-                        } ${el.y + el.height * 0.54} ${cx} ${el.y + el.height * 0.56} Q${
-                          el.x + el.width * 0.7
-                        } ${el.y + el.height * 0.54} ${el.x + el.width * 0.72} ${
-                          el.y + el.height * 0.78
-                        } Z`}
-                        fill={el.stroke || accent}
-                        fillOpacity="0.25"
-                      />
-                      <text
-                        x={cx}
-                        y={el.y + el.height * 0.88}
-                        textAnchor="middle"
-                        fill={el.stroke || accent}
-                        fontFamily="Arial, sans-serif"
-                        fontSize="10"
-                        letterSpacing="1.5"
-                      >
-                        {el.name.toUpperCase()}
-                      </text>
-                    </g>
-                  )}
-
-                  {/* Frame Stroke */}
-                  {shape === 'arch' && (
-                    <path
-                      d={`M${el.x} ${el.y + el.width / 2} A${el.width / 2} ${el.width / 2} 0 0 1 ${
-                        el.x + el.width
-                      } ${el.y + el.width / 2} L${el.x + el.width} ${el.y + el.height} L${el.x} ${
-                        el.y + el.height
-                      } Z`}
-                      fill="none"
-                      stroke={el.stroke || accent}
-                      strokeWidth={el.strokeWidth || 2}
-                    />
-                  )}
-                  {shape === 'oval' && (
-                    <ellipse
-                      cx={cx}
-                      cy={cy}
-                      rx={el.width / 2}
-                      ry={el.height / 2}
-                      fill="none"
-                      stroke={el.stroke || accent}
-                      strokeWidth={el.strokeWidth || 2}
-                    />
-                  )}
-                  {shape === 'circle' && (
-                    <circle
-                      cx={cx}
-                      cy={cy}
-                      r={Math.min(el.width, el.height) / 2}
-                      fill="none"
-                      stroke={el.stroke || accent}
-                      strokeWidth={el.strokeWidth || 2}
-                    />
-                  )}
-                  {shape === 'rect' && (
-                    <rect
-                      x={el.x}
-                      y={el.y}
-                      width={el.width}
-                      height={el.height}
-                      rx="8"
-                      fill="none"
-                      stroke={el.stroke || accent}
-                      strokeWidth={el.strokeWidth || 2}
-                    />
-                  )}
-                </g>
-              );
-            }
-
-            if (el.type === 'text') {
-              const family =
-                el.fontFamily || (doc.font === 'modern' ? 'Arial, sans-serif' : 'Georgia, serif');
-              const size = el.fontSize || 16;
-              const weight = el.fontWeight || 'normal';
-              const style = el.fontStyle || (doc.font === 'italic' ? 'italic' : 'normal');
-              const color = el.color || ink;
-              const align = el.textAlign || 'center';
-              const spacing = el.letterSpacing || 0;
-              const textX = align === 'center' ? cx : align === 'right' ? el.x + el.width : el.x;
-              const anchor = align === 'center' ? 'middle' : align === 'right' ? 'end' : 'start';
-              const rowList = lines(el.text || '', Math.max(8, Math.floor(el.width / (size * 0.5))));
-
-              return (
-                <g
-                  key={el.id}
-                  transform={transform}
-                  opacity={opacity}
-                  className={`canvas-element ${isSelected ? 'selected' : ''}`}
-                  onPointerDown={e => handlePointerDownElement(e, el)}
-                  onDoubleClick={() => setInlineEditingId(el.id)}
-                  style={{ cursor: el.locked ? 'default' : 'move' }}
-                >
-                  <text
-                    textAnchor={anchor}
-                    fill={color}
-                    fontFamily={family}
-                    fontSize={size}
-                    fontWeight={weight}
-                    fontStyle={style}
-                    letterSpacing={spacing}
-                  >
-                    {rowList.map((row, i) => (
-                      <tspan
-                        key={i}
-                        x={textX}
-                        y={el.y + size * 0.9 + i * size * (el.lineHeight || 1.25)}
-                      >
-                        {row}
-                      </tspan>
-                    ))}
-                  </text>
-                </g>
-              );
-            }
-
-            if (el.type === 'shape') {
-              const fill = el.fill || 'none';
-              const stroke = el.stroke || 'none';
-              const strokeW = el.strokeWidth || 1;
-              const dash = el.strokeDasharray;
-
-              return (
-                <g
-                  key={el.id}
-                  transform={transform}
-                  opacity={opacity}
-                  className={`canvas-element ${isSelected ? 'selected' : ''}`}
-                  onPointerDown={e => handlePointerDownElement(e, el)}
-                  style={{ cursor: el.locked ? 'default' : 'move' }}
-                >
-                  {el.shapeType === 'circle' || el.shapeType === 'ellipse' ? (
-                    <ellipse
-                      cx={cx}
-                      cy={cy}
-                      rx={el.width / 2}
-                      ry={el.height / 2}
-                      fill={fill}
-                      stroke={stroke}
-                      strokeWidth={strokeW}
-                      strokeDasharray={dash}
-                    />
-                  ) : el.shapeType === 'line' ? (
-                    <line
-                      x1={el.x}
-                      y1={cy}
-                      x2={el.x + el.width}
-                      y2={cy}
-                      stroke={stroke || accent}
-                      strokeWidth={strokeW}
-                      strokeDasharray={dash}
-                    />
-                  ) : (
-                    <rect
-                      x={el.x}
-                      y={el.y}
-                      width={el.width}
-                      height={el.height}
-                      rx="8"
-                      fill={fill}
-                      stroke={stroke}
-                      strokeWidth={strokeW}
-                      strokeDasharray={dash}
-                    />
-                  )}
-                </g>
-              );
-            }
-
-            if (el.type === 'ornament') {
-              const stroke = el.stroke || accent;
-              const fill = el.fill || accent;
-
-              return (
-                <g
-                  key={el.id}
-                  transform={transform}
-                  opacity={opacity}
-                  className={`canvas-element ${isSelected ? 'selected' : ''}`}
-                  onPointerDown={e => handlePointerDownElement(e, el)}
-                  style={{ cursor: el.locked ? 'default' : 'move' }}
-                >
-                  {getTraditionalOrnamentSvg(el.shapeType || '', stroke, fill) ? (
-                    <g
-                      transform={`translate(${el.x}, ${el.y}) scale(${el.width / 100}, ${el.height / 100})`}
-                      dangerouslySetInnerHTML={{
-                        __html: getTraditionalOrnamentSvg(el.shapeType || '', stroke, fill) || '',
-                      }}
-                    />
-                  ) : el.shapeType === 'border' ? (
-                    <rect
-                      x={el.x}
-                      y={el.y}
-                      width={el.width}
-                      height={el.height}
-                      fill="none"
-                      stroke={stroke}
-                      strokeWidth={el.strokeWidth || 1.2}
-                    />
-                  ) : el.shapeType === 'divider' ? (
-                    <g stroke={stroke}>
-                      <line
-                        x1={el.x}
-                        y1={cy}
-                        x2={el.x + el.width}
-                        y2={cy}
-                        strokeWidth="1.2"
-                      />
-                      <circle cx={cx} cy={cy} r="4" fill={fill} />
-                      <circle cx={cx - 16} cy={cy} r="2" fill={fill} />
-                      <circle cx={cx + 16} cy={cy} r="2" fill={fill} />
-                    </g>
-                  ) : el.shapeType === 'kalash' ? (
-                    <g stroke={stroke} fill="none" strokeWidth="1.3">
-                      <ellipse cx={cx} cy={el.y + el.height * 0.65} rx={el.width * 0.35} ry={el.height * 0.28} />
-                      <ellipse cx={cx} cy={el.y + el.height * 0.35} rx={el.width * 0.22} ry={el.height * 0.08} />
-                      <circle cx={cx} cy={el.y + el.height * 0.18} r={el.width * 0.16} fill={stroke} fillOpacity="0.2" />
-                      <path d={`M${cx - el.width * 0.18} ${el.y + el.height * 0.28} Q${cx - el.width * 0.35} ${el.y + el.height * 0.1} ${cx - el.width * 0.1} ${el.y + el.height * 0.12}`} />
-                      <path d={`M${cx + el.width * 0.18} ${el.y + el.height * 0.28} Q${cx + el.width * 0.35} ${el.y + el.height * 0.1} ${cx + el.width * 0.1} ${el.y + el.height * 0.12}`} />
-                    </g>
-                  ) : el.shapeType === 'mandala' ? (
-                    <g stroke={stroke} fill="none" strokeWidth="1.2" opacity="0.85">
-                      <circle cx={cx} cy={cy} r={Math.min(el.width, el.height) * 0.44} strokeDasharray="3 4" />
-                      <circle cx={cx} cy={cy} r={Math.min(el.width, el.height) * 0.28} />
-                      <circle cx={cx} cy={cy} r={Math.min(el.width, el.height) * 0.12} fill={stroke} fillOpacity="0.15" />
-                      {[0, 45, 90, 135, 180, 225, 270, 315].map(a => (
-                        <line
-                          key={a}
-                          x1={cx}
-                          y1={cy}
-                          x2={cx + Math.cos((a * Math.PI) / 180) * (Math.min(el.width, el.height) * 0.44)}
-                          y2={cy + Math.sin((a * Math.PI) / 180) * (Math.min(el.width, el.height) * 0.44)}
-                          opacity="0.5"
-                        />
-                      ))}
-                    </g>
-                  ) : el.shapeType === 'lanterns' ? (
-                    <g stroke={stroke} fill="none" strokeWidth="1.2">
-                      <line x1={el.x + el.width * 0.2} y1={el.y} x2={el.x + el.width * 0.2} y2={el.y + el.height * 0.5} strokeDasharray="2 3" />
-                      <polygon points={`${el.x + el.width * 0.2},${el.y + el.height * 0.5} ${el.x + el.width * 0.26},${el.y + el.height * 0.65} ${el.x + el.width * 0.24},${el.y + el.height * 0.85} ${el.x + el.width * 0.16},${el.y + el.height * 0.85} ${el.x + el.width * 0.14},${el.y + el.height * 0.65}`} fill={stroke} fillOpacity="0.2" />
-                      <line x1={el.x + el.width * 0.8} y1={el.y} x2={el.x + el.width * 0.8} y2={el.y + el.height * 0.5} strokeDasharray="2 3" />
-                      <polygon points={`${el.x + el.width * 0.8},${el.y + el.height * 0.5} ${el.x + el.width * 0.86},${el.y + el.height * 0.65} ${el.x + el.width * 0.84},${el.y + el.height * 0.85} ${el.x + el.width * 0.76},${el.y + el.height * 0.85} ${el.x + el.width * 0.74},${el.y + el.height * 0.65}`} fill={stroke} fillOpacity="0.2" />
-                    </g>
-                  ) : (
-                    el.svgContent && <g dangerouslySetInnerHTML={{ __html: el.svgContent }} />
-                  )}
-                </g>
-              );
-            }
-
-            return null;
-          })}
+          {/* One composition drives interactive view, preview and export. */}
+          <image data-canonical-art="true" x={minX} y={minY} width={viewW} height={viewH}
+            href={waitingForArtwork ? undefined : 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(renderSvg({ ...doc, canvasElements: elements }, artworkData))}
+            pointerEvents="none" />
+          {sortedElements.filter(el => !el.hidden).map(el => (
+            <rect key={el.id} data-element-id={el.id} aria-label={el.name}
+              x={el.x} y={el.y} width={el.width} height={el.height}
+              transform={el.rotation ? 'rotate(' + el.rotation + ' ' + (el.x + el.width / 2) + ' ' + (el.y + el.height / 2) + ')' : undefined}
+              fill="transparent" className="canvas-element"
+              style={{ cursor: el.locked ? 'default' : 'move' }}
+              onPointerDown={event => handlePointerDownElement(event, el)}
+              onDoubleClick={() => { if (el.type === 'text' && !el.locked) setInlineEditingId(el.id); }} />
+          ))}
 
           {/* Alignment Snapping Guides */}
           {snapGuides.map((guide, i) =>
@@ -746,6 +404,7 @@ export default function InteractiveCanvas({
                   />
                   {/* Rotation Handle Button */}
                   <g
+                    data-rotate-handle="true"
                     transform={`translate(${selectedEl.x + selectedEl.width / 2}, ${
                       selectedEl.y - 24
                     })`}
@@ -806,6 +465,7 @@ export default function InteractiveCanvas({
                   ).map(pt => (
                     <circle
                       key={pt.handle}
+                      data-resize-handle={pt.handle}
                       cx={pt.x}
                       cy={pt.y}
                       r="5.5"
@@ -851,7 +511,7 @@ export default function InteractiveCanvas({
               }}
               style={{
                 fontFamily: selectedEl.fontFamily || (doc.font === 'modern' ? 'Arial, sans-serif' : 'Georgia, serif'),
-                fontSize: `${(selectedEl.fontSize || 16) * (presetW / viewW)}px`,
+                fontSize: `${(selectedEl.fontSize || 16) * (fitWidth / viewW)}px`,
                 fontWeight: selectedEl.fontWeight || 'normal',
                 fontStyle: selectedEl.fontStyle || (doc.font === 'italic' ? 'italic' : 'normal'),
                 color: selectedEl.color || ink,

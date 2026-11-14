@@ -181,7 +181,7 @@ describe('Culturally Rich Traditional Wedding Elements', () => {
     expect(getTraditionalOrnamentSvg('unknown_shape', '#000')).toBeNull();
   });
 
-  it('renders traditional ornaments with embedded Google Fonts inside renderFromCanvasElements', () => {
+  it('renders traditional ornaments and Hindi text without remote font imports', () => {
     const doc: Invitation = {
       schemaVersion: 1,
       id: 'doc-traditional-test',
@@ -247,8 +247,8 @@ describe('Culturally Rich Traditional Wedding Elements', () => {
 
     const svg = renderFromCanvasElements(doc);
     expect(svg).toContain('<svg');
-    expect(svg).toContain('Rozha+One'); // Google Fonts embedded in defs
-    expect(svg).toContain('Tiro+Devanagari+Hindi');
+    expect(svg).toContain('Rozha One'); // Family retained; installed fallback is explicit.
+    expect(svg).not.toContain('@import'); // Image SVGs and isolated workers cannot load remote fonts.
     expect(svg).toContain('॥ शुभ विवाह ॥'); // Devanagari text rendered
     expect(svg).toContain('scale(0.8, 0.8)'); // Scaled Ganesha (80/100)
     expect(svg).toContain('scale(1.1, 0.9)'); // Scaled Doli (110/100, 90/100)

@@ -37,7 +37,12 @@ export function safeDocument(value: unknown): Invitation {
     palette: [...value.palette], font: value.font, format: value.format,
     photo: value.photo ? { data: value.photo.data, x: value.photo.x, y: value.photo.y, zoom: value.photo.zoom } : null,
     ...(value.portraits ? { portraits: { bride: value.portraits.bride ? { data:value.portraits.bride.data,x:value.portraits.bride.x,y:value.portraits.bride.y,zoom:value.portraits.bride.zoom } : null, groom: value.portraits.groom ? {data:value.portraits.groom.data,x:value.portraits.groom.x,y:value.portraits.groom.y,zoom:value.portraits.groom.zoom} : null } } : {}),
-    ...(value.templateSnapshot ? { templateSnapshot: structuredClone(value.templateSnapshot) } : {}) };
+    ...(value.templateSnapshot ? { templateSnapshot: structuredClone(value.templateSnapshot) } : {}),
+    ...(value.canvasElements ? { canvasElements: structuredClone(value.canvasElements) } : {}),
+    ...(value.suiteCards ? { suiteCards: value.suiteCards.map(safeDocument) } : {}),
+    ...(value.eventTag !== undefined ? { eventTag: value.eventTag } : {}),
+    ...(value.rsvpSettings ? { rsvpSettings: { enabled: value.rsvpSettings.enabled, allowPlusOnes: value.rsvpSettings.allowPlusOnes, maxPartySize: value.rsvpSettings.maxPartySize, collectDietary: value.rsvpSettings.collectDietary, collectCeremonies: value.rsvpSettings.collectCeremonies, ...(value.rsvpSettings.deadline ? { deadline: value.rsvpSettings.deadline } : {}), ...(value.rsvpSettings.welcomeMessage ? { welcomeMessage: value.rsvpSettings.welcomeMessage } : {}) } } : {}),
+    ...(value.rsvpResponses ? { rsvpResponses: value.rsvpResponses.map(r => ({ id: r.id, guestName: r.guestName, phoneOrEmail: r.phoneOrEmail, attending: r.attending, guestCount: r.guestCount, ceremonies: [...r.ceremonies], dietary: r.dietary, submittedAt: r.submittedAt, ...(r.notes !== undefined ? { notes: r.notes } : {}) })) } : {}) };
 }
 export async function listProjects(db: Database, ownerId: string) {
   return db.select({ id: projects.id, title: projects.title, occasion: projects.occasion, sharedDetails: projects.sharedDetails, revision: projects.revision, updatedAt: projects.updatedAt,
@@ -90,9 +95,14 @@ export async function createCard(db: Database, ownerId: string, projectId: strin
     const approved = await approvedTemplate(db, source.templateId);
     if (templateFingerprint(documentTemplate(source)) !== templateFingerprint(approved)) throw new DomainError(400, 'INVALID_TEMPLATE', 'The template snapshot differs from its published definition.');
     source.templateSnapshot = approved;
+    for (const card of source.suiteCards || []) {
+      const published = await approvedTemplate(db, card.templateId);
+      if (templateFingerprint(documentTemplate(card)) !== templateFingerprint(published)) throw new DomainError(400, 'INVALID_TEMPLATE', 'A suite card differs from its published template.');
+      card.templateSnapshot = published;
+    }
   }
   const selectedTemplate = source ? undefined : await approvedTemplate(db, String(input.templateId));
-  if (source?.photo || source?.portraits) { await getProject(db, ownerId, projectId); await storeDocumentPhotos(db,ownerId,source); }
+  if (source) { await getProject(db, ownerId, projectId); await storeDocumentPhotos(db,ownerId,source); }
   return db.transaction(async tx => {
     // Lock the parent to serialize quota checks, inserts and deletion for this event.
     const [project] = await tx.select().from(projects).where(and(eq(projects.id, projectId), eq(projects.ownerId, ownerId))).for('update');
@@ -127,6 +137,12 @@ export async function updateCard(db: Database, ownerId: string, id: string, valu
   const existing = await getCard(db, ownerId, id);
   if (existing.templateId !== document.templateId) throw new DomainError(400, 'VALIDATION_ERROR', 'The template of an existing invitation cannot be changed.');
   if (templateFingerprint(documentTemplate(existing)) !== templateFingerprint(documentTemplate(document))) throw new DomainError(400, 'INVALID_TEMPLATE', 'An invitation keeps its immutable template version.');
+  for (const card of document.suiteCards || []) {
+    const prior = existing.suiteCards?.find(saved => saved.id === card.id);
+    const approved = prior ? documentTemplate(prior) : await approvedTemplate(db, card.templateId);
+    if (templateFingerprint(documentTemplate(card)) !== templateFingerprint(approved)) throw new DomainError(400, 'INVALID_TEMPLATE', 'A suite card must retain its saved or published template version.');
+    card.templateSnapshot = approved;
+  }
   await storeDocumentPhotos(db,ownerId,document);
   const saved = { ...document, revision: document.revision + 1, createdAt: existing.createdAt, updatedAt: new Date().toISOString() };
   const [row] = await db.update(invitations).set({ document: saved, revision: saved.revision, updatedAt: new Date() }).where(and(eq(invitations.id, id), eq(invitations.revision, document.revision), inArray(invitations.projectId, ownedProjects(ownerId, db)))).returning();

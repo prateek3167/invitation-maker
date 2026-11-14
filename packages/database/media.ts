@@ -4,7 +4,7 @@ import { mkdir, readFile, writeFile, unlink } from 'node:fs/promises';
 import path from 'node:path';
 import { and, eq, or, sql, notExists } from 'drizzle-orm';
 import { workspaceRoot, type Database } from './client';
-import { assets, invitations, portraitAssets, user } from './schema';
+import { assets, invitations, portraitAssets, canvasAssets, user } from './schema';
 import { DomainError } from './errors';
 import type { Invitation } from '../editor-core/document';
 
@@ -73,7 +73,7 @@ export async function removeAssetFiles(ids: string[]) {
 export async function deleteUnusedPhotos(db: Database, owner: string) {
   const rows = await db.transaction(async tx => {
     await tx.select({ id: user.id }).from(user).where(eq(user.id, owner)).for('update');
-    return tx.delete(assets).where(and(eq(assets.ownerId, owner), notExists(tx.select({ id: invitations.id }).from(invitations).where(eq(invitations.assetId, assets.id))), notExists(tx.select({ id: portraitAssets.assetId }).from(portraitAssets).where(eq(portraitAssets.assetId, assets.id))))).returning();
+    return tx.delete(assets).where(and(eq(assets.ownerId, owner), notExists(tx.select({ id: invitations.id }).from(invitations).where(eq(invitations.assetId, assets.id))), notExists(tx.select({ id: portraitAssets.assetId }).from(portraitAssets).where(eq(portraitAssets.assetId, assets.id))), notExists(tx.select({ id: canvasAssets.assetId }).from(canvasAssets).where(eq(canvasAssets.assetId, assets.id))))).returning();
   });
   await removeAssetFiles(rows.map(row => row.id));
   return rows.length;
@@ -86,9 +86,13 @@ export async function hydratePhoto(db: Database, owner: string, document: Invita
   };
   if (result.photo) result.photo=await hydrate(result.photo);
   if (result.portraits) for (const slot of ['bride','groom'] as const) if (result.portraits[slot]) result.portraits[slot]=await hydrate(result.portraits[slot]!);
+  for (const element of result.canvasElements || []) if (element.src?.startsWith('asset:')) element.src = (await hydrate({data:element.src,x:50,y:50,zoom:1})).data;
+  if (result.suiteCards) result.suiteCards = await Promise.all(result.suiteCards.map(card => hydratePhoto(db, owner, card)));
   return result;
 }
 export async function storeDocumentPhotos(db: Database, owner: string, document: Invitation) {
   if (document.photo) document.photo=await storePhoto(db,owner,document.photo);
   if (document.portraits) for (const slot of ['bride','groom'] as const) if(document.portraits[slot]) document.portraits[slot]=await storePhoto(db,owner,document.portraits[slot]!);
+  for (const element of document.canvasElements || []) if (element.src && /^(?:asset:|data:image\/(?:png|jpeg|webp);base64,)/.test(element.src)) element.src = (await storePhoto(db, owner, {data:element.src,x:50,y:50,zoom:1})).data;
+  for (const card of document.suiteCards || []) await storeDocumentPhotos(db, owner, card);
 }

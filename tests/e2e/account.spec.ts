@@ -1,6 +1,7 @@
 import { mailLink } from './helpers/mail';
 import { expect, test } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import { decomposeTemplateToElements, generateWeddingSuite } from '../../packages/editor-core/document';
 
 test('account registration, multi-card events, saved edits, device copy and session logout', async ({ page }) => {
   const errors: string[] = []; page.on('pageerror', e => errors.push(e.message));
@@ -106,7 +107,13 @@ test('real HTTP authentication, cross-user isolation, CSRF and stale revision co
     expect((await bob.get(`/api/v1/invitations/${invitation.id}`)).status()).toBe(404);
     expect((await bob.put(`/api/v1/invitations/${invitation.id}`, { data: { document: invitation } })).status()).toBe(404);
     expect((await bob.delete(`/api/v1/invitations/${invitation.id}`)).status()).toBe(404);
-    expect((await alice.put(`/api/v1/invitations/${invitation.id}`, { data: { document: { ...invitation, font: 'modern' } } })).status()).toBe(200);
+    const advanced = { ...invitation, font: 'modern', canvasElements: decomposeTemplateToElements(invitation), suiteCards: generateWeddingSuite(invitation) };
+    const advancedSave = await alice.put(`/api/v1/invitations/${invitation.id}`, { data: { document: advanced } });
+    expect(advancedSave.status(), await advancedSave.text()).toBe(200);
+    const reopened = (await (await alice.get(`/api/v1/invitations/${invitation.id}`)).json()).invitation;
+    expect(reopened.canvasElements).toEqual(advanced.canvasElements);
+    expect(reopened.suiteCards).toHaveLength(5);
+    expect(reopened.suiteCards[1].fields.heading).toBe(advanced.suiteCards[1].fields.heading);
     const stale = await alice.put(`/api/v1/invitations/${invitation.id}`, { data: { document: invitation } });
     expect(stale.status()).toBe(409); expect((await stale.json()).error.code).toBe('CONFLICT');
     expect(stale.headers()['cache-control']).toBe('private, no-store'); expect(stale.headers()['x-request-id']).toBeTruthy();
