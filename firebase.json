@@ -1,0 +1,12 @@
+{
+  "apphosting": {
+    "backendId": "invitation-maker",
+    "rootDir": "/",
+    "ignore": [
+      "node_modules",
+      ".git",
+      ".cache",
+      "test-results"
+    ]
+  }
+}
