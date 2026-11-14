@@ -281,6 +281,7 @@ export function decomposeTemplateToElements(document: Invitation, artworkData?: 
         height: h,
         zIndex: zIndex++,
         slot,
+        photoSlot: slot,
         src: photo?.data || '',
         cropX: photo?.x ?? 50,
         cropY: photo?.y ?? 50,

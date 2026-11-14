@@ -1,12 +1,30 @@
 # Invitation Maker — Project Memory
 
-Updated 2026-11-13 (Asia/Calcutta). This is repository-local context, not account-level assistant memory.
+Updated 2026-11-14 (Asia/Calcutta). This is repository-local context, not account-level assistant memory.
 
 ## Start here
 
 Read AGENTS.md and PLAN.md, then [requirements](docs/product/requirements.md), [design](docs/product/design.md), [architecture](docs/architecture/overview.md), [database](docs/architecture/database.md) and [API](docs/architecture/api.md) before implementation. The user authorized building the initial studio, the next account-foundation phase and a backed-up structural cleanup. Those instructions do not approve public deployment, destructive database work or paid services.
 
 Current truth: [implementation status](docs/development/status.md), [setup](docs/development/setup.md), [roadmap](docs/product/roadmap.md) and [ADR 0001](docs/decisions/0001-server-foundation.md).
+
+## CI Quality Gate Resolution & E2E Test Hardening — 2026-11-14
+
+Following diagnosis of GitHub Actions Run #5 failure:
+- **Circular JSON Prevention in Suite Cards**:
+  - In `apps/web/components/editor.tsx`, stripped child card `suiteCards` references during suite updates and account persistence to prevent recursive JSON cycles.
+- **E2E Dialog Title Restoration**:
+  - Restored download dialog title `title="Ready for your big moment?"` in `editor.tsx` ensuring Playwright's dialog title locator resolves instantaneously.
+- **Mobile Top Toolbar Layout & Save Status Pill Visibility**:
+  - Under `@media (max-width: 680px)` in `apps/web/app/globals.css`, hardened `.canva-top-toolbar`, `.toolbar-left`, and `.save-status-pill` so that `'Saved on this device'` remains positive-sized, unclipped, and visible on mobile screen widths (390px/393px).
+- **Dual-Portrait Canvas & SVG Parity**:
+  - Mapped `slot`, `photoSlot`, and `id` in `canvas.ts` and `editor.tsx`, and provided fallback to `document.portraits?.[slot]?.data` in `render.ts` (`renderFromCanvasElements`).
+- **100% Quality Gate Verification**:
+  - Vitest Unit/Integration Tests: 61/61 passed (16 test files).
+  - Playwright E2E Tests: 9/9 passed (`account.spec.ts`, `admin.spec.ts`, `exports.spec.ts`, `royal.spec.ts`, `security.spec.ts`, `studio.spec.ts`).
+  - Next.js Production Build: succeeded with 0 errors across all routes.
+  - Structure Checks: passed (206 maintained files).
+  - TypeScript Typecheck: passed with 0 errors.
 
 ## AI Wedding Content & Shloka Assistant & Auspicious Celebration Audio Engine — 2026-11-14
 

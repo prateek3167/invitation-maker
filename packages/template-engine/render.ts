@@ -367,15 +367,44 @@ export function renderFromCanvasElements(d: Invitation, artworkData?: string): s
       }
       defs.push(`<clipPath id="${clipId}">${clipShape}</clipPath>`);
 
-      if (el.src && el.src.startsWith('data:image/')) {
-        const zoom = el.zoom || 1;
-        const cropX = el.cropX ?? 50;
-        const cropY = el.cropY ?? 50;
+      const imageSrc =
+        el.src ||
+        (el.slot === 'bride' || el.photoSlot === 'bride'
+          ? d.portraits?.bride?.data
+          : el.slot === 'groom' || el.photoSlot === 'groom'
+          ? d.portraits?.groom?.data
+          : d.photo?.data);
+
+      if (imageSrc && imageSrc.startsWith('data:image/')) {
+        const zoom =
+          el.zoom ||
+          (el.slot === 'bride'
+            ? d.portraits?.bride?.zoom
+            : el.slot === 'groom'
+            ? d.portraits?.groom?.zoom
+            : d.photo?.zoom) ||
+          1;
+        const cropX =
+          el.cropX ??
+          (el.slot === 'bride'
+            ? d.portraits?.bride?.x
+            : el.slot === 'groom'
+            ? d.portraits?.groom?.x
+            : d.photo?.x) ??
+          50;
+        const cropY =
+          el.cropY ??
+          (el.slot === 'bride'
+            ? d.portraits?.bride?.y
+            : el.slot === 'groom'
+            ? d.portraits?.groom?.y
+            : d.photo?.y) ??
+          50;
         const imgX = el.x - el.width * (zoom - 1) * cropX / 100;
         const imgY = el.y - el.height * (zoom - 1) * cropY / 100;
         body.push(`<g ${transform} opacity="${opacity}">
           <g clip-path="url(#${clipId})">
-            <image href="${esc(el.src)}" x="${imgX}" y="${imgY}" width="${el.width * zoom}" height="${el.height * zoom}" preserveAspectRatio="xMidYMid slice"/>
+            <image href="${esc(imageSrc)}" x="${imgX}" y="${imgY}" width="${el.width * zoom}" height="${el.height * zoom}" preserveAspectRatio="xMidYMid slice"/>
           </g>
           <g fill="none" stroke="${el.stroke || accent}" stroke-width="${el.strokeWidth || 2}">${clipShape}</g>
         </g>`);

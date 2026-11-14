@@ -1057,6 +1057,54 @@
 }
 
 @media (max-width: 680px) {
+  .canva-top-toolbar {
+    height: 54px;
+    padding: 0 10px;
+    gap: 8px;
+  }
+  .toolbar-left {
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .toolbar-document-meta {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1px;
+    flex-shrink: 0;
+    max-width: none;
+  }
+  .toolbar-document-meta strong {
+    display: none;
+  }
+  .save-status-pill {
+    font-size: 8px;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+  .toolbar-center {
+    display: none;
+  }
+  .toolbar-rsvp-btn {
+    display: none;
+  }
+  .toolbar-right {
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .toolbar-save-btn {
+    padding: 6px 10px;
+    font-size: 11px;
+    min-height: 34px;
+  }
+  .toolbar-download-btn {
+    padding: 6px 12px;
+    font-size: 11px;
+    min-height: 34px;
+  }
   .canva-editor-workspace {
     display: flex;
     flex-direction: column-reverse;
@@ -1068,9 +1116,6 @@
   .interactive-canvas-container {
     padding: 15px;
     min-height: 360px;
-  }
-  .toolbar-document-meta {
-    display: none;
   }
   .editor-mode-toggle span {
     display: none;

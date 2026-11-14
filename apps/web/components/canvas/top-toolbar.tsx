@@ -61,7 +61,7 @@ export default function TopToolbar({
           aria-label="Back to studio"
         >
           <ArrowLeft size={16} />
-          <span>Back to Studio</span>
+          <span>Back to studio</span>
         </button>
 
         <div className="toolbar-document-meta">
@@ -147,6 +147,7 @@ export default function TopToolbar({
           type="button"
           className="button secondary toolbar-save-btn"
           onClick={onSave}
+          aria-label="Save"
           title="Save Draft"
         >
           <Save size={15} />
@@ -156,6 +157,7 @@ export default function TopToolbar({
           type="button"
           className="button toolbar-download-btn"
           onClick={onDownload}
+          aria-label="Download"
           title="Download & Export"
         >
           <Download size={15} />

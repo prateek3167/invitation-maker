@@ -116,7 +116,7 @@ export default function Editor({
   const [syncCouple, setSyncCouple] = useState(true);
 
   const [artworkData, setArtworkData] = useState<string | undefined>(undefined);
-  const [mode, setMode] = useState<'visual' | 'guided'>('visual');
+  const [mode, setMode] = useState<'visual' | 'guided'>('guided');
   const [activeTab, setActiveTab] = useState<ActiveSidebarTab>('templates');
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [zoom, setZoom] = useState(1.0);
@@ -189,7 +189,15 @@ export default function Editor({
 
     // Update active card in suite
     const currentIdx = cardIndexRef.current;
-    let nextSuite = suiteRef.current.map((c, i) => (i === currentIdx ? next : c));
+    const nextClean = { ...next };
+    delete nextClean.suiteCards;
+
+    let nextSuite = suiteRef.current.map((c, i) => {
+      if (i === currentIdx) return nextClean;
+      const copy = { ...c };
+      delete copy.suiteCards;
+      return copy;
+    });
 
     // Propagate couple names to all cards in the suite if enabled
     if (
@@ -197,7 +205,7 @@ export default function Editor({
       patch.fields &&
       (patch.fields.host !== undefined || patch.fields.partner !== undefined)
     ) {
-      nextSuite = syncSuiteCoupleDetails(nextSuite, next);
+      nextSuite = syncSuiteCoupleDetails(nextSuite, nextClean);
     }
     next.suiteCards = nextSuite;
 
@@ -338,9 +346,14 @@ export default function Editor({
       }
       if (alive.current) setStatus('Saving…');
       try {
+        const cleanSuite = (suiteRef.current || []).map(c => {
+          const copy = { ...c };
+          delete copy.suiteCards;
+          return copy;
+        });
         const payload: Invitation = {
           ...ref.current,
-          suiteCards: suiteRef.current,
+          suiteCards: cleanSuite.length > 1 ? cleanSuite : undefined,
           revision: revision.current,
         };
         const saved = await persistDocument(payload);
@@ -804,7 +817,7 @@ export default function Editor({
                             [slot]: photo,
                           };
                           const updatedElements = currentElements.map(el =>
-                            el.type === 'image' && el.photoSlot === slot
+                            el.type === 'image' && (el.slot === slot || el.photoSlot === slot || el.id === `photo-${slot}`)
                               ? { ...el, src: photo?.data, zoom: photo?.zoom, cropX: photo?.x, cropY: photo?.y }
                               : el
                           );
@@ -955,7 +968,7 @@ export default function Editor({
       {/* Download Modal Dialog */}
       {downloadOpen && (
         <Dialog
-          title="Download Wedding Invitations"
+          title="Ready for your big moment?"
           onClose={() => {
             if (!exporting) setDownloadOpen(false);
           }}
