@@ -376,7 +376,7 @@ export default function SidebarTools({
               ))}
             </div>
             <div className="sidebar-template-grid">
-              {filteredTemplates.slice(0, 30).map(t => (
+              {filteredTemplates.map(t => (
                 <button
                   key={t.id}
                   type="button"
@@ -384,6 +384,7 @@ export default function SidebarTools({
                   onClick={() => {
                     onUpdateDocument({
                       templateId: t.id,
+                      templateSnapshot: structuredClone(t),
                       palette: [...t.palette],
                       canvasElements: undefined, // Will re-decompose into new template elements
                     });

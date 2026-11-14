@@ -1,6 +1,6 @@
 import { serverArtwork } from '../../packages/template-engine/artwork';
 import { describe, expect, it } from 'vitest';
-import { contentIssues, createInvitation, filterTemplates, occasions, presets, templates, validateInvitation, decomposeTemplateToElements, syncFieldsFromElements, syncElementsFromFields } from '../../packages/editor-core/document';
+import { contentIssues, createInvitation, documentTemplate, filterTemplates, getTemplate, occasions, presets, templates, validateInvitation, decomposeTemplateToElements, syncFieldsFromElements, syncElementsFromFields } from '../../packages/editor-core/document';
 import { renderSvg } from '../../packages/template-engine/render';
 
 describe('canonical invitation documents', () => {
@@ -96,5 +96,27 @@ describe('canonical invitation documents', () => {
     });
     const svgWithOrnament = renderSvg(doc);
     expect(svgWithOrnament).toContain('Q350,44 359,58');
+  });
+  it('switches templates seamlessly while maintaining valid templateSnapshot identity', () => {
+    const original = createInvitation(templates[0], 'test-switch');
+    expect(original.templateSnapshot?.id).toBe(templates[0].id);
+    expect(documentTemplate(original).id).toBe(templates[0].id);
+
+    // Switch to a different template (e.g. royal template)
+    const targetTemplate = templates.find(t => t.royal)!;
+    const switchedT = getTemplate(targetTemplate.id);
+    const updated = {
+      ...original,
+      templateId: targetTemplate.id,
+      templateSnapshot: structuredClone(switchedT),
+      palette: [...switchedT.palette],
+      ...(switchedT.royal && !original.portraits ? { portraits: { bride: null, groom: null } } : {}),
+    };
+    updated.canvasElements = decomposeTemplateToElements(updated);
+
+    expect(() => validateInvitation(updated)).not.toThrow();
+    expect(documentTemplate(updated).id).toBe(targetTemplate.id);
+    expect(updated.templateSnapshot?.id).toBe(targetTemplate.id);
+    expect(updated.canvasElements.length).toBeGreaterThan(5);
   });
 });

@@ -19,6 +19,7 @@ import {
 import {
   contentIssues,
   documentTemplate,
+  getTemplate,
   presets,
   weddingEvents,
   type Fields,
@@ -535,14 +536,34 @@ export default function Editor({
               selectedId={selectedId}
               onSelect={setSelectedId}
               onChange={handleElementsChange}
-              onUpdateDocument={patch => {
+              onUpdateDocument={async patch => {
                 if (patch.templateId && patch.templateId !== doc.templateId) {
-                  const newT = documentTemplate({ ...doc, templateId: patch.templateId });
-                  const newElements = decomposeTemplateToElements(
-                    { ...doc, templateId: patch.templateId, palette: [...newT.palette] },
-                    artworkData
-                  );
-                  update({ ...patch, canvasElements: newElements });
+                  const newT = getTemplate(patch.templateId);
+                  let currentArt = artworkData;
+                  if (newT.royal) {
+                    try {
+                      const loaded = await browserArtwork({ ...doc, templateId: patch.templateId, templateSnapshot: newT });
+                      if (loaded) {
+                        currentArt = loaded;
+                        setArtworkData(loaded);
+                      }
+                    } catch {}
+                  }
+                  const updatedDoc: Invitation = {
+                    ...doc,
+                    templateId: patch.templateId,
+                    templateSnapshot: structuredClone(newT),
+                    palette: patch.palette || [...newT.palette],
+                    ...(newT.royal && !doc.portraits ? { portraits: { bride: null, groom: null } } : {}),
+                  };
+                  const newElements = decomposeTemplateToElements(updatedDoc, currentArt);
+                  update({
+                    ...patch,
+                    templateId: patch.templateId,
+                    templateSnapshot: structuredClone(newT),
+                    palette: patch.palette || [...newT.palette],
+                    canvasElements: newElements,
+                  });
                 } else if (patch.fields) {
                   const newElements = syncElementsFromFields(currentElements, patch.fields);
                   update({ ...patch, canvasElements: newElements });
