@@ -41,7 +41,35 @@ export type CanvasElement = {
   photoSlot?: 'single' | 'bride' | 'groom';
 
   // Shape / Ornament properties
-  shapeType?: 'rect' | 'circle' | 'ellipse' | 'line' | 'star' | 'mandala' | 'kalash' | 'filigree' | 'toran' | 'lanterns' | 'peacock' | 'henna' | 'border' | 'divider' | 'customSvg';
+  shapeType?:
+    | 'rect'
+    | 'circle'
+    | 'ellipse'
+    | 'line'
+    | 'star'
+    | 'mandala'
+    | 'kalash'
+    | 'filigree'
+    | 'toran'
+    | 'lanterns'
+    | 'peacock'
+    | 'henna'
+    | 'border'
+    | 'divider'
+    | 'ganesha_royal'
+    | 'ganesha_minimal'
+    | 'swastik'
+    | 'om'
+    | 'doli'
+    | 'shehnai'
+    | 'baarat_elephant'
+    | 'havan_kund'
+    | 'mangalsutra'
+    | 'peacock_pair'
+    | 'diya'
+    | 'namaste'
+    | 'marigold_garland'
+    | 'customSvg';
   fill?: string;
   stroke?: string;
   strokeWidth?: number;
@@ -49,48 +77,161 @@ export type CanvasElement = {
   svgContent?: string;
 };
 
-export const WEDDING_ELEMENT_TEMPLATES: Record<string, { name: string; width: number; height: number; shapeType: CanvasElement['shapeType']; svgContent?: string }> = {
+export const WEDDING_ELEMENT_TEMPLATES: Record<
+  string,
+  {
+    name: string;
+    width: number;
+    height: number;
+    shapeType: CanvasElement['shapeType'];
+    svgContent?: string;
+    category?: 'sacred' | 'ceremony' | 'decor' | 'general';
+  }
+> = {
+  // Sacred & Auspicious Invocations
+  ganesha_royal: {
+    name: 'Lord Ganesha (Royal)',
+    width: 80,
+    height: 80,
+    shapeType: 'ganesha_royal',
+    category: 'sacred',
+  },
+  ganesha_minimal: {
+    name: 'Lord Ganesha (Line Art)',
+    width: 70,
+    height: 70,
+    shapeType: 'ganesha_minimal',
+    category: 'sacred',
+  },
+  swastik: {
+    name: 'Auspicious Swastika',
+    width: 55,
+    height: 55,
+    shapeType: 'swastik',
+    category: 'sacred',
+  },
+  om: {
+    name: 'Sacred Pranava Om ॐ',
+    width: 60,
+    height: 60,
+    shapeType: 'om',
+    category: 'sacred',
+  },
   kalash: {
-    name: 'Auspicious Kalash',
+    name: 'Pooja Kalash & Nariyal',
     width: 60,
     height: 60,
     shapeType: 'kalash',
+    category: 'sacred',
   },
   mandala: {
     name: 'Sacred Mandala',
     width: 150,
     height: 150,
     shapeType: 'mandala',
+    category: 'sacred',
+  },
+
+  // Wedding Ceremonies & Processions
+  doli: {
+    name: 'Royal Bridal Doli / Palki',
+    width: 110,
+    height: 90,
+    shapeType: 'doli',
+    category: 'ceremony',
+  },
+  shehnai: {
+    name: 'Shehnai & Dholak Beats',
+    width: 100,
+    height: 85,
+    shapeType: 'shehnai',
+    category: 'ceremony',
+  },
+  baarat_elephant: {
+    name: 'Royal Baarat Elephant',
+    width: 105,
+    height: 95,
+    shapeType: 'baarat_elephant',
+    category: 'ceremony',
+  },
+  havan_kund: {
+    name: 'Saat Phere Havan Kund',
+    width: 90,
+    height: 80,
+    shapeType: 'havan_kund',
+    category: 'ceremony',
+  },
+  mangalsutra: {
+    name: 'Mangalsutra & Sindoor Dani',
+    width: 80,
+    height: 75,
+    shapeType: 'mangalsutra',
+    category: 'ceremony',
+  },
+
+  // Royal Decor & Welcome Elements
+  peacock_pair: {
+    name: 'Mayur Yugam (Peacock Pair)',
+    width: 120,
+    height: 80,
+    shapeType: 'peacock_pair',
+    category: 'decor',
+  },
+  diya: {
+    name: 'Auspicious Brass Diya',
+    width: 65,
+    height: 65,
+    shapeType: 'diya',
+    category: 'decor',
+  },
+  namaste: {
+    name: 'Atithi Devo Bhava (Namaste)',
+    width: 75,
+    height: 75,
+    shapeType: 'namaste',
+    category: 'decor',
+  },
+  marigold_garland: {
+    name: 'Genda Phool Hanging Ladi',
+    width: 40,
+    height: 160,
+    shapeType: 'marigold_garland',
+    category: 'decor',
   },
   toran: {
     name: 'Marigold Toran Garland',
     width: 620,
     height: 60,
     shapeType: 'toran',
+    category: 'decor',
   },
   lanterns: {
     name: 'Palace Hanging Lanterns',
     width: 500,
     height: 140,
     shapeType: 'lanterns',
+    category: 'decor',
   },
   peacock: {
     name: 'Imperial Peacock Feathers',
     width: 600,
     height: 90,
     shapeType: 'peacock',
+    category: 'decor',
   },
   henna: {
     name: 'Henna Arabesque Flourish',
     width: 620,
     height: 890,
     shapeType: 'henna',
+    category: 'decor',
   },
   divider: {
     name: 'Royal Sunburst Divider',
     width: 240,
     height: 20,
     shapeType: 'divider',
+    category: 'decor',
   },
 };
 

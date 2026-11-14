@@ -5,6 +5,7 @@ import type { Invitation } from '../../../../packages/editor-core/document';
 import { presets } from '../../../../packages/editor-core/document';
 import type { CanvasElement } from '../../../../packages/editor-core/canvas';
 import type { DragState, HandleType, SnapGuide } from './types';
+import { getTraditionalOrnamentSvg } from '../../../../packages/template-engine/traditional-elements';
 
 interface InteractiveCanvasProps {
   document: Invitation;
@@ -589,7 +590,14 @@ export default function InteractiveCanvas({
                   onPointerDown={e => handlePointerDownElement(e, el)}
                   style={{ cursor: el.locked ? 'default' : 'move' }}
                 >
-                  {el.shapeType === 'border' ? (
+                  {getTraditionalOrnamentSvg(el.shapeType || '', stroke, fill) ? (
+                    <g
+                      transform={`translate(${el.x}, ${el.y}) scale(${el.width / 100}, ${el.height / 100})`}
+                      dangerouslySetInnerHTML={{
+                        __html: getTraditionalOrnamentSvg(el.shapeType || '', stroke, fill) || '',
+                      }}
+                    />
+                  ) : el.shapeType === 'border' ? (
                     <rect
                       x={el.x}
                       y={el.y}

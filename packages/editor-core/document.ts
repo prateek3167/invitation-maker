@@ -21,6 +21,7 @@ export type Invitation = {
 
 export * from './canvas';
 export * from './suite';
+export * from './shlokas';
 export const templates: Template[] = [...catalog, ...royalCatalog];
 export const royalCategories = [...new Set(royalCatalog.map(t => t.royal.category))];
 export const weddingEvents = ['Shaadi', 'Haldi', 'Mehndi', 'Sangeet', 'Sagaai'] as const;

@@ -22,11 +22,18 @@ import {
   Flower2,
   Crown,
   Heart,
+  Languages,
+  ScrollText,
 } from 'lucide-react';
 import type { Invitation, Format } from '../../../../packages/editor-core/document';
 import { templates, presets } from '../../../../packages/editor-core/document';
 import type { CanvasElement } from '../../../../packages/editor-core/canvas';
 import { WEDDING_ELEMENT_TEMPLATES } from '../../../../packages/editor-core/canvas';
+import {
+  VEDIC_SHLOKAS,
+  convertDocumentToHindi,
+  applyDevanagariFontsToElements,
+} from '../../../../packages/editor-core/shlokas';
 import type { ActiveSidebarTab } from './types';
 import { readPhoto } from '../../lib/export';
 
@@ -40,16 +47,6 @@ interface SidebarToolsProps {
   activeTab: ActiveSidebarTab;
   onTabChange: (tab: ActiveSidebarTab) => void;
 }
-
-const WEDDING_PHRASES = [
-  { label: 'Invocation', text: '॥ श्री गणेशाय नमः ॥' },
-  { label: 'Save the Date', text: 'SAVE THE DATE' },
-  { label: 'Together', text: 'Together with their families' },
-  { label: 'Invitation', text: 'cordially invite you to celebrate the joyous wedding of' },
-  { label: 'Blessing', text: 'Seeking your blessings and warm presence' },
-  { label: 'Reception', text: 'Dinner, Music & Reception to follow' },
-  { label: 'RSVP', text: 'RSVP: With Warm Regards' },
-];
 
 const LUXURY_PALETTES = [
   { name: 'Royal Ruby & Gold', colors: ['#541212', '#fff8ee', '#d4af37'] },
@@ -73,11 +70,26 @@ export default function SidebarTools({
 }: SidebarToolsProps) {
   const [templateSearch, setTemplateSearch] = useState('');
   const [templateFilter, setTemplateFilter] = useState<string>('all');
+  const [shlokaCategory, setShlokaCategory] = useState<string>('all');
+  const [elementCategory, setElementCategory] = useState<string>('all');
+  const [hindiConverted, setHindiConverted] = useState(false);
   const [uploads, setUploads] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
   const uploadInputRef = useRef<HTMLInputElement>(null);
 
   const [ink, , accent] = doc.palette;
+
+  const handleConvertToHindi = () => {
+    const hindiPreset = convertDocumentToHindi(doc);
+    onUpdateDocument({
+      fields: hindiPreset.fields,
+      font: 'serif',
+    });
+    const updated = applyDevanagariFontsToElements(elements);
+    onChange(updated);
+    setHindiConverted(true);
+    setTimeout(() => setHindiConverted(false), 3000);
+  };
 
   // Add Element helper
   const addElement = (newEl: Omit<CanvasElement, 'id' | 'zIndex'>) => {
@@ -280,8 +292,32 @@ export default function SidebarTools({
         {activeTab === 'text' && (
           <div className="sidebar-tab-pane">
             <div className="pane-header">
-              <h3>Add Text</h3>
-              <p>Click to add lettering to your invitation</p>
+              <h3>Add Text &amp; Shlokas</h3>
+              <p>Devanagari calligraphy, Vedic shlokas &amp; headings</p>
+            </div>
+
+            {/* 1-Click Hindi Converter Card */}
+            <div className="hindi-preset-banner">
+              <div className="hindi-banner-left">
+                <Languages size={20} className="hindi-icon" />
+                <div>
+                  <strong>हिंदी निमंत्रण (Shudh Hindi Preset)</strong>
+                  <span>1-click translate names, greetings &amp; details to Devanagari</span>
+                </div>
+              </div>
+              <button
+                type="button"
+                className={`button ${hindiConverted ? 'secondary' : ''}`}
+                onClick={handleConvertToHindi}
+              >
+                {hindiConverted ? '✓ Converted!' : 'हिंदी में बदलें'}
+              </button>
+            </div>
+
+            {/* Devanagari Quick Typography */}
+            <div className="pane-section-title">
+              <Type size={14} />
+              <span>Devanagari Typography (देवनागरी फॉन्ट्स)</span>
             </div>
             <div className="text-actions-list">
               <button
@@ -290,22 +326,22 @@ export default function SidebarTools({
                 onClick={() =>
                   addElement({
                     type: 'text',
-                    name: 'Heading Text',
-                    text: 'A Royal Celebration',
+                    name: 'Shubh Vivah Heading',
+                    text: '॥ शुभ विवाह ॥',
                     x: 100,
-                    y: 300,
+                    y: 280,
                     width: 500,
-                    height: 60,
-                    fontSize: 32,
+                    height: 65,
+                    fontSize: 36,
                     fontWeight: 'bold',
-                    fontFamily: doc.font === 'modern' ? 'Arial, sans-serif' : 'Georgia, serif',
-                    color: ink,
+                    fontFamily: "'Rozha One', serif",
+                    color: accent,
                     textAlign: 'center',
                   })
                 }
               >
-                <strong>Add a heading</strong>
-                <span>32pt serif bold</span>
+                <strong style={{ fontFamily: "'Rozha One', serif", fontSize: 16 }}>॥ शुभ विवाह ॥</strong>
+                <span>36pt Rozha One (शाही हेडिंग)</span>
               </button>
 
               <button
@@ -314,22 +350,44 @@ export default function SidebarTools({
                 onClick={() =>
                   addElement({
                     type: 'text',
-                    name: 'Subheading Text',
-                    text: 'Together with their families',
-                    x: 150,
-                    y: 380,
-                    width: 400,
+                    name: 'Sanskrit Invocation',
+                    text: 'परमपिता परमेश्वर की असीम अनुकंपा से',
+                    x: 100,
+                    y: 355,
+                    width: 500,
                     height: 40,
                     fontSize: 18,
-                    fontStyle: 'italic',
-                    fontFamily: 'Georgia, serif',
+                    fontFamily: "'Tiro Devanagari Hindi', serif",
+                    color: ink,
+                    textAlign: 'center',
+                  })
+                }
+              >
+                <strong style={{ fontFamily: "'Tiro Devanagari Hindi', serif" }}>परमपिता परमेश्वर के आशीर्वाद से</strong>
+                <span>18pt Tiro Devanagari (शास्त्रीय)</span>
+              </button>
+
+              <button
+                type="button"
+                className="add-text-btn festive-btn"
+                onClick={() =>
+                  addElement({
+                    type: 'text',
+                    name: 'Festive Calligraphy',
+                    text: 'सजेगी मेहंदी, रचेगा प्यार',
+                    x: 120,
+                    y: 400,
+                    width: 460,
+                    height: 45,
+                    fontSize: 22,
+                    fontFamily: "'Kalam', cursive",
                     color: accent,
                     textAlign: 'center',
                   })
                 }
               >
-                <strong>Add a subheading</strong>
-                <span>18pt romantic italic</span>
+                <strong style={{ fontFamily: "'Kalam', cursive" }}>सजेगी मेहंदी, रचेगा प्यार</strong>
+                <span>22pt Kalam (उत्सव कैलीग्राफी)</span>
               </button>
 
               <button
@@ -338,51 +396,85 @@ export default function SidebarTools({
                 onClick={() =>
                   addElement({
                     type: 'text',
-                    name: 'Body Details',
-                    text: 'Saturday, November 28th, 2026\nGrand Hyatt Ballroom, Mumbai',
+                    name: 'Hindi Event Details',
+                    text: 'शनिवार, २८ नवंबर २०२६ · सायं ७:०० बजे\nशाही पैलेस, नई दिल्ली',
                     x: 100,
-                    y: 440,
+                    y: 450,
                     width: 500,
                     height: 50,
                     fontSize: 14,
+                    fontFamily: "'Noto Serif Devanagari', serif",
                     color: ink,
                     textAlign: 'center',
-                    lineHeight: 1.3,
+                    lineHeight: 1.35,
                   })
                 }
               >
-                <strong>Add event details</strong>
-                <span>14pt date, time & venue</span>
+                <strong style={{ fontFamily: "'Noto Serif Devanagari', serif" }}>शनिवार, २८ नवंबर २०२६</strong>
+                <span>14pt Noto Serif (वैदिक विवरण)</span>
               </button>
             </div>
 
+            {/* Vedic Shlokas & Mantras Library */}
             <div className="pane-section-title">
-              <Crown size={14} />
-              <span>Auspicious Wedding Phrasing</span>
+              <ScrollText size={14} />
+              <span>पवित्र वैदिक श्लोक एवं मंत्र (Vedic Shlokas)</span>
             </div>
-            <div className="wedding-phrases-list">
-              {WEDDING_PHRASES.map(item => (
+
+            {/* Shloka Category Filter Pills */}
+            <div className="shloka-filter-pills">
+              {[
+                { id: 'all', label: 'सभी' },
+                { id: 'ganesh', label: 'गणेश वंदना' },
+                { id: 'vivah', label: 'विवाह मंगल' },
+                { id: 'gauri', label: 'मां गौरी' },
+                { id: 'saptapadi', label: 'सप्तपदी/फेरे' },
+                { id: 'shanti', label: 'शांति पाठ' },
+                { id: 'headlines', label: 'मांगलिक शीर्षक' },
+                { id: 'traditional_lines', label: 'आमंत्रण पंक्तियां' },
+              ].map(cat => (
                 <button
-                  key={item.label}
+                  key={cat.id}
                   type="button"
-                  className="wedding-phrase-item"
+                  className={`pill-btn ${shlokaCategory === cat.id ? 'active' : ''}`}
+                  onClick={() => setShlokaCategory(cat.id)}
+                >
+                  {cat.label}
+                </button>
+              ))}
+            </div>
+
+            <div className="vedic-shlokas-list">
+              {VEDIC_SHLOKAS.filter(s => shlokaCategory === 'all' || s.category === shlokaCategory).map(item => (
+                <button
+                  key={item.id}
+                  type="button"
+                  className="vedic-shloka-card"
                   onClick={() =>
                     addElement({
                       type: 'text',
-                      name: item.label,
-                      text: item.text,
-                      x: 100,
-                      y: 350,
-                      width: 500,
-                      height: 50,
-                      fontSize: item.label === 'Invocation' ? 24 : 16,
-                      color: item.label === 'Invocation' ? accent : ink,
+                      name: item.title,
+                      text: item.sanskrit,
+                      x: 80,
+                      y: 330,
+                      width: 540,
+                      height: item.sanskrit.includes('\n') ? 75 : 50,
+                      fontSize: item.suggestedFontSize,
+                      fontFamily: item.suggestedFont,
+                      color: item.category === 'headlines' || item.category === 'ganesh' ? accent : ink,
                       textAlign: 'center',
+                      lineHeight: 1.35,
                     })
                   }
                 >
-                  <strong>{item.label}</strong>
-                  <span>{item.text}</span>
+                  <div className="shloka-card-top">
+                    <strong>{item.hindiTitle}</strong>
+                    <span className="shloka-font-tag">{item.suggestedFont.split("'")[1] || 'Serif'}</span>
+                  </div>
+                  <p className="shloka-verse" style={{ fontFamily: item.suggestedFont }}>
+                    {item.sanskrit}
+                  </p>
+                  <small className="shloka-meaning">{item.meaning}</small>
                 </button>
               ))}
             </div>
@@ -524,47 +616,86 @@ export default function SidebarTools({
         {activeTab === 'elements' && (
           <div className="sidebar-tab-pane">
             <div className="pane-header">
-              <h3>Design Elements</h3>
-              <p>Traditional Indian wedding ornaments & shapes</p>
+              <h3>Traditional Elements &amp; Shapes</h3>
+              <p>Authentic Indian wedding vector ornaments &amp; sacred symbols</p>
+            </div>
+
+            {/* Element Category Filter Pills */}
+            <div className="shloka-filter-pills">
+              {[
+                { id: 'all', label: 'सभी तत्व (All)' },
+                { id: 'sacred', label: '🕉️ पवित्र प्रतीक' },
+                { id: 'ceremony', label: '🎺 विवाह रस्में' },
+                { id: 'decor', label: '🦚 राजसी सज्जा' },
+              ].map(cat => (
+                <button
+                  key={cat.id}
+                  type="button"
+                  className={`pill-btn ${elementCategory === cat.id ? 'active' : ''}`}
+                  onClick={() => setElementCategory(cat.id)}
+                >
+                  {cat.label}
+                </button>
+              ))}
             </div>
 
             <div className="pane-section-title">
               <Sparkles size={14} />
-              <span>Auspicious Ornaments</span>
+              <span>Auspicious Ornaments ({Object.entries(WEDDING_ELEMENT_TEMPLATES).filter(([, item]) => elementCategory === 'all' || item.category === elementCategory).length})</span>
             </div>
             <div className="elements-ornaments-grid">
-              {Object.entries(WEDDING_ELEMENT_TEMPLATES).map(([key, item]) => (
-                <button
-                  key={key}
-                  type="button"
-                  className="ornament-card-btn"
-                  onClick={() =>
-                    addElement({
-                      type: 'ornament',
-                      name: item.name,
-                      x: Math.round(350 - item.width / 2),
-                      y: 300,
-                      width: item.width,
-                      height: item.height,
-                      shapeType: item.shapeType,
-                      stroke: accent,
-                      fill: accent,
-                      strokeWidth: 1.5,
-                    })
-                  }
-                >
-                  <div className="ornament-icon-preview">
-                    {key === 'kalash' && '🏺'}
-                    {key === 'mandala' && '☸️'}
-                    {key === 'toran' && '🌿'}
-                    {key === 'lanterns' && '🏮'}
-                    {key === 'peacock' && '🦚'}
-                    {key === 'henna' && '✨'}
-                    {key === 'divider' && '━ ◈ ━'}
-                  </div>
-                  <span>{item.name}</span>
-                </button>
-              ))}
+              {Object.entries(WEDDING_ELEMENT_TEMPLATES)
+                .filter(([, item]) => elementCategory === 'all' || item.category === elementCategory)
+                .map(([key, item]) => {
+                  const icons: Record<string, string> = {
+                    ganesha_royal: '👑 🕉️',
+                    ganesha_minimal: '🕉️',
+                    swastik: '卐',
+                    om: 'ॐ',
+                    kalash: '🏺',
+                    mandala: '☸️',
+                    doli: '🎪 🪑',
+                    shehnai: '🎺 🥁',
+                    baarat_elephant: '🐘',
+                    havan_kund: '🔥',
+                    mangalsutra: '📿 💍',
+                    peacock_pair: '🦚 🦚',
+                    diya: '🪔',
+                    namaste: '🙏',
+                    marigold_garland: '🏵️ 🌿',
+                    toran: '🌿',
+                    lanterns: '🏮',
+                    peacock: '🦚',
+                    henna: '✨',
+                    divider: '━ ◈ ━',
+                  };
+                  return (
+                    <button
+                      key={key}
+                      type="button"
+                      className="ornament-card-btn"
+                      onClick={() =>
+                        addElement({
+                          type: 'ornament',
+                          name: item.name,
+                          x: Math.round(350 - item.width / 2),
+                          y: 300,
+                          width: item.width,
+                          height: item.height,
+                          shapeType: item.shapeType,
+                          stroke: accent,
+                          fill: accent,
+                          strokeWidth: 1.5,
+                        })
+                      }
+                    >
+                      <div className="ornament-icon-preview">
+                        {icons[key] || '✨'}
+                      </div>
+                      <span>{item.name}</span>
+                    </button>
+                  );
+                })}
             </div>
 
             <div className="pane-section-title">

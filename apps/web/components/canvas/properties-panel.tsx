@@ -270,11 +270,21 @@ export default function PropertiesPanel({
                     value={selectedEl.fontFamily || (doc.font === 'modern' ? 'Arial, sans-serif' : 'Georgia, serif')}
                     onChange={e => updateSelected({ fontFamily: e.target.value })}
                   >
-                    <option value="Georgia, serif">Georgia Serif</option>
-                    <option value="'Playfair Display', serif">Playfair Display</option>
-                    <option value="'Cinzel', serif">Cinzel Royal</option>
-                    <option value="'Great Vibes', cursive">Great Vibes Calligraphy</option>
-                    <option value="Arial, sans-serif">Modern Sans</option>
+                    <optgroup label="🕉️ Traditional & Devanagari / Hindi">
+                      <option value="'Rozha One', serif">Rozha One (शाही हेडिंग · श्री)</option>
+                      <option value="'Yatra One', cursive">Yatra One (पारंपरिक बोल्ड · विवाह)</option>
+                      <option value="'Kalam', cursive">Kalam (उत्सव कैलीग्राफी · मेहँदी)</option>
+                      <option value="'Tiro Devanagari Hindi', serif">Tiro Devanagari (शास्त्रीय श्लोक)</option>
+                      <option value="'Noto Serif Devanagari', serif">Noto Serif (वैदिक सेरिफ)</option>
+                      <option value="'Noto Sans Devanagari', sans-serif">Noto Sans (आधुनिक देवनागरी)</option>
+                    </optgroup>
+                    <optgroup label="👑 Royal English Typography">
+                      <option value="'Cinzel', serif">Cinzel (Royal Roman)</option>
+                      <option value="'Playfair Display', serif">Playfair Display (Editorial)</option>
+                      <option value="'Great Vibes', cursive">Great Vibes (Script)</option>
+                      <option value="Georgia, serif">Georgia Serif</option>
+                      <option value="Arial, sans-serif">Modern Sans</option>
+                    </optgroup>
                   </select>
                 </label>
 

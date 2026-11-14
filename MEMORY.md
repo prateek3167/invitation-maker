@@ -8,6 +8,48 @@ Read AGENTS.md and PLAN.md, then [requirements](docs/product/requirements.md), [
 
 Current truth: [implementation status](docs/development/status.md), [setup](docs/development/setup.md), [roadmap](docs/product/roadmap.md) and [ADR 0001](docs/decisions/0001-server-foundation.md).
 
+## Culturally Rich Traditional Elements & Hindi/Devanagari Fonts — 2026-11-14
+
+User explicitly requested building Culturally Rich Traditional Elements & Hindi/Devanagari Fonts:
+- **Google Devanagari Fonts Integration**:
+  - Integrated Google Fonts in `apps/web/app/layout.tsx` and unified SVG `<defs>`:
+    - `Rozha One`: Royal, high-contrast serif for regal wedding titles (`॥ शुभ विवाह ॥`).
+    - `Yatra One`: Handcrafted vintage Devanagari signage style, bold and traditional.
+    - `Kalam`: Warm festive handwritten Hindi calligraphy (for Mehndi, Haldi, personal notes).
+    - `Tiro Devanagari Hindi`: Classical literary serif for Vedic wedding shlokas.
+    - `Noto Serif Devanagari`: Clean, formal Vedic serif for dates, venues, and formal invitations.
+    - `Noto Sans Devanagari`: Modern clean sans-serif for addresses, timings, and details.
+  - Context-sensitive properties inspector (`properties-panel.tsx`) organizes fonts into optgroups: Traditional Devanagari / Hindi and Royal English Typography.
+- **Vedic Shlokas & Auspicious Phrasing Library (`packages/editor-core/shlokas.ts`)**:
+  - `VEDIC_SHLOKAS`: Categorized authentic Sanskrit verses with Hindi meanings and recommended typography:
+    - Ganesh Invocations (`॥ वक्रतुण्ड महाकाय ॥`, `॥ श्री गणेशाय नमः ॥`, `॥ श्री कुलदेवतायै नमः ॥`).
+    - Vivah Mangalam (`मङ्गलं भगवान् विष्णुः`, `यदेतद् हृदयं तव`).
+    - Gauri & Shakti Vandana (`सर्वमङ्गलमाङ्गल्ये शिवे सर्वार्थसाधिके`).
+    - Saptapadi / Saat Phere (`सखा सप्तपदा भव`).
+    - Vedic Ashirwad & Shanti Mantra (`ॐ द्यौः शान्तिरन्तरिक्षं शान्तिः`).
+    - Auspicious Ceremony Headlines & Traditional Formal Family Invitation lines (`दर्शनाभिलाषी एवं विनीत`).
+  - 1-Click insertion in Left Sidebar Text tab with interactive category filters.
+- **1-Click "Convert to Shudh Hindi (हिंदी में बदलें)"**:
+  - Translates names, greetings, headings, and dates into authentic Devanagari Hindi while automatically upgrading canvas elements to Devanagari Google Fonts (`Rozha One`, `Noto Serif Devanagari`).
+- **Traditional Indian Wedding Vector Artworks (`packages/template-engine/traditional-elements.ts`)**:
+  - Pure, high-precision vector SVG generators for 13 royal traditional motifs:
+    - `ganesha_royal`: Royal Lord Ganesha with stepped mukut, tilak, large ears, trunk holding modak, and ekadanta.
+    - `ganesha_minimal`: Modern clean calligraphic line-art Ganesha symbol.
+    - `swastik`: Auspicious Vedic Swastika with 4 bindu dots (Dharma, Artha, Kama, Moksha).
+    - `om`: Sacred Pranava Om ॐ with chandrabindu.
+    - `doli`: Royal Bridal Palanquin (Doli / Palki) with kalash finial, scalloped canopy, draped silk curtains, and carrying poles.
+    - `shehnai`: Traditional Shehnai & celebratory Dholak / Tabla with musical waves.
+    - `baarat_elephant`: Caparisoned royal elephant with raised trunk, howdah canopy, nettipattam forehead plate, and scalloped jhool.
+    - `havan_kund`: Copper Havan Kund altar with sacred samidha logs and rising agni shikha flames for Saat Phere.
+    - `mangalsutra`: Auspicious golden tanmaniya pendant, sacred black beads chain, and peacock-crested sindoor dani.
+    - `peacock_pair`: Symmetrical Mayur Yugam with crested crowns and intertwining floral tail feathers.
+    - `diya`: Traditional brass deepak with tiered pedestal base and glowing teardrop flame.
+    - `namaste`: Respectful folded hands in Anjali Mudra with lotus blossom background.
+    - `marigold_garland`: Hanging Genda Phool string with sacred mango leaves and bottom brass bell.
+  - Registered in `WEDDING_ELEMENT_TEMPLATES` (`packages/editor-core/canvas.ts`) with category filters (`sacred`, `ceremony`, `decor`).
+  - Seamlessly rendered across Interactive SVG Canvas (`interactive-canvas.tsx`) and Export SVG renderer (`render.ts`) preserving 100% export parity.
+- Fully verified: 46 unit & integration tests pass across 13 test suites (0 failures), production build compiles all routes, structure check clean (196 maintained files).
+
 ## Multi-Card Wedding Suite (Ek Sath Puri Shaadi Ka Set) — 2026-11-14
 
 User explicitly requested building the Multi-Card Wedding Suite:

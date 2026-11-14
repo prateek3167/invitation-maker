@@ -1,4 +1,5 @@
 import { documentTemplate, presets, validateInvitation, type Invitation } from '../editor-core/document';
+import { getTraditionalOrnamentSvg } from './traditional-elements';
 
 const esc = (s: string) => s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;' })[c]!);
 function lines(text: string, max: number): string[] {
@@ -329,10 +330,14 @@ function renderRoyal(d: Invitation, artworkData?: string): string {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="${-(viewW-700)/2} ${-(viewH-980)/2} ${viewW} ${viewH}" role="img" aria-label="${esc(d.fields.heading)}"><rect x="${-(viewW-700)/2}" y="${-(viewH-980)/2}" width="${viewW}" height="${viewH}" fill="${paper}"/>${core}</svg>`;
 }
 
-function renderFromCanvasElements(d: Invitation, artworkData?: string): string {
+export function renderFromCanvasElements(d: Invitation, artworkData?: string): string {
   const [ink, paper, accent] = d.palette;
   const elements = [...(d.canvasElements || [])].sort((a, b) => (a.zIndex ?? 0) - (b.zIndex ?? 0));
-  const defs: string[] = [];
+  const defs: string[] = [
+    `<style>
+      @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&amp;family=Great+Vibes&amp;family=Kalam:wght@400;700&amp;family=Noto+Sans+Devanagari:wght@400;600&amp;family=Noto+Serif+Devanagari:wght@400;600;700&amp;family=Playfair+Display:ital,wght@0,600;1,400&amp;family=Rozha+One&amp;family=Tiro+Devanagari+Hindi:ital@0;1&amp;family=Yatra+One&amp;display=swap');
+    </style>`
+  ];
   const body: string[] = [];
 
   for (const el of elements) {
@@ -418,7 +423,10 @@ function renderFromCanvasElements(d: Invitation, artworkData?: string): string {
       const stroke = el.stroke || accent;
       const fill = el.fill || accent;
       let ornamentSvg = '';
-      if (el.shapeType === 'kalash') {
+      const tradSvg = getTraditionalOrnamentSvg(el.shapeType || '', stroke, fill);
+      if (tradSvg) {
+        ornamentSvg = `<g transform="translate(${el.x}, ${el.y}) scale(${el.width / 100}, ${el.height / 100})">${tradSvg}</g>`;
+      } else if (el.shapeType === 'kalash') {
         ornamentSvg = auspiciousKalash(stroke);
       } else if (el.shapeType === 'mandala') {
         ornamentSvg = royalMandalaCenterpiece(el.x + el.width / 2, el.y + el.height / 2, Math.min(el.width, el.height) / 2, stroke);
