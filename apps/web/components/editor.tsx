@@ -13,6 +13,8 @@ import {
   Type,
   Upload,
   X,
+  Layers,
+  Crown,
 } from 'lucide-react';
 import {
   contentIssues,
@@ -29,7 +31,12 @@ import {
   syncFieldsFromElements,
   syncElementsFromFields,
 } from '../../../packages/editor-core/canvas';
-import { exportInvitation, readPhoto } from '../lib/export';
+import {
+  createEventCard,
+  generateWeddingSuite,
+  syncSuiteCoupleDetails,
+} from '../../../packages/editor-core/suite';
+import { exportInvitation, exportSuitePdf, exportSuiteImages, readPhoto } from '../lib/export';
 import { saveDraft } from '../lib/storage';
 import Dialog from './dialog';
 import InvitationPreview from './invitation-preview';
@@ -42,6 +49,7 @@ import InteractiveCanvas from './canvas/interactive-canvas';
 import SidebarTools from './canvas/sidebar-tools';
 import PropertiesPanel from './canvas/properties-panel';
 import TopToolbar from './canvas/top-toolbar';
+import SuiteBar from './canvas/suite-bar';
 import type { ActiveSidebarTab } from './canvas/types';
 
 const labels: Record<keyof Fields, string> = {
@@ -89,7 +97,23 @@ export default function Editor({
         : decomposeTemplateToElements(initial),
   };
 
-  const [doc, setDoc] = useState<Invitation>(initialWithCanvas);
+  // Initialize multi-card suite
+  const initialSuite: Invitation[] =
+    initial.suiteCards && initial.suiteCards.length > 0
+      ? initial.suiteCards.map(c => ({
+          ...c,
+          canvasElements:
+            c.canvasElements && c.canvasElements.length > 0
+              ? c.canvasElements
+              : decomposeTemplateToElements(c),
+        }))
+      : [initialWithCanvas];
+
+  const [suiteCards, setSuiteCards] = useState<Invitation[]>(initialSuite);
+  const [cardIndex, setCardIndex] = useState(0);
+  const [doc, setDoc] = useState<Invitation>(suiteCards[0] || initialWithCanvas);
+  const [syncCouple, setSyncCouple] = useState(true);
+
   const [artworkData, setArtworkData] = useState<string | undefined>(undefined);
   const [mode, setMode] = useState<'visual' | 'guided'>('visual');
   const [activeTab, setActiveTab] = useState<ActiveSidebarTab>('templates');
@@ -108,9 +132,15 @@ export default function Editor({
   const [exporting, setExporting] = useState(false);
   const [downloadOpen, setDownloadOpen] = useState(false);
   const [downloadType, setDownloadType] = useState<'png' | 'jpg' | 'pdf'>('png');
+  const [downloadScope, setDownloadScope] = useState<'card' | 'suite_pdf' | 'suite_images'>('card');
 
   const ref = useRef(doc);
   ref.current = doc;
+  const suiteRef = useRef(suiteCards);
+  suiteRef.current = suiteCards;
+  const cardIndexRef = useRef(cardIndex);
+  cardIndexRef.current = cardIndex;
+
   const revision = useRef(initial.revision);
   const change = useRef(0);
   const savedChange = useRef(initial.revision ? 0 : -1);
@@ -154,11 +184,116 @@ export default function Editor({
     }
     change.current++;
     const next = { ...ref.current, ...patch };
+
+    // Update active card in suite
+    const currentIdx = cardIndexRef.current;
+    let nextSuite = suiteRef.current.map((c, i) => (i === currentIdx ? next : c));
+
+    // Propagate couple names to all cards in the suite if enabled
+    if (
+      syncCouple &&
+      patch.fields &&
+      (patch.fields.host !== undefined || patch.fields.partner !== undefined)
+    ) {
+      nextSuite = syncSuiteCoupleDetails(nextSuite, next);
+    }
+    next.suiteCards = nextSuite;
+
     ref.current = next;
+    suiteRef.current = nextSuite;
     setDoc(next);
+    setSuiteCards(nextSuite);
     setDirty(true);
     setError('');
     setStatus('Unsaved changes');
+  };
+
+  const handleSelectCard = (index: number) => {
+    if (index < 0 || index >= suiteCards.length) return;
+    setCardIndex(index);
+    const target = suiteCards[index];
+    ref.current = target;
+    setDoc(target);
+    setSelectedId(null);
+  };
+
+  const handleAddCard = (ceremonyId: string) => {
+    const newCard = createEventCard(doc, ceremonyId);
+    const nextSuite = [...suiteCards, newCard];
+    setSuiteCards(nextSuite);
+    setCardIndex(nextSuite.length - 1);
+    ref.current = newCard;
+    setDoc(newCard);
+    setSelectedId(null);
+    update({ suiteCards: nextSuite });
+    setStatus(`Added ${newCard.eventTag || 'new ceremony'} card`);
+  };
+
+  const handleGenerateSuite = () => {
+    const fullSuite = generateWeddingSuite(doc);
+    setSuiteCards(fullSuite);
+    setCardIndex(0);
+    const first = fullSuite[0];
+    ref.current = first;
+    setDoc(first);
+    setSelectedId(null);
+    update({ suiteCards: fullSuite });
+    setStatus('Complete 5-Card Wedding Suite generated!');
+  };
+
+  const handleDuplicateCard = (index: number) => {
+    const source = suiteCards[index];
+    const clone: Invitation = {
+      ...structuredClone(source),
+      id: crypto.randomUUID(),
+      title: `${source.title} (Copy)`,
+      revision: 0,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    const nextSuite = [
+      ...suiteCards.slice(0, index + 1),
+      clone,
+      ...suiteCards.slice(index + 1),
+    ];
+    setSuiteCards(nextSuite);
+    setCardIndex(index + 1);
+    ref.current = clone;
+    setDoc(clone);
+    update({ suiteCards: nextSuite });
+    setStatus('Card duplicated in suite');
+  };
+
+  const handleDeleteCard = (index: number) => {
+    if (suiteCards.length <= 1) return;
+    const nextSuite = suiteCards.filter((_, i) => i !== index);
+    const nextIndex = Math.min(cardIndex, nextSuite.length - 1);
+    setSuiteCards(nextSuite);
+    setCardIndex(nextIndex);
+    const active = nextSuite[nextIndex];
+    ref.current = active;
+    setDoc(active);
+    update({ suiteCards: nextSuite });
+    setStatus('Card removed from suite');
+  };
+
+  const handleMoveCard = (fromIndex: number, toIndex: number) => {
+    if (
+      fromIndex < 0 ||
+      fromIndex >= suiteCards.length ||
+      toIndex < 0 ||
+      toIndex >= suiteCards.length
+    ) {
+      return;
+    }
+    const nextSuite = [...suiteCards];
+    const [moved] = nextSuite.splice(fromIndex, 1);
+    nextSuite.splice(toIndex, 0, moved);
+    setSuiteCards(nextSuite);
+    if (cardIndex === fromIndex) {
+      setCardIndex(toIndex);
+    }
+    update({ suiteCards: nextSuite });
   };
 
   const handleUndo = () => {
@@ -201,7 +336,12 @@ export default function Editor({
       }
       if (alive.current) setStatus('Saving…');
       try {
-        const saved = await persistDocument({ ...ref.current, revision: revision.current });
+        const payload: Invitation = {
+          ...ref.current,
+          suiteCards: suiteRef.current,
+          revision: revision.current,
+        };
+        const saved = await persistDocument(payload);
         revision.current = saved.revision;
         savedChange.current = version;
         if (alive.current && change.current === version) {
@@ -286,13 +426,21 @@ export default function Editor({
     setExporting(true);
     setError('');
     try {
-      await exportInvitation(ref.current, downloadType);
+      if (downloadScope === 'suite_pdf') {
+        await exportSuitePdf(suiteCards, doc.title || 'Wedding_Suite');
+        setStatus(`Wedding Suite (${suiteCards.length} cards) exported as PDF booklet`);
+      } else if (downloadScope === 'suite_images') {
+        await exportSuiteImages(suiteCards, downloadType === 'pdf' ? 'png' : downloadType);
+        setStatus(`All ${suiteCards.length} wedding cards downloaded`);
+      } else {
+        await exportInvitation(ref.current, downloadType);
+        setStatus(
+          storage === 'account'
+            ? 'Download ready · account draft'
+            : 'Download ready · edits save on this device'
+        );
+      }
       setDownloadOpen(false);
-      setStatus(
-        storage === 'account'
-          ? 'Download ready · account draft'
-          : 'Download ready · edits save on this device'
-      );
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Download failed. Please retry.');
     } finally {
@@ -353,6 +501,9 @@ export default function Editor({
           onRedo={handleRedo}
           mode={mode}
           onModeChange={setMode}
+          suiteCount={suiteCards.length}
+          currentCardIndex={cardIndex}
+          eventTag={doc.eventTag}
         />
 
         {/* VISUAL CANVA STUDIO MODE */}
@@ -384,17 +535,31 @@ export default function Editor({
               onTabChange={setActiveTab}
             />
 
-            {/* Center Canvas: Interactive Drag/Resize/Rotate Workspace */}
-            <InteractiveCanvas
-              document={doc}
-              elements={currentElements}
-              selectedId={selectedId}
-              onSelect={setSelectedId}
-              onChange={handleElementsChange}
-              zoom={zoom}
-              onZoomChange={setZoom}
-              artworkData={artworkData}
-            />
+            {/* Center Column: Interactive Canvas + Bottom Multi-Card Suite Bar */}
+            <div className="canva-center-column">
+              <InteractiveCanvas
+                document={doc}
+                elements={currentElements}
+                selectedId={selectedId}
+                onSelect={setSelectedId}
+                onChange={handleElementsChange}
+                zoom={zoom}
+                onZoomChange={setZoom}
+                artworkData={artworkData}
+              />
+
+              {/* Bottom Multi-Card Wedding Suite Bar */}
+              <SuiteBar
+                cards={suiteCards}
+                activeIndex={cardIndex}
+                onSelectCard={handleSelectCard}
+                onAddCard={handleAddCard}
+                onGenerateSuite={handleGenerateSuite}
+                onDuplicateCard={handleDuplicateCard}
+                onDeleteCard={handleDeleteCard}
+                onMoveCard={handleMoveCard}
+              />
+            </div>
 
             {/* Right Properties Panel: Contextual Inspector */}
             <PropertiesPanel
@@ -425,7 +590,7 @@ export default function Editor({
                   A few details.
                   <br />A personal touch.
                 </h2>
-                <p>Changes synchronize directly with your visual design canvas.</p>
+                <p>Changes synchronize directly with your visual design canvas and wedding suite.</p>
               </div>
 
               <div className="editor-tabs" aria-label="Editor sections">
@@ -531,6 +696,15 @@ export default function Editor({
                         )}
                       </label>
                     ))}
+
+                    <label className="field-checkbox" style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 12 }}>
+                      <input
+                        type="checkbox"
+                        checked={syncCouple}
+                        onChange={e => setSyncCouple(e.target.checked)}
+                      />
+                      <span>Sync Bride & Groom names across all ceremony cards in suite</span>
+                    </label>
                   </>
                 )}
 
@@ -775,37 +949,97 @@ export default function Editor({
       {/* Download Modal Dialog */}
       {downloadOpen && (
         <Dialog
-          title="Ready for your big moment?"
+          title="Download Wedding Invitations"
           onClose={() => {
             if (!exporting) setDownloadOpen(false);
           }}
         >
           <p className="dialog-description">
-            Download the exact design in your canvas preview. Your photo, typography, and custom
-            artwork elements are fully preserved.
+            Export print-ready files preserving your custom canvas elements, typography, and couple photographs.
           </p>
+
+          {/* Download Scope Selector (Current Card vs Full Suite Booklet vs All Cards) */}
+          <div className="field">
+            Export Selection
+            <div className="download-scope-options">
+              <button
+                type="button"
+                className={`scope-option-btn ${downloadScope === 'card' ? 'active' : ''}`}
+                onClick={() => setDownloadScope('card')}
+              >
+                <Layers size={16} />
+                <div>
+                  <strong>Current Card Only</strong>
+                  <small>{doc.eventTag || doc.fields.heading || 'Active Card'}</small>
+                </div>
+              </button>
+
+              <button
+                type="button"
+                className={`scope-option-btn ${downloadScope === 'suite_pdf' ? 'active' : ''}`}
+                onClick={() => {
+                  setDownloadScope('suite_pdf');
+                  setDownloadType('pdf');
+                }}
+              >
+                <Crown size={16} />
+                <div>
+                  <strong>Complete Wedding Suite (PDF Booklet)</strong>
+                  <small>All {suiteCards.length} ceremony cards in 1 print document</small>
+                </div>
+              </button>
+
+              <button
+                type="button"
+                className={`scope-option-btn ${downloadScope === 'suite_images' ? 'active' : ''}`}
+                onClick={() => {
+                  setDownloadScope('suite_images');
+                  if (downloadType === 'pdf') setDownloadType('png');
+                }}
+              >
+                <Sparkles size={16} />
+                <div>
+                  <strong>All Ceremony Cards (Images)</strong>
+                  <small>Download each of the {suiteCards.length} cards separately</small>
+                </div>
+              </button>
+            </div>
+          </div>
+
           <label className="field">
             File format
             <select
               value={downloadType}
               onChange={e => setDownloadType(e.target.value as typeof downloadType)}
+              disabled={downloadScope === 'suite_pdf'}
             >
               <option value="png">PNG — crisp digital sharing (High Resolution 300 DPI)</option>
               <option value="jpg">JPG — smaller file size (High Resolution 300 DPI)</option>
-              <option value="pdf">PDF — raster print layout</option>
+              {downloadScope !== 'suite_images' && (
+                <option value="pdf">PDF — raster print layout</option>
+              )}
             </select>
           </label>
+
           <div className="download-summary">
             <Download size={21} />
             <div>
-              <strong>{presets[doc.format].name}</strong>
+              <strong>
+                {downloadScope === 'suite_pdf'
+                  ? `Wedding Suite Booklet (${suiteCards.length} Pages)`
+                  : downloadScope === 'suite_images'
+                  ? `All ${suiteCards.length} Ceremony Cards`
+                  : presets[doc.format].name}
+              </strong>
               <span>
-                {presets[doc.format].width} × {presets[doc.format].height} pixels
-                {downloadType === 'pdf' ? ' · RGB raster, no bleed' : ''}
+                {downloadScope === 'suite_pdf'
+                  ? `Multi-page PDF booklet · ${presets[doc.format].width} × ${presets[doc.format].height} px per page`
+                  : `${presets[doc.format].width} × ${presets[doc.format].height} pixels · 300 DPI RGB`}
               </span>
             </div>
             <ChevronDown size={16} />
           </div>
+
           {issues.length > 0 && (
             <div className="notice">
               <strong>A few finishing touches</strong>
@@ -833,7 +1067,13 @@ export default function Editor({
             ) : (
               <Download size={18} />
             )}
-            {exporting ? 'Creating your download…' : `Download ${downloadType.toUpperCase()}`}
+            {exporting
+              ? 'Creating your download…'
+              : downloadScope === 'suite_pdf'
+              ? `Download Wedding Booklet (PDF)`
+              : downloadScope === 'suite_images'
+              ? `Download All ${suiteCards.length} Cards (${downloadType.toUpperCase()})`
+              : `Download ${downloadType.toUpperCase()}`}
           </button>
           {storage === 'account' && (
             <button

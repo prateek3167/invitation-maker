@@ -15,9 +15,12 @@ export type Invitation = {
   portraits?: { bride: Photo | null; groom: Photo | null };
   templateSnapshot?: Template;
   canvasElements?: CanvasElement[];
+  suiteCards?: Invitation[];
+  eventTag?: string;
 };
 
 export * from './canvas';
+export * from './suite';
 export const templates: Template[] = [...catalog, ...royalCatalog];
 export const royalCategories = [...new Set(royalCatalog.map(t => t.royal.category))];
 export const weddingEvents = ['Shaadi', 'Haldi', 'Mehndi', 'Sangeet', 'Sagaai'] as const;
@@ -72,6 +75,12 @@ export function validateInvitation(value: unknown): asserts value is Invitation 
   }
   if (d.canvasElements !== undefined) {
     if (!Array.isArray(d.canvasElements) || d.canvasElements.length > 500) throw new Error('Invalid canvas elements.');
+  }
+  if (d.eventTag !== undefined && (typeof d.eventTag !== 'string' || d.eventTag.length > 60)) {
+    throw new Error('Invalid event tag.');
+  }
+  if (d.suiteCards !== undefined) {
+    if (!Array.isArray(d.suiteCards) || d.suiteCards.length > 25) throw new Error('Invalid suite cards.');
   }
 }
 export function contentIssues(d: Invitation): string[] {

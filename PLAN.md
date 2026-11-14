@@ -1,5 +1,18 @@
 # Phased Implementation Plan
 
+## Authorized Multi-Card Wedding Suite (Ek Sath Puri Shaadi Ka Set) — 2026-11-14
+
+The user explicitly requested building the Multi-Card Wedding Suite so couples can create, customize, navigate, and download their complete wedding ceremony suite (Save the Date, Shubh Haldi, Shubh Mehndi, Sangeet Night, Shubh Vivah, Grand Reception) in one project.
+
+- [x] Phase 1: Establish Multi-Card Wedding Suite data model (`WeddingCeremony`, `WEDDING_CEREMONIES`, `suiteCards?: Invitation[]`, `eventTag?: string`) in `packages/editor-core/suite.ts` and `document.ts` with transparent persistence and backward compatibility.
+- [x] Phase 2: Implement 1-click ceremony card generator (`createEventCard`) and 5-card coordinated suite generator (`generateWeddingSuite`) with event-appropriate color themes, timing defaults, ceremonies, and typography.
+- [x] Phase 3: Implement smart bidirectional detail sync (`syncSuiteCoupleDetails`) so Bride & Groom names and Host family details propagate seamlessly across all suite cards while individual event dates, times, and venues remain independent.
+- [x] Phase 4: Build bottom Canva-style ceremony card strip (`apps/web/components/canvas/suite-bar.tsx`) with active card selection, live thumbnails, ceremony badges, reordering (`<`, `>`), duplicate, delete, and `+ Add Event Card` popup menu.
+- [x] Phase 5: Implement multi-card export in `apps/web/lib/export.ts` (`exportSuitePdf` for high-resolution 300 DPI multi-page wedding booklet PDF with `jsPDF.addPage`, and `exportSuiteImages` for sequential downloads of all cards).
+- [x] Phase 6: Full verification with comprehensive unit tests (`tests/unit/suite.test.ts`), Next.js production build, structure checks, and typecheck.
+
+Verified: 40 unit/integration tests pass across 12 test suites (0 failures); Next.js production build succeeds with all static & dynamic routes compiled; structure check passes (193 maintained files); multi-card suite strip, 5-card generation, live couple detail sync, and multi-page wedding booklet PDF download verified.
+
 ## Authorized Canva-like interactive template editor (Phase 8 expansion) — 2026-11-14
 
 The user explicitly requested enhancing the Template Editor into a full Canva-like visual design and editing studio with on-canvas drag-and-drop, individual element customization, text formatting, photo editing, design elements library, layers management, undo/redo, auto-save, and export parity.

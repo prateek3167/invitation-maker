@@ -8,6 +8,26 @@ Read AGENTS.md and PLAN.md, then [requirements](docs/product/requirements.md), [
 
 Current truth: [implementation status](docs/development/status.md), [setup](docs/development/setup.md), [roadmap](docs/product/roadmap.md) and [ADR 0001](docs/decisions/0001-server-foundation.md).
 
+## Multi-Card Wedding Suite (Ek Sath Puri Shaadi Ka Set) — 2026-11-14
+
+User explicitly requested building the Multi-Card Wedding Suite:
+- **Suite Data Architecture (`packages/editor-core/suite.ts`)**:
+  - `WeddingCeremony`: Ceremony definition metadata (`id`, `name`, `hindiName`, `emoji`, `themeColor`, `defaultTime`, `defaultMessage`).
+  - `WEDDING_CEREMONIES`: Pre-configured support for 6 key wedding events: Save the Date, Shubh Haldi, Shubh Mehndi, Sangeet Night, Shubh Vivah, Grand Reception.
+  - `createEventCard`: Generates an event-specific invitation document pre-populated with matching palette, event titles, auspicious headings, timings, and decomposed canvas elements.
+  - `generateWeddingSuite`: Generates a coordinated 5-card Indian wedding suite in 1 click.
+  - `syncSuiteCoupleDetails`: Automatically propagates Bride & Groom names, parent/host family lines, and hashtags across all suite cards in real time while preserving each ceremony's individual date, time, and venue.
+  - `applyPaletteToSuite`: Propagates color palette updates across every card in the suite.
+  - `Invitation.suiteCards?: Invitation[]` on primary document ensures 100% backward-compatible persistence in local IndexedDB (`drafts`) and Account API (`event_projects`) without modifying database schemas.
+- **Canva-Style Ceremony Strip (`apps/web/components/canvas/suite-bar.tsx`)**:
+  - Docked at the bottom of the visual canvas with live rendered thumbnails, active card highlight, card numbering, ceremony emoji badges, reordering (`<`, `>`), duplicate, delete, and `+ Add Event Card` ceremony popup menu.
+  - Dedicated `✨ Generate 5-Card Suite` magic button in both the bottom strip and top toolbar.
+- **Multi-Card Export Engine (`apps/web/lib/export.ts`)**:
+  - Single active card export (PNG, JPG, PDF).
+  - Multi-page High-Res 300 DPI Wedding Booklet PDF (`exportSuitePdf`) via `jsPDF.addPage()`, compiling all ceremony cards into one unified printable booklet.
+  - Batch export of all ceremony cards as separate high-resolution images (`exportSuiteImages`).
+- Fully tested & verified: 40 unit and integration tests passing (including 5 dedicated suite tests in `tests/unit/suite.test.ts`), production build passing, structure check clean (193 maintained files).
+
 ## Canva-Like Interactive Visual Template Editor — 2026-11-14
 
 User explicitly requested enhancing the Template Editor into a full Canva-like interactive design studio:

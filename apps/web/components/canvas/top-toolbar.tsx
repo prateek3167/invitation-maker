@@ -7,6 +7,7 @@ import {
   Save,
   Sparkles,
   FileText,
+  Crown,
 } from 'lucide-react';
 import type { Invitation } from '../../../../packages/editor-core/document';
 
@@ -23,6 +24,9 @@ interface TopToolbarProps {
   onRedo: () => void;
   mode: 'visual' | 'guided';
   onModeChange: (mode: 'visual' | 'guided') => void;
+  suiteCount?: number;
+  currentCardIndex?: number;
+  eventTag?: string;
 }
 
 export default function TopToolbar({
@@ -38,6 +42,9 @@ export default function TopToolbar({
   onRedo,
   mode,
   onModeChange,
+  suiteCount = 1,
+  currentCardIndex = 0,
+  eventTag,
 }: TopToolbarProps) {
   return (
     <header className="canva-top-toolbar" aria-label="Editor toolbar">
@@ -53,7 +60,14 @@ export default function TopToolbar({
         </button>
 
         <div className="toolbar-document-meta">
-          <strong title={doc.title}>{doc.title || 'Wedding Invitation'}</strong>
+          <div className="toolbar-title-row">
+            <strong title={doc.title}>{doc.title || 'Wedding Invitation'}</strong>
+            {suiteCount > 1 && (
+              <span className="toolbar-suite-tag">
+                <Crown size={11} /> Card {currentCardIndex + 1}/{suiteCount} · {eventTag || doc.fields.heading.split(' ')[0]}
+              </span>
+            )}
+          </div>
           <span className="save-status-pill" aria-live="polite">
             <span className={`status-dot ${dirty ? 'pending' : ''}`} />
             {status}

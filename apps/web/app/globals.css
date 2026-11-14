@@ -1076,3 +1076,361 @@
     display: none;
   }
 }
+
+
+/* =========================================================================
+   MULTI-CARD WEDDING SUITE STYLES
+   ========================================================================= */
+
+.canva-center-column {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  min-width: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.canva-suite-bar {
+  height: 122px;
+  background: #ffffff;
+  border-top: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  padding: 8px 16px;
+  gap: 6px;
+  flex-shrink: 0;
+  z-index: 15;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.03);
+}
+
+.suite-bar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.suite-title-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--plum);
+}
+
+.suite-count-tag {
+  font-size: 9px;
+  background: #ede2eb;
+  color: var(--plum);
+  border-radius: 12px;
+  padding: 2px 7px;
+  font-weight: 600;
+}
+
+.suite-magic-gen-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  background: linear-gradient(135deg, #7c3aed, #db2777);
+  color: #fff;
+  border: 0;
+  border-radius: 20px;
+  padding: 4px 12px;
+  cursor: pointer;
+  transition: transform 0.15s, opacity 0.15s;
+}
+
+.suite-magic-gen-btn:hover {
+  transform: translateY(-1px);
+  opacity: 0.95;
+}
+
+.suite-cards-track {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: thin;
+  align-items: center;
+  flex: 1;
+}
+
+.suite-card-thumb {
+  position: relative;
+  flex-shrink: 0;
+  width: 105px;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  border-radius: 6px;
+  padding: 3px;
+  border: 2px solid transparent;
+  transition: all 0.15s;
+  background: #fdfbf8;
+}
+
+.suite-card-thumb:hover {
+  border-color: #c9b1c2;
+}
+
+.suite-card-thumb.active {
+  border-color: #7c3aed;
+  background: #faf5ff;
+  box-shadow: 0 0 0 1px #7c3aed;
+}
+
+.card-thumb-art {
+  height: 52px;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 3px;
+  text-align: center;
+  overflow: hidden;
+}
+
+.card-thumb-badge {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 8px;
+  font-weight: 700;
+}
+
+.ceremony-emoji {
+  font-size: 11px;
+}
+
+.card-thumb-heading {
+  font-size: 8px;
+  font-weight: 600;
+  line-height: 1.1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 90px;
+  margin-top: 1px;
+}
+
+.card-thumb-names {
+  font-size: 7px;
+  font-family: var(--serif);
+  font-style: italic;
+  margin-top: 1px;
+}
+
+.card-thumb-footer {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 3px;
+}
+
+.card-index-pill {
+  font-size: 8px;
+  font-weight: 700;
+  background: #e5ded7;
+  border-radius: 50%;
+  width: 14px;
+  height: 14px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.card-event-name {
+  font-size: 9px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.card-thumb-actions {
+  display: none;
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 2px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  gap: 2px;
+  z-index: 10;
+}
+
+.suite-card-thumb:hover .card-thumb-actions {
+  display: flex;
+}
+
+.card-thumb-actions button {
+  padding: 3px;
+  border-radius: 4px;
+  color: #554a51;
+  display: grid;
+  place-items: center;
+}
+
+.card-thumb-actions button:hover {
+  background: #f0e6ed;
+  color: var(--plum);
+}
+
+.card-thumb-actions button.danger:hover {
+  background: #fee7e9;
+  color: #923c4b;
+}
+
+.suite-add-card-container {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.suite-add-card-btn {
+  border: 2px dashed #cfbccb;
+  border-radius: 6px;
+  width: 95px;
+  height: 75px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: var(--plum);
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  background: #faf5f8;
+}
+
+.suite-add-card-btn:hover {
+  background: #f3e5f0;
+  border-color: var(--plum);
+}
+
+.suite-ceremony-popup-menu {
+  position: absolute;
+  bottom: 85px;
+  right: 0;
+  width: 240px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 8px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.18);
+  z-index: 50;
+}
+
+.popup-menu-heading {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--plum);
+  padding: 4px 6px 8px;
+  border-bottom: 1px solid var(--line);
+}
+
+.popup-ceremony-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.popup-ceremony-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  text-align: left;
+  transition: background 0.15s;
+  background: #fff;
+}
+
+.popup-ceremony-item:hover {
+  background: #f8eff5;
+}
+
+.ceremony-item-icon {
+  font-size: 16px;
+}
+
+.ceremony-item-info strong {
+  display: block;
+  font-size: 11px;
+  color: var(--ink);
+}
+
+.ceremony-item-info small {
+  font-size: 9px;
+  color: var(--muted);
+}
+
+.download-scope-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.scope-option-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 14px;
+  text-align: left;
+  background: #fff;
+  transition: all 0.15s;
+  cursor: pointer;
+}
+
+.scope-option-btn:hover {
+  background: #faf4f8;
+  border-color: #d1b8c8;
+}
+
+.scope-option-btn.active {
+  background: #f9eff6;
+  border-color: var(--plum);
+  box-shadow: 0 0 0 1px var(--plum);
+}
+
+.scope-option-btn strong {
+  display: block;
+  font-size: 12px;
+  color: var(--ink);
+}
+
+.scope-option-btn small {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.toolbar-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toolbar-suite-tag {
+  font-size: 9px;
+  font-weight: 600;
+  background: #ede2eb;
+  color: var(--plum);
+  padding: 2px 7px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
